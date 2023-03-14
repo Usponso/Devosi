@@ -1,0 +1,37 @@
+@font-face {
+  font-family: 'Formula1';
+  src: url("../fonts/Formula1-Regular.ttf") format("truetype"),
+  url("../fonts/Formula1-Regular.ttf") format('truetype');
+}
+
+#app{ //Global app style
+  font-family: 'Formula1';
+  min-height: 100vh;
+  margin: -.5em;
+  background-color: #181818;
+  color: white;
+}
+
+.ricard{
+  background: linear-gradient(to right, blue 0%, white 33%, white 66%, red 100%);
+}
+.imola, .monza{
+  background: linear-gradient(to right, green 0%, white 33%, white 66%, red 100%);
+}
+.spa{
+  background: linear-gradient(to right, black 20%, yellow, red 80%);
+}
+.jeddah{
+background: linear-gradient(to right, #006632 30%, white, #006632 70%);
+}
+.suzuka{
+  background: radial-gradient(circle closest-corner, rgba(255, 0, 0, 1) 20%, rgba(255, 255, 255, 1) 20%);
+}
+.monaco{
+  background: linear-gradient(180deg, red 40%, white 60%);
+}
+.catalunya{
+  background: linear-gradient(180deg, red 40%, yellow 45%, yellow 66%, red 70%)
+}
+
+
