@@ -4,10 +4,10 @@
       Devosi
     </div>
     <div class="links">
-      <RouterLink to="/">Season</RouterLink>
-      <RouterLink to="/">Drivers</RouterLink>
-      <RouterLink to="/">Teams</RouterLink>
-      <RouterLink to="/">News</RouterLink>
+      <RouterLink to="/season">Season</RouterLink>
+      <RouterLink to="/drivers">Drivers</RouterLink>
+      <RouterLink to="/teams">Teams</RouterLink>
+      <RouterLink to="/news">News</RouterLink>
     </div>
   </div>
 </template>
@@ -39,5 +39,14 @@ export default {
 .links a{
   text-decoration: none;
   color: white;
+}
+.links a:hover{
+  color: #F2DA00;
+}
+.links a.router-link-active {
+  text-decoration: underline;
+  text-decoration-color: #F2DA00;
+  text-underline-offset: .8em;
+  text-decoration-thickness: .25em;
 }
 </style>
