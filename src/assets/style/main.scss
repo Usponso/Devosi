@@ -13,25 +13,82 @@
 }
 
 .ricard{
-  background: linear-gradient(to right, blue 0%, white 33%, white 66%, red 100%);
+  //background: linear-gradient(to right, #002654 0%, white 33%, white 66%, #ed2939 100%);
+  background: linear-gradient(to right, #002654 33%, white 33%, white 66%, #ed2939 66%);
 }
 .imola, .monza{
-  background: linear-gradient(to right, green 0%, white 33%, white 66%, red 100%);
+  //background: linear-gradient(to right, green 0%, white 33%, white 66%, red 100%);
+  background: linear-gradient(to right, #008c45 33%, white 33%, white 66%, #cd212a 66%);
 }
 .spa{
-  background: linear-gradient(to right, black 20%, yellow, red 80%);
+  //background: linear-gradient(to right, black 20%, yellow, red 80%);
+  background: linear-gradient(to right, #2d2926 33%, #ffcd00 33%, #ffcd00 66%, #c8102e 66%);
 }
 .jeddah{
-background: linear-gradient(to right, #006632 30%, white, #006632 70%);
+  //background: linear-gradient(to right, #006632 30%, white, #006632 70%);
+  background: linear-gradient(to right, #006632 40%, white 40%, white 60%, #006632 60%);
 }
 .suzuka{
-  background: radial-gradient(circle closest-corner, rgba(255, 0, 0, 1) 20%, rgba(255, 255, 255, 1) 20%);
+  background: radial-gradient(circle closest-corner, #bc002d 20%, white 20%);
 }
 .monaco{
-  background: linear-gradient(180deg, red 40%, white 60%);
+  background: linear-gradient(180deg, #ce1126 50%, white 50%);
 }
 .catalunya{
-  background: linear-gradient(180deg, red 40%, yellow 45%, yellow 66%, red 70%)
+  //background: linear-gradient(180deg, red 40%, yellow 45%, yellow 66%, red 70%)
+  background: linear-gradient(180deg, #aa151b 40%, #f1bf00 40%, #f1bf00 66%, #aa151b 66%);
 }
+.albert_park {
+  //background: linear-gradient(to right, #012169 35%, #e4002b 35%, #e4002b 45%, white 45%, white 50%, #e4002b 50%, #e4002b 65%, #012169 65%);
+  background: linear-gradient(to right, #012169 40%, #e4002b 40%, #e4002b 48%, white 48%, white 52%, #e4002b 52%, #e4002b 60%, #012169 60%);
+}
+.baku {
+  background: linear-gradient(180deg, #0092bc 40%, #e4002b 40%, #e4002b 66%, #00af66 66%);
+}
+.miami {
+  background: linear-gradient(to right, #E97DB1, #02B7DD);
+}
+.villeneuve {
+  background: linear-gradient(to right, #d80621 30%, white 30%, white 45%, #d80621 45%, #d80621 55%, white 55%, white 70%, #d80621 70%);
+}
+.red_bull_ring{
+  background: linear-gradient(180deg, #ef3340 40%, white 40%, white 66%, #ef3340 66%);
+}
+.silverstone{
+  background: linear-gradient(to right, #00247d 35%, white 35%, white 40%, #cf142b 40%, #cf142b 60%, white 60%, white 65%, #00247d 65%);
+}
+.hungaroring{
+  background: linear-gradient(180deg, #ce2939 40%, white 40%, white 66%, #477050 66%);
+}
+.zandvort{
+  background: linear-gradient(180deg, #c8102e 40%, white 40%, white 66%, #003da5 66%);
+}
+.marina_bay{
+  background: linear-gradient(to right, #ef3340 50%, white 50%);
+}
+.losail{
+  background: linear-gradient(to right, white 30%, #8a1538 30%);
+}
+.americas{
+  background: linear-gradient(to right, #3c3b6e 10%, white 10%, white 15%, #3c3b6e 15%, #3c3b6e 25%, #b22234 25%);
+}
+.rodriguez{
+  background: linear-gradient(to right, #006341 33%, white 33%, white 44%, #613821 44%, #613821 55%, white 55%, white 66%, #c8102e 66%);
+}
+.interlagos{
+  background: linear-gradient(to right, #009739 33%, #fedd00 33%, #fedd00 44%, #012169 44%, #012169 55%, #fedd00 55%, #fedd00 66%, #009739 66%);
+}
+.vegas{
+  color: #FFFFFF;
+  background: #333333;
+  text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 0px, #FFF 0px 0px 15px, #FF2D95 0px 0px 20px, #FF2D95 0px 0px 30px, #FF2D95 0px 0px 40px, #FF2D95 0px 0px 50px, #FF2D95 0px 0px 75px;
+}
+.yas_marina{
+  background: linear-gradient(to bottom, #ef3340 0%, #ef3340 100%) no-repeat left,
+  linear-gradient(180deg, #009739 40%, white 33%, white 66%, black 66%);
+  background-size: 20% 100%;
+}
+
+
 
 

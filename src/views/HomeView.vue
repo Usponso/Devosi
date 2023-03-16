@@ -45,7 +45,8 @@ function formatDate(value: number){
   <div class="container">
     <NavBar/>
     <main class="home">
-      <p :class="nextRace ? 'gp-name ' + circuitId : 'gp-name'">{{ nextRace ? gpName : "Grand Prix" }}</p>
+      <!-- <p :class="nextRace ? 'gp-name ' + circuitId : 'gp-name'">{{ nextRace ? gpName : "Grand Prix" }}</p> -->
+      <p :class="nextRace ? 'gp-name ' + circuitId : 'gp-name'">{{ nextRace ? "Saudi Arabian Grand Prix" : "Grand Prix" }}</p>
       <p class="gp-countdown">{{ `${formatDate(days)}d : ${formatDate(hours%24)}h : ${formatDate(minutes%60)}m : ${formatDate(seconds%60)}s` }}</p>
     </main>
   </div>
