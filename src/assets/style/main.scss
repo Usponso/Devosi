@@ -12,6 +12,10 @@
   color: white;
 }
 
+.container{
+  padding: 2em;
+}
+
 .ricard{
   //background: linear-gradient(to right, #002654 0%, white 33%, white 66%, #ed2939 100%);
   background: linear-gradient(to right, #002654 33%, white 33%, white 66%, #ed2939 66%);
@@ -35,7 +39,7 @@
   background: linear-gradient(180deg, #ce1126 50%, white 50%);
 }
 .catalunya{
-  //background: linear-gradient(180deg, red 40%, yellow 45%, yellow 66%, red 70%)
+  //background: linear-gradient(180deg, #aa151b 0%, #f1bf00 33%, #f1bf00 66%, #aa151b 100%);
   background: linear-gradient(180deg, #aa151b 40%, #f1bf00 40%, #f1bf00 66%, #aa151b 66%);
 }
 .albert_park {
@@ -66,7 +70,7 @@
 .marina_bay{
   background: linear-gradient(to right, #ef3340 50%, white 50%);
 }
-.losail{
+.losail, bahrain{
   background: linear-gradient(to right, white 30%, #8a1538 30%);
 }
 .americas{
@@ -81,7 +85,7 @@
 .vegas{
   color: #FFFFFF;
   background: #333333;
-  text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 0px, #FFF 0px 0px 15px, #FF2D95 0px 0px 20px, #FF2D95 0px 0px 30px, #FF2D95 0px 0px 40px, #FF2D95 0px 0px 50px, #FF2D95 0px 0px 75px;
+  text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 0px, #FFF 0px 0px 15px, #C60E0E 0px 0px 20px, #C60E0E 0px 0px 30px, #C60E0E 0px 0px 40px, #C60E0E 0px 0px 50px, #C60E0E 0px 0px 75px;
 }
 .yas_marina{
   background: linear-gradient(to bottom, #ef3340 0%, #ef3340 100%) no-repeat left,

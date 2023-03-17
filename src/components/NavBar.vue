@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <div class="brand">
-      Devosi
+      <RouterLink to="/">DEVOSI</RouterLink>
     </div>
     <div class="links">
       <RouterLink to="/season">Season</RouterLink>
@@ -31,6 +31,10 @@ export default {
 }
 .brand::first-letter{
   color: #F2DA00;
+}
+.brand a{
+  text-decoration: none;
+  color: white;
 }
 .links{
   display: flex;
