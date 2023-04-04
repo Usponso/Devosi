@@ -16,7 +16,7 @@ onMounted(async() => {
   <div class="container">
     <NavBar/>
     <div class="card-list">
-      <RouterLink :to="`/race/${race.round}`" v-for="race in races">
+      <RouterLink :to="{name: 'gp', params: {'round': race.round}}" v-for="race in races">
         <GrandPrixCard
             :round="race.round"
             :fp1="race['FirstPractice']"
