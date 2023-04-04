@@ -97,13 +97,13 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
         <img src="/assets/img/icons/qualifying.webp"/>
         {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
       </div>
-      <div v-if="sprint" class="sprint">
-        <img src="/assets/img/icons/sprint.png"/>
-        {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${sprintDate.toLocaleTimeString()}`}}
-      </div>
       <div class="second-practice">
         <img src="/assets/img/icons/practice.png"/>
         {{`FP2 : ${fp2Date.toLocaleDateString()} - ${fp2Date.toLocaleTimeString()}`}}
+      </div>
+      <div v-if="sprint" class="sprint">
+        <img src="/assets/img/icons/sprint.png"/>
+        {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${sprintDate.toLocaleTimeString()}`}}
       </div>
       <div v-if="!sprint" class="third-practice">
         <img src="/assets/img/icons/practice.png"/>
@@ -152,6 +152,9 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
 .card-header .location img{
   margin-right: .5em;
   border-radius: .1em;
+}
+.card-body{
+  font-weight: normal;
 }
 .card-body div{
   display: flex;
