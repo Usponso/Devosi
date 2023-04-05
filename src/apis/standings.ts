@@ -17,6 +17,7 @@ export async function getDriverStandings(season: string){
 export async function getConstructorStandings(season: string){
     try{
         const res = await f1Instance.get(`${season}/constructorStandings.json`);
+        // await new Promise(resolve => setTimeout(resolve, 3000)); // simulate slow response
         return res.data;
     } catch(e){
         throw new Error('La requête a échoué.\n' + e);
