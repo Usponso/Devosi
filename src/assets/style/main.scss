@@ -1,7 +1,21 @@
 @font-face {
   font-family: 'Formula1';
-  src: url("../fonts/Formula1-Regular.ttf") format("truetype"),
-  url("../fonts/Formula1-Regular.ttf") format('truetype');
+  src: url("../fonts/Formula1-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Formula1-Bold';
+  src: url("../fonts/Formula1-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Formula1-Wide';
+  src: url("../fonts/Formula1-Wide.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Formula1-Black';
+  src: url("../fonts/Formula1-Black.ttf") format("truetype");
 }
 
 #app{ //Global app style
@@ -93,6 +107,39 @@
   background-size: 20% 100%;
 }
 
-
-
-
+.card--red_bull{
+  background-color: #1F3F6E;
+}
+.card--ferrari{
+  background-color: #87090A;
+}
+.card--aston_martin{
+  background-color: #00665E;
+}
+.card--mercedes{
+  background-color: #00AF9E;
+}
+.card--mclaren{
+  background-color: #F58020;
+}
+.card--haas{
+  background-color: #EFEFEF;
+  color: black;
+}
+.card--alpine{
+  background-color: #0079C1;
+}
+.card--alfa{
+  background-color: #981E32;
+}
+.card--alphatauri{
+  background-color: #00293F;
+}
+.card--williams{
+  background-color: #00A3E0;
+}
+.loader{
+  padding: 2em 2em 0em 2em;
+  background-color: #333333;
+  border-radius: 8px;
+}
