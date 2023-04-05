@@ -5,7 +5,7 @@ import {onMounted, ref} from "vue";
 import {getRaceBySeasonAndRound, getRaceResult} from "@/apis/races";
 import * as RaceResult from "@/types/RaceResult";
 
-const route = useRoute()
+const route = useRoute();
 let gp = ref([]);
 let result = ref<RaceResult.default[]>([]);
 let podium = ref<RaceResult.default[]>([]);
@@ -22,12 +22,10 @@ onMounted(async() => {
 </script>
 
 <template>
-<!--{{$route.params.round}}-->
   <div class="container">
     <NavBar/>
     <div v-if="gp" class="gp-details">
       <div class="track">
-<!--        gp-name ${gp['Circuit'] ? gp['Circuit'].circuitId : ''}-->
         <div :class="`track-name`">
           {{gp['Circuit'] ? gp['Circuit']['Location']['country'] : ''}}
           {{gp['raceName']}}
@@ -38,17 +36,14 @@ onMounted(async() => {
           <div v-if="podium" class="podium">
             <div class="podium_item">
               <img :src="`/assets/img/drivers/${podium[1] ? podium[1].Driver.driverId : ''}.png`"/>
-<!--              <p class="driver">{{podium[1] ? podium[1].Driver.code : 'DRI'}}</p>-->
               <div class="podium_rank second">2</div>
             </div>
             <div class="podium_item">
               <img :src="`/assets/img/drivers/${podium[0] ? podium[0].Driver.driverId : ''}.png`"/>
-<!--              <p class="driver">{{podium[0] ? podium[0].Driver.code : 'DRI'}}</p>-->
               <div class="podium_rank first">1</div>
             </div>
             <div class="podium_item">
               <img :src="`/assets/img/drivers/${podium[2] ? podium[2].Driver.driverId : ''}.png`"/>
-<!--              <p class="driver">{{podium[2] ? podium[2].Driver.code : 'DRI'}}</p>-->
               <div class="podium_rank third">3</div>
             </div>
           </div>
