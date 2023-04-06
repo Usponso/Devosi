@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const f1Instance = axios.create({
-    baseURL: "http://ergast.com/api/f1/"
+    baseURL: "https://ergast.com/api/f1/"
 });
 
 export async function getDriverStandings(season: string){

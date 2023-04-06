@@ -1,5 +1,7 @@
 # Devosi [WIP]
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a272679a-7eef-49de-9bf3-2c40c68d04cf/deploy-status)](https://app.netlify.com/sites/devosi/deploys)
+
 Devosi is an app about Formula 1 using a public API named [Ergast](https://ergast.com/).
 
 Built with Vue 3 and TypeScript. 
