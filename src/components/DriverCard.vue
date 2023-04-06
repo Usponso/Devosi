@@ -120,7 +120,7 @@ const props = defineProps({
 }
 @media screen and (max-width: 700px){
     .card{
-        grid-template-rows: .5fr 1fr 1fr;
+        grid-template-rows: 20% 1fr 1fr;
     }
 }
 </style>

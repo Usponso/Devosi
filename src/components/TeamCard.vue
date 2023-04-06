@@ -42,7 +42,7 @@ const props = defineProps({
     padding: 2em 2em 0em 0em;
     display: grid;
     grid-template-columns: 1fr 1fr .5fr;
-    grid-template-rows: 1fr 2.5fr .5fr;
+    grid-template-rows: 1fr 2.5fr;
     border-radius: .5em;
     font-weight: bold;
 }
@@ -87,12 +87,42 @@ const props = defineProps({
     grid-row: 2;
     place-self: center;
 }
-@media screen and (max-width: 500px){
+@media screen and (min-width: 1700px) {
+    .card{
+        grid-template-rows: .5fr 1fr 2fr;
+    }
+    .card--car-photo, .card--constructor-points{
+        grid-row-start: 2;
+        grid-row-end: 4;
+    }
+}
+@media screen and (max-width: 1400px) {
+    .card{
+        padding: 1em 1em 0em 0em;
+        grid-template-rows: .5fr 2fr;
+        grid-template-columns: 1fr 1.5fr 1fr;
+    }
+}
+@media screen and (max-width: 1000px) {
     .card{
         padding: 1em 1em 0em 0em;
         grid-template-rows: .5fr 1fr;
         grid-template-columns: 1fr 1.5fr 1fr;
     }
+}
+@media screen and (max-width: 700px) {
+    .card{
+        padding: 1em 1em 0em 0em;
+        grid-template-rows: .5fr 2fr;
+        grid-template-columns: 1fr 1.5fr 1fr;
+    }
+}
+@media screen and (max-width: 500px) {
+    .card{
+        grid-template-rows: .5fr 1fr;
+    }
+}
+@media screen and (max-width: 500px) {
     .card--constructor-name{
         font-size: .8em;
     }

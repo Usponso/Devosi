@@ -43,7 +43,7 @@ onMounted(async () => {
     color: white;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 700px) {
     .card-list {
         grid-template-columns: 1fr;
     }
