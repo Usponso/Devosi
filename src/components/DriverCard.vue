@@ -1,6 +1,4 @@
-<script setup>
-import DriverCardLoader from "@/components/loaders/DriverCardLoader.vue";
-
+<script setup lang="ts">
 const props = defineProps({
     driverId: {
         type: String,
@@ -40,6 +38,7 @@ const props = defineProps({
 <template>
   <div :class="`card card--${constructorId}`">
     <div class="card--driver-rank">
+        <!-- + (rank == 1 ? 'st' : rank == 2 ? 'nd' : rank == 3 ? 'rd' : 'th') -->
         {{ rank }}
     </div>
     <div class="card--driver-constructor">

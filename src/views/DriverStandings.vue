@@ -18,7 +18,7 @@ onMounted(async () => {
     <div class="container">
       <NavBar/>
       <div class="card-list">
-        <DriverCardLoader v-for="i in 20" v-if="!standings.DriverStandings"/>
+        <DriverCardLoader v-for="i in 20" v-if="!standings.DriverStandings" :key="i"/>
         <RouterLink to="#" v-for="driver in standings.DriverStandings" v-else>
           <DriverCard
                   :driver-id="driver.Driver.driverId"
