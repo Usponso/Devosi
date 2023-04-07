@@ -47,4 +47,24 @@ onMounted(async() => {
   text-decoration: none;
   color: white;
 }
+@media screen and (min-width: 2200px){
+    .card-list{
+        grid-template-columns: repeat(5,1fr);
+    }
+}
+@media screen and (min-width: 1600px) and (max-width: 2199px){
+    .card-list{
+        grid-template-columns: repeat(4,1fr);
+    }
+}
+@media screen and (max-width: 1200px) {
+    .card-list{
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+@media screen and (max-width: 800px) {
+    .card-list{
+        grid-template-columns: 1fr;
+    }
+}
 </style>
