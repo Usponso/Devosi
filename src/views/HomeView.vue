@@ -60,6 +60,7 @@ function formatDate(value: number){
   justify-content: center;
 }
 .gp-name{
+  text-align: center;
   font-size: 3em;
   font-weight: bold;
   -webkit-background-clip: text;
@@ -70,5 +71,13 @@ function formatDate(value: number){
   font-size: 2em;
   font-weight: bold;
   margin-top: .5em;
+}
+@media screen and (max-width: 900px){
+    .gp-name{
+        font-size: 1.8em;
+    }
+    .gp-countdown{
+        font-size: 1em;
+    }
 }
 </style>
