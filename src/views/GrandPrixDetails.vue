@@ -111,9 +111,10 @@ onMounted(async() => {
 }
 .gp-details .track .track-infos{
   display: grid;
-  grid-template-columns: repeat(2,1fr);
+  grid-template-columns: repeat(2,50%);
   gap: 2em;
   margin-top: 1em;
+  align-items: center;
 }
 .gp-details .track .track-infos img{
   width: 100%;
@@ -123,6 +124,7 @@ onMounted(async() => {
   justify-self: center;
   align-self: center;
   align-items: flex-end;
+  justify-content: center;
 }
 .gp-details .podium_item{
   text-align: center;
@@ -154,10 +156,15 @@ onMounted(async() => {
   border-left: 0px;
 }
 .result{
-    padding: 2em;
+    margin-top: 2em;
+    overflow-x: scroll;
+    background-color: #2b2a24;
+    border-radius: .8em;
+    border: 2px solid #f2da00;
 }
 .result-table{
   width: 100%;
+  border-spacing: 2em;
 }
 .result-table thead{
     text-align: left;
@@ -185,5 +192,20 @@ onMounted(async() => {
 .result-table .fastest{
     color: #ED00FF;
     font-weight: bold;
+}
+@media screen and (min-width: 1100px) {
+    .result::-webkit-scrollbar{
+        display: none;
+    }
+}
+@media screen and (max-width: 1000px) {
+    .gp-details .track .podium {
+        width: 70%;
+    }
+}
+@media screen and (max-width: 700px) {
+    .gp-details .track .track-infos {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
