@@ -18,12 +18,13 @@
   src: url("$fonts/Formula1-Black.ttf") format("truetype");
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
 // VARIABLES
 $primary: #F2DA00;
 
-
 #app{ //Global app style
-  font-family: 'Formula1';
+  font-family: 'Formula1', 'Russo One', sans-serif;;
   min-height: 100vh;
   margin: -.5em;
   background-color: #181818;
