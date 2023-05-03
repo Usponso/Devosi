@@ -82,7 +82,7 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
     </div>
     <div class="card-header">
       <div class="location">
-        <img :src="`/assets/img/countries/${country}.png`" />{{`${locality}`}}
+        <img :src="`/assets/img/countries/${country}.png`"  alt="Race country flag"/>{{`${locality}`}}
       </div>
       <div class="date">
         {{date}}
@@ -90,19 +90,19 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
     </div>
     <div class="card-body">
       <div class="first-practice">
-        <img src="/assets/img/icons/practice.png"/>
+        <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
         {{`FP1 : ${fp1Date.toLocaleDateString()} - ${fp1Date.toLocaleTimeString()}`}}
       </div>
       <div v-if="sprint" class="qualifying">
-        <img src="/assets/img/icons/qualifying.webp"/>
-        {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
+        <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
+        {{`RACE QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
       </div>
       <div class="second-practice">
-        <img src="/assets/img/icons/practice.png"/>
-        {{`FP2 : ${fp2Date.toLocaleDateString()} - ${fp2Date.toLocaleTimeString()}`}}
+        <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
+        {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${fp2Date.toLocaleTimeString()}`}}
       </div>
       <div v-if="sprint" class="sprint">
-        <img src="/assets/img/icons/sprint.png"/>
+        <img src="/assets/img/icons/sprint.png" alt="Qualifying logo"/>
         {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${sprintDate.toLocaleTimeString()}`}}
       </div>
       <div v-if="!sprint" class="third-practice">
@@ -110,7 +110,7 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
         {{`FP3 : ${fp3Date.toLocaleDateString()} - ${fp3Date.toLocaleTimeString()}`}}
       </div>
       <div v-if="!sprint" class="qualifying">
-        <img src="/assets/img/icons/qualifying.webp"/>
+        <img src="/assets/img/icons/qualifying.png"/>
         {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
       </div>
       <div class="race">

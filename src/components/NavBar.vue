@@ -105,7 +105,7 @@ const open = ref(false);
         text-align: center;
     }
     .brand{
-        font-size: 2em;
+        font-size: 1.5em;
     }
 }
 </style>
