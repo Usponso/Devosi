@@ -24,9 +24,6 @@ onMounted(async() => {
 <template>
   <div class="container">
     <NavBar/>
-    <div class="go-back-container">
-        <a class="go-back" @click="this.$router.go(-1)">&lt; Back</a>
-    </div>
     <div v-if="gp" class="gp-details">
       <div class="track">
         <div :class="`track-name`">
