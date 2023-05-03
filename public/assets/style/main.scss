@@ -24,7 +24,7 @@
 $primary: #F2DA00;
 
 #app{ //Global app style
-  font-family: 'Formula1', 'Russo One', sans-serif;;
+  font-family: 'Formula1', 'Russo One', monospace;
   min-height: 100vh;
   margin: -.5em;
   background-color: #181818;
@@ -147,4 +147,24 @@ $primary: #F2DA00;
   padding: 2em 2em 0em 2em;
   background-color: #333333;
   border-radius: 8px;
+}
+
+.bold{
+  font-weight: bold;
+}
+.uppercase{
+  text-transform: uppercase;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.go-back-container {
+  margin-top: 2em;
+}
+.go-back {
+  cursor: pointer;
+}
+.go-back:hover {
+  color: $primary;
 }
