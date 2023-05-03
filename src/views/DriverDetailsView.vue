@@ -39,11 +39,6 @@ onUnmounted(() => {
 <template>
     <div class="container">
         <NavBar/>
-        
-        <div class="go-back-container">
-            <a class="go-back" @click="this.$router.go(-1)">&lt; Back</a>
-        </div>
-
         <div v-if="driverProfile.code" class="driver-profile">
             <div class="driver-header">
                 <div class="driver-presentation">
@@ -171,6 +166,7 @@ onUnmounted(() => {
 }
 @media screen and (max-width: 850px) {
     .driver-profile {
+        margin-top: 1em;
         padding: 3em;
     }
     .driver-header {
