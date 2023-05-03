@@ -3,6 +3,7 @@ import NavBar from "@/components/NavBar.vue";
 import GrandPrixCard from "@/components/GrandPrixCard.vue";
 import {onMounted, ref} from "vue";
 import {getAllRacesBySeason} from "@/apis/races";
+import GrandPrixCardLoader from "@/components/loaders/GrandPrixCardLoader.vue";
 
 let races = ref([]);
 
@@ -16,7 +17,8 @@ onMounted(async() => {
   <div class="container">
     <NavBar/>
     <div class="card-list">
-      <RouterLink :to="{name: 'gp', params: {'round': race.round}}" v-for="race in races">
+      <GrandPrixCardLoader v-if="!races.length" v-for="i in 20" :key="i"/>
+      <RouterLink v-else :to="{name: 'gp', params: {'round': race.round}}" v-for="race in races">
         <GrandPrixCard
             :round="race.round"
             :fp1="race['FirstPractice']"
