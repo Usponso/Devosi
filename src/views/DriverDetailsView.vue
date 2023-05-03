@@ -27,6 +27,7 @@ let driverProfile = ref<DriverProfile>({
 
 onMounted(() => {
     document.body.classList.add('overflow-hidden'); // best solution found atm
+    window.scrollTo(0,0);
     getDriverProfile(route.params.id as string).then((res) => {
         driverProfile.value = res;
     });
