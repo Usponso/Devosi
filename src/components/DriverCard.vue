@@ -73,7 +73,7 @@ const props = defineProps({
     grid-column: 1;
     grid-row: 1;
     font-size: 1.5em;
-    font-family: 'Formula1-Black';
+    font-family: 'Formula1-Black', 'Russo One', monospace;
 }
 .card--driver-constructor{
     grid-column-start: 3;

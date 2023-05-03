@@ -51,13 +51,13 @@ const props = defineProps({
     grid-column-end: 3;
     grid-row: 1;
     font-size: 1.5em;
-    font-family: 'Formula1-Black';
+    font-family: 'Formula1-Black', 'Russo One', monospace;
     margin-left: 1em;
     display: flex;
     align-items: center;
 }
 .card--constructor-name{
-    font-family: Formula1;
+    font-family: Formula1, 'Russo One', monospace;
 }
 .card--logo-constructor{
     grid-column-start: 3;
