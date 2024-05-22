@@ -1,4 +1,4 @@
-export default interface RaceResult {
+export interface Result {
     number: string,
     position: string,
     positionText: string,

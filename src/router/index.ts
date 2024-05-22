@@ -39,7 +39,7 @@ const router = createRouter({
       name: 'teams',
       component: TeamStandings
     }
-  ]
+  ],
 })
 
 export default router

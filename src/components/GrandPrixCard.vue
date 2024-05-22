@@ -13,6 +13,10 @@ const props = defineProps({
     type: String,
     required: true
   },
+  isNext: {
+    type: Boolean,
+    required: true
+  },
   raceName: {
     type: String,
     required: true
@@ -75,48 +79,53 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
 </script>
 
 <template>
-  <div class="card">
-    <div class="card-title">{{`${raceName}`}}</div>
-    <div class="card-track">
-      <img :src="`/assets/img/tracks/${circuitId}.png`"/>
-    </div>
-    <div class="card-header">
-      <div class="location">
-        <img :src="`/assets/img/countries/${country}.png`"  alt="Race country flag"/>{{`${locality}`}}
-      </div>
-      <div class="date">
-        {{date}}
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="first-practice">
-        <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
-        {{`FP1 : ${fp1Date.toLocaleDateString()} - ${fp1Date.toLocaleTimeString()}`}}
-      </div>
-      <div v-if="sprint" class="qualifying">
-        <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
-        {{`RACE QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
-      </div>
-      <div class="second-practice">
-        <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
-        {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${fp2Date.toLocaleTimeString()}`}}
-      </div>
-      <div v-if="sprint" class="sprint">
-        <img src="/assets/img/icons/sprint.png" alt="Qualifying logo"/>
-        {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${sprintDate.toLocaleTimeString()}`}}
-      </div>
-      <div v-if="!sprint" class="third-practice">
-        <img src="/assets/img/icons/practice.png"/>
-        {{`FP3 : ${fp3Date.toLocaleDateString()} - ${fp3Date.toLocaleTimeString()}`}}
-      </div>
-      <div v-if="!sprint" class="qualifying">
-        <img src="/assets/img/icons/qualifying.png"/>
-        {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
-      </div>
-      <div class="race">
-        <img src="/assets/img/icons/flag.png"/>
-        {{`RACE : ${raceDate.toLocaleDateString()} - ${raceDate.toLocaleTimeString()}`}}
-      </div>
+  <div :class="isNext ? 'card' : 'card'">
+    <div class="card-content">
+        <div :class="isNext ? 'card-title live' : 'card-title'">
+            <div v-if="isNext" class="live-mark blink-it"></div>
+            {{raceName}}
+        </div>
+        <div class="card-track">
+            <img :src="`/assets/img/tracks/${circuitId}.png`" :alt="`${circuitId} track`"/>
+        </div>
+        <div class="card-header">
+            <div class="location">
+                <img :src="`/assets/img/countries/${country}.png`"  alt="Race country flag"/>{{`${locality}`}}
+            </div>
+            <div class="date">
+                {{date}}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="first-practice">
+                <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
+                {{`FP1 : ${fp1Date.toLocaleDateString()} - ${fp1Date.toLocaleTimeString()}`}}
+            </div>
+            <div v-if="sprint" class="qualifying">
+                <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
+                {{`RACE QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
+            </div>
+            <div class="second-practice">
+                <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
+                {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${fp2Date.toLocaleTimeString()}`}}
+            </div>
+            <div v-if="sprint" class="sprint">
+                <img src="/assets/img/icons/sprint.png" alt="Qualifying logo"/>
+                {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${sprintDate.toLocaleTimeString()}`}}
+            </div>
+            <div v-if="!sprint" class="third-practice">
+                <img src="/assets/img/icons/practice.png" alt="Third practice logo"/>
+                {{`FP3 : ${fp3Date.toLocaleDateString()} - ${fp3Date.toLocaleTimeString()}`}}
+            </div>
+            <div v-if="!sprint" class="qualifying">
+                <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
+                {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
+            </div>
+            <div class="race">
+                <img src="/assets/img/icons/flag.png" alt="Chequered flag logo"/>
+                {{`RACE : ${raceDate.toLocaleDateString()} - ${raceDate.toLocaleTimeString()}`}}
+            </div>
+        </div>
     </div>
   </div>
 </template>
@@ -129,10 +138,47 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
   min-height: 10vh;
   padding: 1.2em;
 }
+.is-next{
+    position: relative;
+    overflow: hidden;
+    place-items: center;
+    z-index: 1;
+    border: none
+}
+.is-next::before{
+    content: '';
+    width: 50%;
+    height: 160%;
+    left: 35%;
+    top: -30%;
+    background: #f2da00;
+    position: absolute;
+    animation: rotate 5s linear infinite;
+    z-index: -20;
+}
+.is-next::after{
+    content:'';
+    position: absolute;
+    background: #2b2a24;
+    inset: 5px;
+    border-radius: 5px;
+    z-index: -10;
+}
 .card-title{
   text-align: center;
   font-size: 1.2em;
   margin-bottom: .6em;
+}
+.live {
+    display: flex;
+    justify-content: center;
+    gap: .2em;
+}
+.live-mark {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
 }
 .card-track img{
   width: 100%;
@@ -163,5 +209,73 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
 }
 .card-body img{
   width: 1.4em;
+}
+.blink-it {
+    animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+@keyframes rotate {
+    0%{
+        transform: rotate(0deg);
+    }
+
+    100%{
+        transform: rotate(360deg);
+    }
+}
+.ribbon {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    position: absolute;
+}
+.ribbon::before,
+.ribbon::after {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    display: block;
+    border: 5px solid #2980b9;
+}
+.ribbon span {
+    position: absolute;
+    display: block;
+    width: 225px;
+    padding: 15px 0;
+    background-color: #3498db;
+    box-shadow: 0 5px 10px rgba(0,0,0,.1);
+    color: #fff;
+    font: 700 18px/1 'Lato', sans-serif;
+    text-shadow: 0 1px 1px rgba(0,0,0,.2);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* top left*/
+.ribbon-top-left {
+    top: -10px;
+    left: -10px;
+}
+.ribbon-top-left::before,
+.ribbon-top-left::after {
+    border-top-color: transparent;
+    border-left-color: transparent;
+}
+.ribbon-top-left::before {
+    top: 0;
+    right: 0;
+}
+.ribbon-top-left::after {
+    bottom: 0;
+    left: 0;
+}
+.ribbon-top-left span {
+    right: -25px;
+    top: 30px;
+    transform: rotate(-45deg);
 }
 </style>
