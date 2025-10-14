@@ -135,7 +135,7 @@ $primary: #F2DA00;
 }
 
 .card--red_bull{
-  background-color: #1F3F6E;
+  background-color: #245AAD;
 }
 .card--ferrari{
   background-color: #A6051A;
@@ -150,11 +150,11 @@ $primary: #F2DA00;
   background-color: #F58020;
 }
 .card--haas{
-  background-color: #EFEFEF;
-  color: black;
+  background-color: #4D5052;
+  color: white;
 }
 .card--alpine{
-  background-color: #FF87BC;
+  background-color: #00A1E8;
 }
 .card--alfa{
   background-color: #981E32;
@@ -164,10 +164,10 @@ $primary: #F2DA00;
   background-color: #52E252;
 }
 .card--rb{
-  background-color: #6692FF;
+  background-color: #00A1E8;
 }
 .card--williams{
-  background-color: #00A3E0;
+  background-color: #0A2FA6;
 }
 .loader{
   padding: 2em 2em 0 2em;
@@ -189,8 +189,10 @@ $primary: #F2DA00;
   margin-top: 2em;
 }
 .go-back {
+  text-decoration: none;
+  color: $primary;
   cursor: pointer;
 }
 .go-back:hover {
-  color: $primary;
+  color: white;
 }

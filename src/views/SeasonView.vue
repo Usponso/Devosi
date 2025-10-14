@@ -13,13 +13,17 @@ let nextCircuitId = ref("");
 const el = ref(null);
 const isVisible = useElementVisibility(el);
 
-onMounted(async() => {
-  let tmp = await getAllRacesBySeason('current');
-  races.value = tmp.MRData.RaceTable.Races;
-  let tmpNext = await getNextRace();
-  nextRace.value = tmpNext.MRData.RaceTable.Races;
-  if(nextRace.value.length)
-    nextCircuitId.value = tmpNext.MRData.RaceTable.Races[0].Circuit.circuitId;
+onMounted(() => {
+  getAllRacesBySeason('current').then(res => {
+    races.value = res.MRData.RaceTable.Races;
+    getNextRace().then(res =>  {
+      nextRace.value = res.MRData.RaceTable.Races;
+      if(nextRace.value.length)
+        nextCircuitId.value = res.MRData.RaceTable.Races[0].Circuit.circuitId;
+    });
+  }).catch(e => {
+    console.log(e);
+  });
 });
 </script>
 
@@ -34,8 +38,8 @@ onMounted(async() => {
             :round="race.round"
             :is-next="nextCircuitId === race['Circuit'].circuitId"
             :fp1="race['FirstPractice']"
-            :fp2="race['SecondPractice']"
-            :fp3="!race['Sprint'] ? race['ThirdPractice'] : undefined"
+            :fp2="race['SecondPractice'] ? race['SecondPractice'] : undefined"
+            :fp3="race['ThirdPractice'] ? race['ThirdPractice'] : undefined"
             :qualifying="race['Qualifying']"
             :sprint="race['Sprint'] ? race['Sprint'] : undefined"
             :end-date="race.date"

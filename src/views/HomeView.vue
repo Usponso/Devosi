@@ -58,6 +58,10 @@ function formatDate(value: number){
       <HomeLoader v-else/>
       <p v-if="nextRace.length" class="gp-countdown">{{ `${formatDate(days)}d : ${formatDate(hours%24)}h : ${formatDate(minutes%60)}m : ${formatDate(seconds%60)}s` }}</p>
       <p v-else-if="!loading" class="">We will be back soon, stay tuned !</p>
+      <RouterLink v-if="nextRace.length" class="schedule-btn" :to="`gp/${nextRace[0].round}`">
+        <!--<img src="/assets/img/icons/flag.png" alt="race flag icon"/>-->
+        go to details
+      </RouterLink>
     </main>
   </div>
 </template>
@@ -75,6 +79,7 @@ function formatDate(value: number){
   font-size: 3em;
   font-weight: bold;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0px;
 }
@@ -82,6 +87,19 @@ function formatDate(value: number){
   font-size: 2em;
   font-weight: bold;
   margin-top: .5em;
+}
+.schedule-btn{
+  text-decoration: none;
+  color: #F2DA00;
+  padding: .8em;
+  display: flex;
+  gap: .6em;
+  border: 1px solid #F2DA00;
+  border-radius: .5em;
+  align-items: center;
+}
+.schedule-btn img{
+  width: 4vh;
 }
 @media screen and (max-width: 900px){
     .gp-name{

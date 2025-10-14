@@ -48,7 +48,7 @@ const props = defineProps({
       <img :src="`/assets/img/drivers/${driverId}.png`">
     </div>
     <div class="card--driver-helmet">
-        <img :src="`/assets/img/helmets/${driverId}.png`">
+        <img :src="`/assets/img/helmets/${driverId}.png`" onerror="this.onerror=null; this.src='/assets/img/helmets/default.png'">
     </div>
     <div class="card--driver-points">
         {{ `${points} pts` }}
@@ -89,10 +89,10 @@ const props = defineProps({
     grid-row-start: 2;
     grid-row-end: 4;
     position: relative;
+    overflow: hidden;
 }
 .card--driver-photo img{
     position: absolute;
-    bottom: 0;
     width: 100%;
 }
 .card--driver-helmet{
@@ -113,10 +113,11 @@ const props = defineProps({
     place-self: center;
     align-items: center;
     display: flex;
+    gap: 1em;
 }
 .card--driver-presentation img{
-    width: 90px;
-    height: 100%;
+    max-width: 3em;
+    max-height: 3em;
 }
 @media screen and (max-width: 700px){
     .card{

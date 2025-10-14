@@ -5,6 +5,7 @@ import GrandPrixDetails from "../views/GrandPrixDetails.vue";
 import DriverStandings from "@/views/DriverStandings.vue";
 import TeamStandings from "@/views/TeamStandings.vue";
 import DriverDetailsView from "@/views/DriverDetailsView.vue";
+import NewsView from '@/views/NewsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/teams',
       name: 'teams',
       component: TeamStandings
+    },
+    {
+      path: '/news',
+      name: 'news',
+      component: NewsView
     }
   ],
 })

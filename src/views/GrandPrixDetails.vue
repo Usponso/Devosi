@@ -7,6 +7,7 @@ import utils from "../mixins/utils";
 import type {Result} from "@/types/Result";
 import type {Session} from "@/types/Session";
 import type {GrandPrix} from "@/types/GrandPrix";
+import {NationalityEnum} from "@/types/NationalityEnum";
 
 const route = useRoute();
 let gp = ref<GrandPrix>();
@@ -18,14 +19,15 @@ let fp2 = ref<Session>();
 let fp3 = ref<Session>();
 let qualifying = ref<Session>();
 let sprint = ref<Session>();
+let country = ref<string>();
 
 onMounted(async() => {
   let tmp = await getRaceBySeasonAndRound('current', ''+route.params.round);
   gp.value = tmp.MRData.RaceTable.Races[0];
   race.value = {time: gp.value!.time, date: gp.value!.date};
+  country.value = gp.value['Circuit']['Location']['country'];
   let tmpResult = await getRaceResult('current', ''+route.params.round);
-  result.value = tmpResult.MRData.RaceTable.Races[0].Results;
-  console.log(tmpResult);
+  result.value = tmpResult.MRData.RaceTable.Races[0]?.Results;
   podium.value = result.value?.slice(0,3);
   fp1.value = gp.value!.FirstPractice;
   fp2.value = gp.value!.SecondPractice;
@@ -38,10 +40,13 @@ onMounted(async() => {
 <template>
   <div class="container">
     <NavBar/>
+    <div class="go-back-container">
+      <RouterLink to="/season" class="go-back">🡄 go back</RouterLink>
+    </div>
     <div v-if="gp" class="gp-details">
       <div class="track">
-        <div :class="`track-name`">
-          {{gp['Circuit'] ? gp['Circuit']['Location']['country'] : ''}}
+        <div class="track-name">
+          <img v-if="country" :src="`/assets/img/countries/${country}.png`" :alt="`${country} flag`"/>
           {{gp['raceName']}}
         </div>
         <div class="track-infos">
@@ -67,21 +72,17 @@ onMounted(async() => {
           </div>
         </div>
       </div>
-      <div class="weekend-details">
+      <div class="schedule">
         <div class="gp-day-card first-day">
           <span class="header">{{fp1 ? utils.methods.getDateFormatted(fp1.date)[0] + " " + utils.methods.getDateFormatted(fp1.date)[1] : ""}}</span>
           <div class="sessions">
             <div class="sessions--line">
               <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
-              {{fp1 ? `FP1 : ${fp1.time}` : ""}}
+              {{fp1 ? `FP1 : ${utils.methods.getTimeFormatted(fp1)}` : ""}}
             </div>
-            <div class="sessions--line" v-if="sprint">
-              <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
-              {{qualifying ? `RACE QUALI : ${qualifying.time}` : ""}}
-            </div>
-            <div class="sessions--line" v-else>
-              <img src="/assets/img/icons/practice.png" alt="Qualifying logo"/>
-              {{fp2 ? `FP2 : ${fp2.time}` : ""}}
+            <div class="sessions--line">
+              <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
+              {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2 ? utils.methods.getTimeFormatted(fp2) : ''}`}}
             </div>
           </div>
         </div>
@@ -96,19 +97,19 @@ onMounted(async() => {
           <div class="sessions">
             <div class="sessions--line" v-if="sprint">
               <img src="/assets/img/icons/qualifying.png" alt="Sprint qualifying logo"/>
-              {{fp2 ? `SPRINT QUALI : ${fp2.time}` : ""}}
+              {{fp2 ? `SPRINT QUALI : ${utils.methods.getTimeFormatted(fp2)}` : ""}}
             </div>
             <div class="sessions--line" v-else>
               <img src="/assets/img/icons/practice.png" alt="Third practice logo"/>
-              {{fp3 ? `FP3 : ${fp3.time}` : ""}}
+              {{fp3 ? `FP3 : ${utils.methods.getTimeFormatted(fp3)}` : ""}}
             </div>
             <div class="sessions--line" v-if="sprint">
               <img src="/assets/img/icons/sprint.png" alt="Sprint race logo"/>
-              {{`SPRINT RACE : ${sprint.time}`}}
+              {{`SPRINT RACE : ${utils.methods.getTimeFormatted(sprint)}`}}
             </div>
             <div class="sessions--line" v-else>
               <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
-              {{qualifying ? `QUALIFYING : ${qualifying.time}` : ""}}
+              {{qualifying ? `QUALIFYING : ${utils.methods.getTimeFormatted(qualifying)}` : ""}}
             </div>
           </div>
         </div>
@@ -117,7 +118,7 @@ onMounted(async() => {
           <div class="sessions">
             <div class="sessions--line">
               <img src="/assets/img/icons/flag.png" alt="Chequered flag logo"/>
-              {{race ? `RACE : ${race.time}` : ""}}
+              {{race ? `RACE : ${utils.methods.getTimeFormatted(race)}` : ""}}
             </div>
           </div>
         </div>
@@ -181,7 +182,14 @@ onMounted(async() => {
   gap: 2em;
   text-align: center;
 }
-.gp-details .weekend-details .gp-day-card {
+.gp-details .schedule {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 2em;
+  gap: 2em;
+  text-align: center;
+}
+.gp-details .schedule .gp-day-card {
   border: 1px solid #f2da00;
   width: 100%;
   display: flex;
@@ -194,9 +202,18 @@ onMounted(async() => {
   color: black;
   padding: 1em;
   border-radius: 1em 1em 0 0;
+  font-weight: bold;
 }
-.gp-details .track .track-name{
-  text-align: center;
+.gp-details .track .track-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .4em;
+}
+.gp-details .track .track-name img {
+  margin-right: .3em;
+  height: 2.5vh;
+  border-radius: .3em;
 }
 .gp-details .track .track-infos{
   display: grid;

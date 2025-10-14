@@ -39,7 +39,7 @@ const props = defineProps({
   },
   fp2: {
     type: Object as PropType<Session>,
-    required: true
+    required: false
   },
   fp3: {
     type: Object as PropType<Session>,
@@ -66,12 +66,13 @@ const props = defineProps({
 const { fp1, fp2, fp3, sprint, qualifying, endDate, raceHour } = toRefs(props);
 const raceDate = new Date(endDate.value + ' ' + raceHour.value);
 const fp1Date = new Date(fp1?.value?.date + ' ' + fp1?.value?.time);
-const fp2Date = new Date(fp2?.value?.date + ' ' + fp2?.value?.time);
 let sprintDate = new Date();
+let fp2Date = new Date();
 let fp3Date = new Date();
 if(sprint?.value != undefined){
   sprintDate = new Date(sprint?.value?.date + ' ' + sprint?.value?.time);
 } else {
+  fp2Date = new Date(fp2?.value?.date + ' ' + fp2?.value?.time);
   fp3Date = new Date(fp3?.value?.date + ' ' + fp3?.value?.time);
 }
 const qualifyingDate = new Date(qualifying?.value?.date + ' ' + qualifying?.value?.time);
@@ -79,7 +80,7 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
 </script>
 
 <template>
-  <div :class="isNext ? 'card' : 'card'">
+  <div :class="isNext ? 'card is-next' : 'card'">
     <div class="card-content">
         <div :class="isNext ? 'card-title live' : 'card-title'">
             <div v-if="isNext" class="live-mark blink-it"></div>
@@ -99,31 +100,31 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
         <div class="card-body">
             <div class="first-practice">
                 <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
-                {{`FP1 : ${fp1Date.toLocaleDateString()} - ${fp1Date.toLocaleTimeString()}`}}
-            </div>
-            <div v-if="sprint" class="qualifying">
-                <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
-                {{`RACE QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
+                {{`FP1 : ${fp1Date.toLocaleDateString()} - ${utils.methods.getTimeFormatted(fp1)}`}}
             </div>
             <div class="second-practice">
                 <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
-                {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${fp2Date.toLocaleTimeString()}`}}
+                {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${sprint ? utils.methods.getTimeFormatted(sprint) : fp2 ? utils.methods.getTimeFormatted(fp2) : ''}`}}
+            </div>
+            <div v-if="sprint" class="qualifying">
+                <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
+                {{`RACE QUALI : ${qualifyingDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(qualifying)}`}}
             </div>
             <div v-if="sprint" class="sprint">
                 <img src="/assets/img/icons/sprint.png" alt="Qualifying logo"/>
-                {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${sprintDate.toLocaleTimeString()}`}}
+                {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(sprint)}`}}
             </div>
             <div v-if="!sprint" class="third-practice">
                 <img src="/assets/img/icons/practice.png" alt="Third practice logo"/>
-                {{`FP3 : ${fp3Date.toLocaleDateString()} - ${fp3Date.toLocaleTimeString()}`}}
+                {{`FP3 : ${fp3Date.toLocaleDateString()} - ${utils.methods.getTimeFormatted(fp3!)}`}}
             </div>
             <div v-if="!sprint" class="qualifying">
                 <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
-                {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${qualifyingDate.toLocaleTimeString()}`}}
+                {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(qualifying)}`}}
             </div>
             <div class="race">
                 <img src="/assets/img/icons/flag.png" alt="Chequered flag logo"/>
-                {{`RACE : ${raceDate.toLocaleDateString()} - ${raceDate.toLocaleTimeString()}`}}
+                {{`RACE : ${raceDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted({date: `${raceDate.getFullYear()}-${raceDate.getMonth()}-${raceDate.getDate()}`, time: raceHour})}`}}
             </div>
         </div>
     </div>
@@ -148,9 +149,9 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
 .is-next::before{
     content: '';
     width: 50%;
-    height: 160%;
-    left: 35%;
-    top: -30%;
+    height: 200%;
+    left: 25%;
+    top: -50%;
     background: #f2da00;
     position: absolute;
     animation: rotate 5s linear infinite;

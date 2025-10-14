@@ -43,10 +43,10 @@ onUnmounted(() => {
         <div v-if="driverProfile.code" class="driver-profile">
             <div class="driver-header">
                 <div class="driver-presentation">
+                    <img v-if="driverProfile.driverId" :src="`/assets/img/numbers-profile/${driverProfile.driverId}.png`" alt="Driver number">
                     <div class="driver-name">
                         {{driverProfile.givenName}}<span class="bold uppercase">&nbsp{{driverProfile.familyName}}</span>
                     </div>
-                    <img v-if="driverProfile.driverId" :src="`/assets/img/numbers-profile/${driverProfile.driverId}.png`" alt="Driver number">
                 </div>
                 <img v-if="driverProfile.Constructor.constructorId" :src="`/assets/img/teams-profile/${driverProfile.Constructor.constructorId}.png`" alt="Constructor logo" class="driver-constructor-logo">
             </div>
@@ -152,7 +152,6 @@ onUnmounted(() => {
 .driver-photo img {
     position: absolute;
     right: 4em;
-    bottom: -9em;
 }
 @media screen and (max-width: 1200px) {
     .driver-photo img {
@@ -222,9 +221,6 @@ onUnmounted(() => {
     }
     .driver-information {
         font-size: 1em;
-    }
-    .driver-photo img {
-        bottom: -2em;
     }
     .car-photo img {
         width: 80vw;

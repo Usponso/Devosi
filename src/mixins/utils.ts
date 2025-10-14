@@ -1,3 +1,4 @@
+import type { Session } from "@/types/Session";
 import {month} from "@/utils/utils";
 
 const utils = {
@@ -18,6 +19,10 @@ const utils = {
                 toReturn.push("JAN","01");
             }
             return toReturn;
+        },
+        getTimeFormatted(session: Session): string {
+            const date = new Date(`${session.date} ${session.time}`);
+            return `${date.getHours() < 10 ? '0'+date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()}`;
         }
     }
 }

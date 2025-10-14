@@ -1,4 +1,4 @@
-export const enum NationalityEnum {
+export enum NationalityEnum {
     American = 'United States',
     Australian = 'Australia',
     Austrian = 'Austria',
@@ -18,7 +18,36 @@ export const enum NationalityEnum {
     Hungarian = 'Hungary',
     Italian = 'Italy',
     Japanese = 'Japan',
-    Mexican = 'Mexico',
+    Mexican = 'Mexico', 
+    Monegasque = 'Monaco',
+    Qatari = 'Qatar',
+    'Saudi Arabian' = 'Saudi Arabia',
+    Singaporean = 'Singapore',
+    Spanish = 'Spain',
+    Thai = 'Thailand'
+}
+
+export enum CountryEnum {
+    American = 'United States',
+    Australian = 'Australia',
+    Austrian = 'Austria',
+    Azerbaijani = 'Azerbaijan',
+    Baharna = 'Bahrain',
+    Belgian = 'Belgium',
+    Brazilian = 'Brazil',
+    British = 'UK',
+    Canadian = 'Canada',
+    Chinese = 'China',
+    Danish = 'Denmark',
+    Dutch = 'Netherlands',
+    Emirati = 'UAE',
+    Finnish = 'Finland',
+    French = 'France',
+    German = 'Germany',
+    Hungarian = 'Hungary',
+    Italian = 'Italy',
+    Japanese = 'Japan',
+    Mexican = 'Mexico', 
     Monegasque = 'Monaco',
     Qatari = 'Qatar',
     'Saudi Arabian' = 'Saudi Arabia',
