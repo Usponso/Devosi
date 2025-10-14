@@ -23,19 +23,16 @@
 // VARIABLES
 $primary: #F2DA00;
 
+* {
+  scroll-behavior: smooth;
+}
+
 #app{ //Global app style
   font-family: 'Formula1', 'Russo One', monospace;
   min-height: 100vh;
   margin: -.5em;
   background-color: #181818;
   color: white;
-}
-
-/* ===== Scrollbar CSS ===== */
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #f2da00 #181818;
 }
 
 /* Chrome, Edge, and Safari */
@@ -55,6 +52,9 @@ $primary: #F2DA00;
 
 .container{
   padding: 2em;
+}
+.primary{
+  color: $primary;
 }
 
 .ricard{
@@ -111,7 +111,7 @@ $primary: #F2DA00;
 .marina_bay{
   background: linear-gradient(to right, #ef3340 50%, white 50%);
 }
-.losail, bahrain{
+.losail, .bahrain{
   background: linear-gradient(to right, white 30%, #8a1538 30%);
 }
 .americas{
@@ -126,7 +126,7 @@ $primary: #F2DA00;
 .vegas{
   color: #FFFFFF;
   background: #333333;
-  text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 0px, #FFF 0px 0px 15px, #C60E0E 0px 0px 20px, #C60E0E 0px 0px 30px, #C60E0E 0px 0px 40px, #C60E0E 0px 0px 50px, #C60E0E 0px 0px 75px;
+  text-shadow: #FFF 0 0 5px, #FFF 0 0 0, #FFF 0 0 15px, #C60E0E 0 0 20px, #C60E0E 0 0 30px, #C60E0E 0 0 40px, #C60E0E 0 0 50px, #C60E0E 0 0 75px;
 }
 .yas_marina{
   background: linear-gradient(to bottom, #ef3340 0%, #ef3340 100%) no-repeat left,
@@ -135,7 +135,7 @@ $primary: #F2DA00;
 }
 
 .card--red_bull{
-  background-color: #1F3F6E;
+  background-color: #245AAD;
 }
 .card--ferrari{
   background-color: #A6051A;
@@ -150,23 +150,27 @@ $primary: #F2DA00;
   background-color: #F58020;
 }
 .card--haas{
-  background-color: #EFEFEF;
-  color: black;
+  background-color: #4D5052;
+  color: white;
 }
 .card--alpine{
-  background-color: #0079C1;
+  background-color: #00A1E8;
 }
 .card--alfa{
   background-color: #981E32;
 }
-.card--alphatauri{
-  background-color: #00293F;
+.card--sauber {
+  color: black;
+  background-color: #52E252;
+}
+.card--rb{
+  background-color: #00A1E8;
 }
 .card--williams{
-  background-color: #00A3E0;
+  background-color: #0A2FA6;
 }
 .loader{
-  padding: 2em 2em 0em 2em;
+  padding: 2em 2em 0 2em;
   background-color: #333333;
   border-radius: 8px;
 }
@@ -185,8 +189,10 @@ $primary: #F2DA00;
   margin-top: 2em;
 }
 .go-back {
+  text-decoration: none;
+  color: $primary;
   cursor: pointer;
 }
 .go-back:hover {
-  color: $primary;
+  color: white;
 }

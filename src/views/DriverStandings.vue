@@ -20,14 +20,14 @@ onMounted(async () => {
         <DriverCardLoader v-for="i in 20" v-if="!standings.DriverStandings" :key="i"/>
         <RouterLink :to="{name: 'driverDetails', params: {'id': driver.Driver.driverId}}" v-for="driver in standings.DriverStandings" v-else>
           <DriverCard
-                  :driver-id="driver.Driver.driverId"
-                  :driver-firstname="driver.Driver.givenName"
-                  :driver-name="driver.Driver.familyName"
-                  :driver-number="driver.Driver.permanentNumber"
-                  :rank="driver.positionText"
-                  :points="driver.points"
-                  :constructor-id="driver.Constructors[0].constructorId"
-                  :constructor-name="driver.Constructors[0].name"
+              :driver-id="driver.Driver.driverId"
+              :driver-firstname="driver.Driver.givenName"
+              :driver-name="driver.Driver.familyName"
+              :driver-number="driver.Driver.permanentNumber"
+              :rank="driver.positionText"
+              :points="driver.points"
+              :constructor-id="driver.Constructors[0].constructorId"
+              :constructor-name="driver.Constructors[0].name"
           />
         </RouterLink>
       </div>
