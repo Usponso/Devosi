@@ -53,6 +53,10 @@ const props = defineProps({
     type: Object as PropType<Session>,
     required: false
   },
+  sprintQualifying: {
+    type: Object as PropType<Session>,
+    required: false
+  },
   endDate: {
     type: String,
     required: true
@@ -102,23 +106,23 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
                 <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
                 {{`FP1 : ${fp1Date.toLocaleDateString()} - ${utils.methods.getTimeFormatted(fp1)}`}}
             </div>
-            <div class="second-practice">
-                <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
-                {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${sprint ? utils.methods.getTimeFormatted(sprint) : fp2 ? utils.methods.getTimeFormatted(fp2) : ''}`}}
-            </div>
             <div v-if="sprint" class="qualifying">
                 <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
                 {{`RACE QUALI : ${qualifyingDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(qualifying)}`}}
+            </div>
+            <div v-else class="second-practice">
+                <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
+                {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${sprint ? utils.methods.getTimeFormatted(sprint) : fp2 ? utils.methods.getTimeFormatted(fp2) : ''}`}}
             </div>
             <div v-if="sprint" class="sprint">
                 <img src="/assets/img/icons/sprint.png" alt="Qualifying logo"/>
                 {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(sprint)}`}}
             </div>
-            <div v-if="!sprint" class="third-practice">
+            <div v-else class="third-practice">
                 <img src="/assets/img/icons/practice.png" alt="Third practice logo"/>
                 {{`FP3 : ${fp3Date.toLocaleDateString()} - ${utils.methods.getTimeFormatted(fp3!)}`}}
             </div>
-            <div v-if="!sprint" class="qualifying">
+            <div v-if="qualifying" class="qualifying">
                 <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
                 {{`QUALI : ${qualifyingDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(qualifying)}`}}
             </div>

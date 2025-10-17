@@ -22,7 +22,7 @@ const utils = {
         },
         getTimeFormatted(session: Session): string {
             const date = new Date(`${session.date} ${session.time}`);
-            return `${date.getHours() < 10 ? '0'+date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()}`;
+            return `${date.getHours() < 10 ? '0'+date.getHours() : date.getHours()}H${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()}`;
         }
     }
 }

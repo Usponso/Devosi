@@ -13,5 +13,6 @@ export interface GrandPrix {
   SecondPractice: Session,
   ThirdPractice: Session,
   Qualifying: Session,
-  Sprint: Session
+  Sprint: Session,
+  SprintQualifying: Session
 }

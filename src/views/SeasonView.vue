@@ -34,21 +34,22 @@ onMounted(() => {
       <GrandPrixCardLoader v-if="!races.length" v-for="i in 24" :key="i"/>
       <RouterLink v-else :to="{name: 'gp', params: {'round': race.round}}" v-for="race in races">
         <GrandPrixCard
-            :ref="nextCircuitId === race['Circuit'].circuitId ? 'el' : ''"
+            :ref="nextCircuitId === race.Circuit.circuitId ? 'el' : ''"
             :round="race.round"
-            :is-next="nextCircuitId === race['Circuit'].circuitId"
-            :fp1="race['FirstPractice']"
-            :fp2="race['SecondPractice'] ? race['SecondPractice'] : undefined"
-            :fp3="race['ThirdPractice'] ? race['ThirdPractice'] : undefined"
-            :qualifying="race['Qualifying']"
-            :sprint="race['Sprint'] ? race['Sprint'] : undefined"
+            :is-next="nextCircuitId === race.Circuit.circuitId"
+            :fp1="race.FirstPractice"
+            :fp2="race.SecondPractice ? race.SecondPractice : undefined"
+            :fp3="race.ThirdPractice ? race.ThirdPractice : undefined"
+            :qualifying="race.Qualifying"
+            :sprint="race.Sprint ? race.Sprint : undefined"
+            :sprint-qualifying="race.SprintQualifying ? race.SprintQualifying : undefined"
             :end-date="race.date"
-            :circuit-id="race['Circuit'].circuitId"
-            :country="race['Circuit']['Location'].country"
-            :locality="race['Circuit']['Location'].locality"
-            :race-name="race['raceName']"
-            :race-hour="race['time']"
-            :id="race['Circuit'].circuitId"
+            :circuit-id="race.Circuit.circuitId"
+            :country="race.Circuit.Location.country"
+            :locality="race.Circuit.Location.locality"
+            :race-name="race.raceName"
+            :race-hour="race.time"
+            :id="race.Circuit.circuitId"
         />
       </RouterLink>
       <div v-if="!isVisible && races.length" class="go-to-next-race">

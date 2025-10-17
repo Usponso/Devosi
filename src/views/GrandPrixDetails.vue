@@ -19,6 +19,7 @@ let fp2 = ref<Session>();
 let fp3 = ref<Session>();
 let qualifying = ref<Session>();
 let sprint = ref<Session>();
+let sprintQualifying = ref<Session>();
 let country = ref<string>();
 
 onMounted(async() => {
@@ -34,6 +35,7 @@ onMounted(async() => {
   fp3.value = gp.value!.ThirdPractice;
   qualifying.value = gp.value!.Qualifying;
   sprint.value = gp.value!.Sprint ? gp.value!.Sprint : undefined;
+  sprintQualifying.value = gp.value!.SprintQualifying ? gp.value.SprintQualifying : undefined;
 });
 </script>
 
@@ -80,9 +82,13 @@ onMounted(async() => {
               <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
               {{fp1 ? `FP1 : ${utils.methods.getTimeFormatted(fp1)}` : ""}}
             </div>
-            <div class="sessions--line">
-              <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
-              {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2 ? utils.methods.getTimeFormatted(fp2) : ''}`}}
+            <div v-if="fp2" class="sessions--line">
+              <img :src="`/assets/img/icons/practice.png`" alt="Second practice logo"/>
+              {{`FP2 : ${fp2 ? utils.methods.getTimeFormatted(fp2) : ''}`}}
+            </div>
+            <div v-else class="sessions--line">
+              <img :src="`/assets/img/icons/qualifying.png`" alt="Sprint qualifying logo"/>
+              {{`SPRINT QUALI : ${sprintQualifying ? utils.methods.getTimeFormatted(sprintQualifying) : ''}`}}
             </div>
           </div>
         </div>
@@ -96,18 +102,14 @@ onMounted(async() => {
           </span>
           <div class="sessions">
             <div class="sessions--line" v-if="sprint">
-              <img src="/assets/img/icons/qualifying.png" alt="Sprint qualifying logo"/>
-              {{fp2 ? `SPRINT QUALI : ${utils.methods.getTimeFormatted(fp2)}` : ""}}
+              <img src="/assets/img/icons/sprint.png" alt="Sprint race logo"/>
+              {{`SPRINT RACE : ${utils.methods.getTimeFormatted(sprint)}`}}
             </div>
             <div class="sessions--line" v-else>
               <img src="/assets/img/icons/practice.png" alt="Third practice logo"/>
               {{fp3 ? `FP3 : ${utils.methods.getTimeFormatted(fp3)}` : ""}}
             </div>
-            <div class="sessions--line" v-if="sprint">
-              <img src="/assets/img/icons/sprint.png" alt="Sprint race logo"/>
-              {{`SPRINT RACE : ${utils.methods.getTimeFormatted(sprint)}`}}
-            </div>
-            <div class="sessions--line" v-else>
+            <div class="sessions--line" v-if="qualifying">
               <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
               {{qualifying ? `QUALIFYING : ${utils.methods.getTimeFormatted(qualifying)}` : ""}}
             </div>
