@@ -67,14 +67,16 @@ const props = defineProps({
   }
 });
 
-const { fp1, fp2, fp3, sprint, qualifying, endDate, raceHour } = toRefs(props);
+const { fp1, fp2, fp3, sprint, qualifying, sprintQualifying, endDate, raceHour } = toRefs(props);
 const raceDate = new Date(endDate.value + ' ' + raceHour.value);
 const fp1Date = new Date(fp1?.value?.date + ' ' + fp1?.value?.time);
 let sprintDate = new Date();
+let sprintQualifyingDate = new Date();
 let fp2Date = new Date();
 let fp3Date = new Date();
 if(sprint?.value != undefined){
   sprintDate = new Date(sprint?.value?.date + ' ' + sprint?.value?.time);
+  sprintQualifyingDate = new Date(sprintQualifying?.value?.date + ' ' + sprintQualifying?.value?.time);
 } else {
   fp2Date = new Date(fp2?.value?.date + ' ' + fp2?.value?.time);
   fp3Date = new Date(fp3?.value?.date + ' ' + fp3?.value?.time);
@@ -106,17 +108,17 @@ let date = utils.methods.formatDate(fp1.value.date, endDate.value);
                 <img src="/assets/img/icons/practice.png" alt="Practice logo"/>
                 {{`FP1 : ${fp1Date.toLocaleDateString()} - ${utils.methods.getTimeFormatted(fp1)}`}}
             </div>
-            <div v-if="sprint" class="qualifying">
-                <img src="/assets/img/icons/qualifying.png" alt="Qualifying logo"/>
-                {{`RACE QUALI : ${qualifyingDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(qualifying)}`}}
+            <div v-if="sprintQualifying" class="qualifying">
+                <img src="/assets/img/icons/qualifying.png" alt="Sprint qualifying logo"/>
+                {{`SPRINT QUALI : ${sprintQualifyingDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(sprintQualifying)}`}}
             </div>
             <div v-else class="second-practice">
                 <img :src="`/assets/img/icons/${sprint ? 'qualifying' : 'practice'}.png`" alt="Second practice logo"/>
                 {{`${sprint ? 'SPRINT QUALI' : 'FP2'} : ${fp2Date.toLocaleDateString()} - ${sprint ? utils.methods.getTimeFormatted(sprint) : fp2 ? utils.methods.getTimeFormatted(fp2) : ''}`}}
             </div>
             <div v-if="sprint" class="sprint">
-                <img src="/assets/img/icons/sprint.png" alt="Qualifying logo"/>
-                {{`SPRINT : ${sprintDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(sprint)}`}}
+                <img src="/assets/img/icons/sprint.png" alt="Sprint logo"/>
+                {{`SPRINT RACE : ${sprintDate.toLocaleDateString()} - ${utils.methods.getTimeFormatted(sprint)}`}}
             </div>
             <div v-else class="third-practice">
                 <img src="/assets/img/icons/practice.png" alt="Third practice logo"/>
