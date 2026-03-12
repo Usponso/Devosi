@@ -8,7 +8,7 @@ import TeamCardLoader from "@/components/loaders/TeamCardLoader.vue";
 const standings = ref([]);
 
 onMounted(async () => {
-    let tmp = await getConstructorStandings("current");
+    let tmp = await getConstructorStandings("2025");
     standings.value = tmp.MRData.StandingsTable.StandingsLists[0];
 });
 </script>

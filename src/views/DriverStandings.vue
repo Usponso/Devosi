@@ -6,19 +6,23 @@ import {getDriverStandings} from "@/apis/standings";
 import DriverCardLoader from "@/components/loaders/DriverCardLoader.vue";
 
 const standings = ref([]);
+const loaded = ref(false);
+const rounds = ref(null);
 
 onMounted(async () => {
-   let tmp = await getDriverStandings("current");
-   standings.value = tmp.MRData.StandingsTable.StandingsLists[0];
+  getDriverStandings("2025").then((res) => {
+    standings.value = res.MRData.StandingsTable.StandingsLists[0];
+    rounds.value = res.MRData.StandingsTable.round;
+    loaded.value = true;
+  });
 });
 </script>
 
 <template>
     <div class="container">
       <NavBar/>
-      <div class="card-list">
-        <DriverCardLoader v-for="i in 20" v-if="!standings.DriverStandings" :key="i"/>
-        <RouterLink :to="{name: 'driverDetails', params: {'id': driver.Driver.driverId}}" v-for="driver in standings.DriverStandings" v-else>
+      <div v-if="loaded" class="card-list">
+        <RouterLink v-if="rounds" :to="{name: 'driverDetails', params: {'id': driver.Driver.driverId}}" v-for="driver in standings.DriverStandings">
           <DriverCard
               :driver-id="driver.Driver.driverId"
               :driver-firstname="driver.Driver.givenName"
@@ -30,7 +34,11 @@ onMounted(async () => {
               :constructor-name="driver.Constructors[0].name"
           />
         </RouterLink>
+        <div v-else>
+          The season has not started yet, waiting for the new one !
+        </div>
       </div>
+      <DriverCardLoader v-else v-for="i in 20" :key="i"/>
     </div>
 </template>
 

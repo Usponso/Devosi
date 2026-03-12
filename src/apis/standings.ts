@@ -4,9 +4,11 @@ const f1Instance = axios.create({
     baseURL: "https://api.jolpi.ca/ergast/f1/"
 });
 
-export async function getDriverStandings(season: string){
+export async function getDriverStandings(season: string) {
     try{
         const res = await f1Instance.get(`${season}/driverStandings.json`);
+        console.log("returning data");
+        console.log(res.data);
         // await new Promise(resolve => setTimeout(resolve, 3000)); // simulate slow response
         return res.data;
     } catch(e){

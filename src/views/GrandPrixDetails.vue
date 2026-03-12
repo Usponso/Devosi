@@ -40,6 +40,7 @@ onMounted(async() => {
 </script>
 
 <template>
+  {{ gp }}
   <div class="container">
     <NavBar/>
     <div class="go-back-container">
