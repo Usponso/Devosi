@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#080808"/>
-  <text x="4" y="24" font-family="serif" font-size="22" font-weight="bold" fill="#E8002D">D</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0E0E10"/>
+  <g transform="translate(4, 0) skewX(-10)">
+    <path d="M 20 18 L 20 46" stroke="#E10600" stroke-width="7" stroke-linejoin="miter" stroke-linecap="square" />
+    <path d="M 28 18 H 40 L 48 26 L 48 38 L 40 46 H 28" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linejoin="bevel" stroke-linecap="square" />
+  </g>
 </svg>
