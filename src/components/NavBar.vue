@@ -143,6 +143,7 @@ watch(route, () => { mobileOpen.value = false })
   align-items: center;
   height: 100%;
   gap: 32px;
+  justify-content: space-between;
 }
 
 .logo {

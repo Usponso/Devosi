@@ -348,7 +348,7 @@ onUnmounted(() => clearInterval(timer))
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 20px;
-  min-width: 72px;
+  width: 20%;
 }
 
 .countdown-num {

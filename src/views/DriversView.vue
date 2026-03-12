@@ -251,7 +251,7 @@ const store = useF1Store()
 }
 
 @media (max-width: 768px) {
-  .podium-visual { grid-template-columns: 1fr; }
+  .podium-visual { grid-template-columns: 1fr 1fr 1fr; }
   .driver-row { grid-template-columns: 36px 52px 1fr auto auto; }
   .dr-stat:not(:first-of-type) { display: none; }
   .dr-gap { display: none; }

@@ -428,5 +428,11 @@ const formatDateTime = (dateStr, timeStr) => {
   50% { opacity: 0.3; }
 }
 
+@media (max-width: 768px) {
+  .result-row {
+    gap: 2px;
+  }
+}
+
 .blink { animation: blink 1s ease-in-out infinite; }
 </style>
