@@ -1,147 +1,131 @@
 <template>
-  <div id="app">
-    <NavBar />
+  <AppHeader />
 
-    <!-- Loading overlay global -->
-    <transition name="fade">
-      <div v-if="store.loading && !store.drivers.length" class="global-loader">
-        <div class="loader-inner">
-          <div class="loader-logo font-display">F1</div>
-          <div class="loader-bars">
-            <div class="loader-bar" v-for="i in 5" :key="i" :style="{ animationDelay: `${i * 0.12}s` }"></div>
-          </div>
-          <div class="loader-text">Chargement des données...</div>
-        </div>
+  <!-- Chargement initial : feux de départ -->
+  <transition name="fade">
+    <div v-if="store.loading && !store.drivers.length" class="global-loader" role="status">
+      <div class="lights" aria-hidden="true">
+        <span v-for="i in 5" :key="i" class="light" :style="{ animationDelay: `${i * 0.18}s` }"></span>
       </div>
-    </transition>
+      <div class="eyebrow">Chargement de la saison…</div>
+    </div>
+  </transition>
 
-    <!-- Erreur API -->
-    <transition name="fade">
-      <div v-if="store.error && !store.loading && !store.drivers.length" class="global-error">
-        <div class="error-inner">
-          <div class="error-icon">⚠️</div>
-          <div class="error-title font-display">Connexion impossible</div>
-          <p class="error-sub">Impossible de joindre l'API F1. Vérifiez votre connexion internet.</p>
-          <button class="error-retry" @click="store.loadData()">Réessayer</button>
-        </div>
-      </div>
-    </transition>
-
-    <main class="main-content">
-      <router-view v-slot="{ Component }">
-        <transition name="page" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
-    </main>
+  <!-- Erreur API -->
+  <div v-if="store.error && !store.loading && !store.drivers.length" class="global-error container">
+    <div class="title-lg">Drapeau rouge</div>
+    <p class="dim">Impossible de joindre l'API F1. Vérifie ta connexion puis réessaie.</p>
+    <button class="btn" @click="store.loadData()">Réessayer</button>
   </div>
+
+  <main class="app-main">
+    <router-view v-slot="{ Component, route }">
+      <transition name="page" mode="out-in">
+        <component :is="Component" :key="route.path" />
+      </transition>
+    </router-view>
+  </main>
+
+  <footer class="footer container muted">
+    Données : <a href="https://jolpi.ca" target="_blank" rel="noopener">Jolpica F1</a>,
+    <a href="https://openf1.org" target="_blank" rel="noopener">OpenF1</a>,
+    <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>,
+    tracés <a href="https://github.com/bacinger/f1-circuits" target="_blank" rel="noopener">f1-circuits</a>.
+    Devosi n'est pas affilié à la Formule 1.
+  </footer>
+
+  <MobileTabBar />
+  <TeamPicker />
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import NavBar from '@/components/NavBar.vue'
+import { onMounted, onUnmounted } from 'vue'
+import AppHeader from '@/components/AppHeader.vue'
+import MobileTabBar from '@/components/MobileTabBar.vue'
+import TeamPicker from '@/components/TeamPicker.vue'
 import { useF1Store } from '@/stores/f1Store'
+import { useTeamTheme } from '@/composables/useTeamTheme'
+import { onRevalidate } from '@/services/http'
 
 const store = useF1Store()
+useTeamTheme()
+
+// Si une donnée servie depuis un cache périmé a changé, on recharge silencieusement
+let refreshTimer = null
+const stopRevalidate = onRevalidate(() => {
+  clearTimeout(refreshTimer)
+  refreshTimer = setTimeout(() => store.loadData(), 400)
+})
+
 onMounted(() => store.loadData())
+onUnmounted(() => {
+  stopRevalidate()
+  clearTimeout(refreshTimer)
+})
 </script>
 
 <style>
-.main-content {
-  min-height: calc(100vh - var(--nav-height));
-  padding-top: var(--nav-height);
-  padding: 1em;
+.app-main {
+  min-height: 100vh;
+  padding-top: var(--header-h);
 }
 
-/* Global loader */
+.footer {
+  padding-top: 24px;
+  padding-bottom: calc(32px + var(--tabbar-h));
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.footer a {
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .global-loader {
   position: fixed;
   inset: 0;
-  z-index: 9999;
-  background: var(--bg, #0a0a0a);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.loader-inner {
+  z-index: 150;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 24px;
+  background: var(--bg);
 }
 
-.loader-logo {
-  font-size: 64px;
-  color: var(--red, #E8002D);
-  letter-spacing: -2px;
-}
-
-.loader-bars {
+.lights {
   display: flex;
-  gap: 6px;
-  align-items: flex-end;
-  height: 32px;
+  gap: 14px;
+  padding: 14px 18px;
+  background: #050506;
+  border-radius: 12px;
+  border: 1px solid var(--line);
 }
 
-.loader-bar {
-  width: 6px;
-  background: var(--red, #E8002D);
-  border-radius: 3px;
-  animation: loaderBar 0.9s ease-in-out infinite alternate;
+.light {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #2a0b0b;
+  animation: light-on 2s infinite;
 }
 
-@keyframes loaderBar {
-  from { height: 8px; opacity: 0.3; }
-  to { height: 32px; opacity: 1; }
+@keyframes light-on {
+  0%, 15% { background: #2a0b0b; box-shadow: none; }
+  25%, 85% { background: #ff1e1e; box-shadow: 0 0 18px #ff1e1e; }
+  100% { background: #2a0b0b; box-shadow: none; }
 }
 
-.loader-text {
-  font-size: 13px;
-  color: var(--white-muted, rgba(255,255,255,0.4));
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-/* Error screen */
 .global-error {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: var(--bg, #0a0a0a);
+  min-height: 70vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.error-inner {
+  gap: 16px;
   text-align: center;
-  padding: 40px;
-  max-width: 400px;
+  padding-top: var(--header-h);
 }
-
-.error-icon { font-size: 48px; margin-bottom: 16px; }
-.error-title { font-size: 36px; margin-bottom: 8px; color: var(--white, #fff); }
-.error-sub { font-size: 14px; color: var(--white-muted, rgba(255,255,255,0.4)); margin-bottom: 24px; line-height: 1.6; }
-
-.error-retry {
-  background: var(--red, #E8002D);
-  color: white;
-  border: none;
-  padding: 12px 28px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.error-retry:hover { opacity: 0.85; }
-
-/* Page transitions */
-.fade-enter-active,
-.fade-leave-active { transition: opacity 0.3s ease; }
-.fade-enter-from,
-.fade-leave-to { opacity: 0; }
 </style>

@@ -1,438 +1,654 @@
 <template>
-  <div class="race-detail" v-if="race">
-    <!-- Hero -->
-    <div class="rd-hero">
-      <div class="container rd-hero-inner">
-        <router-link to="/season" class="back-btn">← Saison</router-link>
-        <div class="rd-header">
-          <div class="rd-flag">
-            <img v-if="race.flag.includes('http')" :src="race.flag" style="width: 1.33em; height: 1em; object-fit: cover; border-radius: 0.15em; vertical-align: middle; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" />
-            <span v-else>{{ race.flag }}</span>
+  <div v-if="race" class="page race-detail">
+    <!-- En-tête -->
+    <header class="rd-hero">
+      <div class="rd-glow" aria-hidden="true"></div>
+      <div class="container rd-hero-grid">
+        <div>
+          <router-link to="/season" class="back muted">← Calendrier</router-link>
+          <div class="rd-tags">
+            <span class="badge mono">Manche {{ race.round }}/{{ store.races.length }}</span>
+            <span v-if="race.sprint" class="badge"><Icon name="bolt" :size="11" /> Sprint</span>
+            <span v-if="isNext" class="badge badge-accent badge-live">Prochain GP</span>
+            <span v-else-if="race.completed" class="badge">Terminé</span>
           </div>
-          <div class="rd-title">
-            <div class="rd-num font-mono text-muted">Grand Prix #{{ race.id }}</div>
-            <h1 class="rd-name font-display">{{ race.name }}</h1>
-            <div class="rd-meta text-dim">
-              {{ race.circuit }} · {{ formatDate(race.date) }}
-            </div>
+          <h1 class="title-lg rd-title">{{ race.name }}</h1>
+          <div class="rd-place dim">
+            <Flag :src="race.flag" :alt="race.country" :size="15" />
+            {{ race.circuit }} · {{ race.locality }}, {{ race.country }}
           </div>
-          <div class="rd-status">
-            <span v-if="isNext" class="badge badge-red">
-              <span class="blink">●</span> Prochain Grand Prix
-            </span>
-            <span v-else-if="race.completed" class="badge badge-gold">✓ Course terminée</span>
-            <span v-else class="badge badge-gray">À venir</span>
+          <div class="rd-facts">
+            <div><span class="eyebrow">Date</span><span class="mono">{{ formatDate(race.date) }}</span></div>
+            <div v-if="race.laps"><span class="eyebrow">Tours</span><span class="mono">{{ race.laps }}</span></div>
+            <div v-if="circuitLength"><span class="eyebrow">Tour</span><span class="mono">{{ (circuitLength / 1000).toFixed(3) }} km</span></div>
+            <div v-if="winner"><span class="eyebrow">Vainqueur</span><span :style="{ color: winner.color }">{{ winner.driverName }}</span></div>
           </div>
         </div>
-
-        <!-- Race info -->
-        <div class="rd-info-grid">
-          <div class="rd-info-item">
-            <div class="ri-label">Pays</div>
-            <div class="ri-val">
-              <img v-if="race.flag.includes('http')" :src="race.flag" style="width: 1.33em; height: 1em; object-fit: cover; border-radius: 0.15em; vertical-align: middle;" />
-              <span v-else>{{ race.flag }}</span>
-              {{ race.country }}
-            </div>
-          </div>
-          <div class="rd-info-item">
-            <div class="ri-label">Circuit</div>
-            <div class="ri-val">{{ race.circuit }}</div>
-          </div>
-          <div class="rd-info-item">
-            <div class="ri-label">Tours</div>
-            <div class="ri-val font-mono">{{ race.laps > 0 ? race.laps : '—' }}</div>
-          </div>
-          <div class="rd-info-item">
-            <div class="ri-label">Distance</div>
-            <div class="ri-val font-mono">{{ race.distance || '—' }}</div>
-          </div>
+        <div class="rd-circuit">
+          <CircuitMap :circuit-id="race.circuitId" :label="race.circuit" animated />
         </div>
       </div>
-    </div>
+    </header>
 
     <div class="container rd-body">
-      <!-- Séances du week-end -->
-      <div v-if="hasSessions" class="sessions-section">
-        <h2 class="section-title font-display">Programme du week-end</h2>
-        <div class="sessions-grid">
-          <div class="session-card" v-if="race.fp1">
-            <div class="sc-name">Essais Libres 1</div>
-            <div class="sc-time font-mono">{{ formatDateTime(race.fp1.date, race.fp1.time) }}</div>
-          </div>
-          <div class="session-card" v-if="race.fp2">
-            <div class="sc-name">Essais Libres 2</div>
-            <div class="sc-time font-mono">{{ formatDateTime(race.fp2.date, race.fp2.time) }}</div>
-          </div>
-          <div class="session-card" v-if="race.fp3">
-            <div class="sc-name">Essais Libres 3</div>
-            <div class="sc-time font-mono">{{ formatDateTime(race.fp3.date, race.fp3.time) }}</div>
-          </div>
-          <div class="session-card sprint-quali-card" v-if="race.sprintQualifying">
-            <div class="sc-name">Qualif. Sprint</div>
-            <div class="sc-time font-mono">{{ formatDateTime(race.sprintQualifying.date, race.sprintQualifying.time) }}</div>
-          </div>
-          <div class="session-card sprint-card" v-if="race.sprint">
-            <div class="sc-name">Sprint</div>
-            <div class="sc-time font-mono">{{ formatDateTime(race.sprint.date, race.sprint.time) }}</div>
-          </div>
-          <div class="session-card quali-card" v-if="race.qualifying">
-            <div class="sc-name">Qualifications</div>
-            <div class="sc-time font-mono">{{ formatDateTime(race.qualifying.date, race.qualifying.time) }}</div>
-          </div>
-          <div class="session-card race-card">
-            <div class="sc-name">Course</div>
-            <div class="sc-time font-mono">{{ formatDateTime(race.date, race.time) }}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Results if completed -->
-      <div v-if="race.completed && race.results.length">
-        <h2 class="section-title font-display">Résultats de la course</h2>
-        <div class="results-list">
-          <div
-            v-for="(result, idx) in race.results"
-            :key="idx"
-            class="result-row card"
-            :class="{ 'result-top': idx < 3 }"
-          >
-            <div class="rr-pos font-display" :class="`pos-${idx + 1}`">P{{ idx + 1 }}</div>
-            <div class="rr-driver">
-              <router-link :to="`/drivers/${getDriverId(result)}`" class="rr-link">
-                <span class="rr-code font-mono">{{ result.driver }}</span>
-                <span class="rr-name">{{ getDriverFullName(result) }}</span>
-              </router-link>
-              <span class="rr-team text-dim" :style="{ color: getDriverColor(result) }">{{ getDriverTeam(result) }}</span>
+      <!-- Course à venir : programme -->
+      <template v-if="!race.completed">
+        <div class="upcoming-grid">
+          <section class="card">
+            <div class="card-head">
+              <h2 class="title-md">Programme du week-end</h2>
+              <span class="muted small">heure locale</span>
             </div>
-            <div class="rr-time font-mono text-dim">{{ result.time }}</div>
-            <div class="rr-medal" v-if="idx === 0">🏆</div>
-            <div class="rr-medal" v-else-if="idx === 1">🥈</div>
-            <div class="rr-medal" v-else-if="idx === 2">🥉</div>
-          </div>
+            <WeekendSchedule :race="race" :weather="weather" />
+          </section>
+          <section v-if="pastWinners.length" class="card">
+            <div class="card-head"><h2 class="title-md">Vainqueurs précédents</h2></div>
+            <ol class="past-winners">
+              <li v-for="w in pastWinners" :key="w.season" :style="{ '--tc': w.color }">
+                <span class="mono muted">{{ w.season }}</span>
+                <router-link :to="`/drivers/${w.driverId}`">{{ w.driver }}</router-link>
+                <span class="muted small">{{ w.constructor }}</span>
+              </li>
+            </ol>
+          </section>
         </div>
 
-
-        <!-- Winner detail -->
-        <div class="winner-spotlight" v-if="winner" :style="{ '--tc': winner.color }">
-          <div class="ws-inner">
-            <div class="ws-badge badge badge-gold">🏆 Vainqueur</div>
-            <div class="ws-name font-display">{{ winner.name }}</div>
-            <div class="ws-team" :style="{ color: winner.color }">{{ winner.team }}</div>
-            <div class="ws-time font-mono text-dim">{{ race.results[0]?.time }}</div>
+        <!-- Résultats des séances déjà disputées (EL, qualifs, sprint) -->
+        <section v-if="startedSessions.length" class="card table-card weekend-results">
+          <div class="card-head wr-head">
+            <h2 class="title-md">Résultats du week-end</h2>
+            <div class="tabs">
+              <button
+                v-for="s in startedSessions"
+                :key="s.key"
+                class="tab"
+                :class="{ active: activeSession?.key === s.key }"
+                @click="weekendTab = s.key"
+              >
+                {{ s.short }}
+                <span v-if="s.status === 'live'" class="live-dot" aria-label="en cours"></span>
+              </button>
+            </div>
           </div>
-          <div class="ws-num font-display" :style="{ color: winner.color }">{{ winner.number }}</div>
-        </div>
-      </div>
+          <SessionResults v-if="activeSession" :rows="activeSession.rows" :status="activeSession.status" />
+        </section>
+      </template>
 
-      <!-- Not yet run -->
-      <div v-else-if="!race.completed" class="not-run">
-        <div class="nr-icon">⏳</div>
-        <div class="nr-title font-display">Course à venir</div>
-        <p class="nr-sub text-dim">Les résultats seront disponibles après le {{ formatDate(race.date) }}</p>
-      </div>
+      <!-- Course disputée : onglets -->
+      <template v-else>
+        <div class="tabs rd-tabs" role="tablist">
+          <button
+            v-for="t in tabs"
+            :key="t.id"
+            class="tab"
+            :class="{ active: tab === t.id }"
+            role="tab"
+            :aria-selected="tab === t.id"
+            @click="tab = t.id"
+          >{{ t.label }}</button>
+        </div>
+
+        <!-- Résultats course / sprint -->
+        <section v-if="tab === 'race' || tab === 'sprint'" class="card table-card">
+          <div class="res-head">
+            <span>Pos</span><span>Pilote</span><span class="c-grid">Grille</span><span class="c-laps">Tours</span><span>Temps / statut</span><span class="c-pts">Pts</span>
+          </div>
+          <ol class="res-list">
+            <li
+              v-for="(r, i) in tab === 'race' ? race.results : race.sprintResults"
+              :key="r.driverId"
+              class="res-row team-edge"
+              :class="{ 'is-fav': r.constructorId === prefs.favoriteTeamId, out: !r.classified }"
+              :style="{ '--tc': r.color, animationDelay: `${i * 25}ms` }"
+            >
+              <span class="mono c-pos" :class="`pos-${r.pos}`">{{ r.classified ? r.pos : r.positionText }}</span>
+              <router-link :to="`/drivers/${r.driverId}`" class="c-driver">
+                <strong>{{ r.driverName }}</strong>
+                <span class="muted small">{{ r.constructor }}</span>
+              </router-link>
+              <span class="c-grid mono">
+                <span class="muted">{{ r.grid || 'PL' }}</span>
+                <span v-if="r.classified && r.grid" class="gain" :class="gainClass(r)">{{ gainLabel(r) }}</span>
+              </span>
+              <span class="c-laps mono muted">{{ r.laps }}</span>
+              <span class="c-time mono">
+                {{ r.classified ? r.time : r.status }}
+                <span v-if="r.fastestLap?.rank === 1" class="fl-badge" title="Meilleur tour"><Icon name="timer" :size="12" /> <span class="fl-time">{{ r.fastestLap.time }}</span></span>
+              </span>
+              <span class="c-pts mono">{{ r.points || '' }}</span>
+            </li>
+          </ol>
+        </section>
+
+        <!-- Qualifications -->
+        <section v-else-if="tab === 'quali'" class="card table-card">
+          <div class="q-head">
+            <span>Pos</span><span>Pilote</span><span>Q1</span><span>Q2</span><span>Q3</span><span class="c-gap">Écart</span>
+          </div>
+          <ol class="res-list">
+            <li
+              v-for="(q, i) in race.qualifyingResults"
+              :key="q.driverId"
+              class="q-row team-edge"
+              :class="{ 'is-fav': q.constructorId === prefs.favoriteTeamId }"
+              :style="{ '--tc': q.color, animationDelay: `${i * 25}ms` }"
+            >
+              <span class="mono c-pos" :class="`pos-${q.pos}`">{{ q.pos }}</span>
+              <router-link :to="`/drivers/${q.driverId}`" class="c-driver">
+                <strong>{{ q.driverName }}</strong>
+                <span class="muted small">{{ q.constructor }}</span>
+              </router-link>
+              <span class="mono q-time" :class="{ best: q.q1 === bestTimes.q1 }">{{ q.q1 || '—' }}</span>
+              <span class="mono q-time" :class="{ best: q.q2 === bestTimes.q2 }">{{ q.q2 || '' }}</span>
+              <span class="mono q-time" :class="{ best: q.q3 === bestTimes.q3 }">{{ q.q3 || '' }}</span>
+              <span class="mono muted c-gap">{{ qualiGap(q) }}</span>
+            </li>
+          </ol>
+        </section>
+
+        <!-- Stratégie pneus -->
+        <section v-else-if="tab === 'strategy'" class="card">
+          <div class="card-head">
+            <h2 class="title-md">Stratégie pneus</h2>
+            <span class="muted small">Données OpenF1</span>
+          </div>
+          <div v-if="openf1.loading" class="skeleton chart-skeleton"></div>
+          <p v-else-if="openf1.error" class="empty">{{ openf1.error }}</p>
+          <TyreStints v-else-if="strategyRows.length" :rows="strategyRows" :total-laps="race.laps || maxLap" />
+        </section>
+
+        <!-- Essais libres -->
+        <section v-else-if="practiceTab" class="card table-card">
+          <SessionResults :rows="practiceTab.rows" :status="practiceTab.status" />
+        </section>
+
+        <!-- Positions tour par tour -->
+        <section v-else-if="tab === 'positions'" class="card">
+          <div class="card-head">
+            <h2 class="title-md">Positions tour par tour</h2>
+            <span class="muted small">Survole une courbe pour l'isoler</span>
+          </div>
+          <div v-if="openf1.loading" class="skeleton chart-skeleton"></div>
+          <p v-else-if="openf1.error" class="empty">{{ openf1.error }}</p>
+          <LineChart
+            v-else-if="positionSeries.length"
+            :series="positionSeries"
+            :x-labels="positionLabels"
+            :height="460"
+            :y-min="1"
+            :y-max="positionSeries.length"
+            invert
+            :format-y="(v) => `P${v}`"
+            :tooltip-title="(i) => (i === 0 ? 'Départ' : `Tour ${i}`)"
+            aria-label="Positions des pilotes à chaque tour"
+          />
+        </section>
+      </template>
     </div>
+
+    <!-- Intro : la monoplace gagnante fonce vers l'écran -->
+    <Teleport to="body">
+      <GpIntro
+        v-if="showIntro"
+        :winner="winner"
+        :round="race.round"
+        :race-name="race.name"
+        @done="showIntro = false"
+      />
+    </Teleport>
   </div>
 
-  <div v-else class="container" style="padding: 80px 24px; text-align: center;">
-    <div class="text-muted">Course introuvable</div>
-  </div>
+  <div v-else-if="!store.loading" class="container empty">Grand Prix introuvable.</div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import Icon from '@/components/Icon.vue'
+import Flag from '@/components/Flag.vue'
+import CircuitMap from '@/components/CircuitMap.vue'
+import WeekendSchedule from '@/components/WeekendSchedule.vue'
+import TyreStints from '@/components/charts/TyreStints.vue'
+import LineChart from '@/components/charts/LineChart.vue'
+import SessionResults from '@/components/SessionResults.vue'
+import GpIntro from '@/components/GpIntro.vue'
+import circuitsMeta from '@/data/circuits.json'
+import { useWeekendResults } from '@/composables/useWeekendResults'
 import { useF1Store } from '@/stores/f1Store'
+import { usePrefsStore } from '@/stores/prefsStore'
+import { fetchCircuitWinners } from '@/services/jolpica'
+import { fetchSessionWeather } from '@/services/weather'
+import {
+  OPENF1_FIRST_SEASON,
+  findSession,
+  fetchSessionDrivers,
+  fetchStints,
+  fetchLapPositions,
+} from '@/services/openf1'
+import { formatDate, weekendSessions } from '@/utils/race'
+import { winnerOf } from '@/utils/stats'
 
 const route = useRoute()
 const store = useF1Store()
+const prefs = usePrefsStore()
 
-const race = computed(() => store.races.find(r => r.id === parseInt(route.params.id)))
+const race = computed(() => store.getRaceById(route.params.id))
 const isNext = computed(() => store.nextRace?.id === race.value?.id)
+const winner = computed(() => (race.value ? winnerOf(race.value) : null))
+const circuitLength = computed(() => circuitsMeta[race.value?.circuitId]?.length ?? null)
 
-const hasSessions = computed(() => !!(race.value?.fp1 || race.value?.qualifying || race.value?.sprintQualifying))
+// ---------------------------------------------------------------------------
+// Onglets
+// ---------------------------------------------------------------------------
 
-// Recherche par code 3 lettres (shortName) ou par driverId
-const getDriver = (code) => store.drivers.find(d => d.shortName === code || d.shortName === code?.toUpperCase())
+const hasOpenF1 = computed(() => race.value?.season >= OPENF1_FIRST_SEASON)
 
-// Utilise driverId si disponible (résultats API), sinon lookup par code
-const getDriverId = (result) => result.driverId ?? getDriver(result.driver)?.id
-const getDriverFullName = (result) => result.driverName ?? getDriver(result.driver)?.name ?? result.driver
-const getDriverTeam = (result) => result.constructor ?? getDriver(result.driver)?.team ?? ''
-const getDriverColor = (result) => {
-  if (result.constructorId) {
-    const team = store.teams.find(t => t.id === result.constructorId)
-    return team?.color ?? 'var(--white)'
+// Séances OpenF1 : EL seulement pour une course terminée (le reste vient de Jolpica),
+// toutes les séances déjà courues pendant le week-end
+const { sessions: weekend } = useWeekendResults(race, (r) =>
+  r.completed ? ['fp1', 'fp2', 'fp3'] : ['fp1', 'fp2', 'fp3', 'sprintQualifying', 'sprint', 'qualifying'],
+)
+
+const startedSessions = computed(() => weekend.value.filter((s) => s.status !== 'upcoming'))
+const weekendTab = ref(null)
+const activeSession = computed(
+  () => startedSessions.value.find((s) => s.key === weekendTab.value) ?? startedSessions.value.at(-1) ?? null,
+)
+
+const practiceSessions = computed(() => weekend.value.filter((s) => s.key.startsWith('fp') && s.rows.length))
+const practiceTab = computed(() => practiceSessions.value.find((s) => s.key === tab.value) ?? null)
+
+const tabs = computed(() => {
+  const list = [{ id: 'race', label: 'Course' }]
+  if (race.value?.qualifyingResults.length) list.push({ id: 'quali', label: 'Qualifs' })
+  if (race.value?.sprintResults.length) list.push({ id: 'sprint', label: 'Sprint' })
+  practiceSessions.value.forEach((s) => list.push({ id: s.key, label: s.short }))
+  if (hasOpenF1.value) {
+    list.push({ id: 'strategy', label: 'Stratégie' })
+    list.push({ id: 'positions', label: 'Positions' })
   }
-  return getDriver(result.driver)?.color ?? 'var(--white)'
-}
-
-const winner = computed(() => {
-  if (!race.value?.completed || !race.value.results.length) return null
-  const firstResult = race.value.results[0]
-  return getDriver(firstResult.driver) ?? {
-    name: firstResult.driverName ?? firstResult.driver,
-    team: firstResult.constructor ?? '',
-    color: 'var(--gold)',
-    number: '',
-  }
+  return list
 })
 
-const formatDate = (dateStr) => {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+const tab = ref('race')
+watch(() => route.params.id, () => (tab.value = 'race'))
+
+// ---------------------------------------------------------------------------
+// Intro animée (GP terminé) : la F1 du vainqueur, aux couleurs de son écurie
+// ---------------------------------------------------------------------------
+
+const showIntro = ref(false)
+const mountedAt = Date.now()
+let introDecided = false
+
+watch(
+  winner,
+  (w) => {
+    if (introDecided || !w) return
+    introDecided = true
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // Si les résultats arrivent tard (premier chargement), on ne coupe pas la lecture de la page
+    const tooLate = Date.now() - mountedAt > 4000
+    if (!reducedMotion && !tooLate) showIntro.value = true
+  },
+  { immediate: true },
+)
+
+// ---------------------------------------------------------------------------
+// Résultats / qualifs
+// ---------------------------------------------------------------------------
+
+const gainLabel = (r) => {
+  const g = r.grid - r.pos
+  return g > 0 ? `▲${g}` : g < 0 ? `▼${-g}` : '='
+}
+const gainClass = (r) => (r.grid - r.pos > 0 ? 'gain-up' : r.grid - r.pos < 0 ? 'gain-down' : 'muted')
+
+function toSeconds(t) {
+  if (!t) return null
+  const [m, s] = t.includes(':') ? t.split(':') : ['0', t]
+  return parseInt(m) * 60 + parseFloat(s)
 }
 
-const formatDateTime = (dateStr, timeStr) => {
-  if (!dateStr) return 'Horaire non défini'
-  if (!timeStr) return formatDate(dateStr)
-  // timeStr est généralement au format "14:00:00Z"
-  const d = new Date(`${dateStr}T${timeStr}`)
-  // capitaliser la première lettre du jour
-  const str = d.toLocaleString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-  return str.charAt(0).toUpperCase() + str.slice(1)
+const bestTimes = computed(() => {
+  const best = {}
+  for (const key of ['q1', 'q2', 'q3']) {
+    const times = (race.value?.qualifyingResults ?? []).map((q) => q[key]).filter(Boolean)
+    best[key] = times.sort((a, b) => toSeconds(a) - toSeconds(b))[0] ?? null
+  }
+  return best
+})
+
+/** Écart à la pole sur la dernière séance disputée par le pilote */
+function qualiGap(q) {
+  if (q.pos === 1) return 'Pole'
+  const key = q.q3 ? 'q3' : q.q2 ? 'q2' : 'q1'
+  const mine = toSeconds(q[key])
+  const ref = toSeconds(bestTimes.value[key])
+  return mine && ref ? `+${(mine - ref).toFixed(3)}` : ''
 }
+
+// ---------------------------------------------------------------------------
+// Course à venir : météo + vainqueurs passés
+// ---------------------------------------------------------------------------
+
+const weather = ref(null)
+const pastWinners = ref([])
+
+watch(
+  () => race.value?.id,
+  async () => {
+    weather.value = null
+    pastWinners.value = []
+    if (!race.value || race.value.completed) return
+    const r = race.value
+    const [w, past] = await Promise.allSettled([
+      fetchSessionWeather(r, weekendSessions(r)),
+      fetchCircuitWinners(r.circuitId, 8),
+    ])
+    weather.value = w.status === 'fulfilled' ? w.value : null
+    pastWinners.value = past.status === 'fulfilled' ? past.value.filter((x) => x.season < r.season) : []
+  },
+  { immediate: true },
+)
+
+// ---------------------------------------------------------------------------
+// OpenF1 : stratégie et positions (chargées à l'ouverture de l'onglet)
+// ---------------------------------------------------------------------------
+
+const openf1 = reactive({ loading: false, error: null, raceId: null, drivers: null, stints: [], positions: null })
+
+async function loadOpenF1() {
+  const r = race.value
+  if (!r || openf1.raceId === r.id) return
+  openf1.raceId = r.id
+  openf1.loading = true
+  openf1.error = null
+  openf1.stints = []
+  openf1.positions = null
+  try {
+    const session = await findSession(r, 'Race')
+    if (!session) throw new Error('Séance introuvable dans OpenF1.')
+    const winnerNumber = r.results.find((x) => x.pos === 1)?.number
+    const [drivers, stints, positions] = await Promise.all([
+      fetchSessionDrivers(session.session_key),
+      fetchStints(session.session_key),
+      winnerNumber ? fetchLapPositions(session.session_key, winnerNumber) : null,
+    ])
+    openf1.drivers = drivers
+    openf1.stints = stints
+    openf1.positions = positions
+    if (!stints.length) openf1.error = 'Pas de données pneus pour cette course.'
+  } catch (err) {
+    openf1.error = err.message?.startsWith('Séance') ? err.message : 'Données OpenF1 indisponibles pour le moment.'
+    openf1.raceId = null
+  } finally {
+    openf1.loading = false
+  }
+}
+
+watch(tab, (t) => {
+  if (t === 'strategy' || t === 'positions') loadOpenF1()
+})
+
+/** Résultat Jolpica correspondant à un numéro OpenF1 (via le code pilote) */
+function resultForNumber(number) {
+  const code = openf1.drivers?.get(number)?.code
+  return race.value.results.find((r) => r.driver === code) ?? race.value.results.find((r) => r.number === number)
+}
+
+const maxLap = computed(() => Math.max(1, ...openf1.stints.map((s) => s.lapEnd ?? 0)))
+
+const strategyRows = computed(() => {
+  const byDriver = new Map()
+  for (const s of openf1.stints) {
+    if (!byDriver.has(s.driverNumber)) byDriver.set(s.driverNumber, [])
+    byDriver.get(s.driverNumber).push({ ...s, lapEnd: s.lapEnd ?? maxLap.value })
+  }
+  return [...byDriver.entries()]
+    .map(([number, stints]) => {
+      const res = resultForNumber(number)
+      return {
+        number,
+        code: res?.driver ?? openf1.drivers?.get(number)?.code ?? String(number),
+        color: res?.color ?? openf1.drivers?.get(number)?.color ?? 'var(--text)',
+        pos: res?.classified ? res.pos : null,
+        order: res?.pos ?? 99,
+        highlight: res?.constructorId === prefs.favoriteTeamId,
+        stints: stints.sort((a, b) => a.stint - b.stint),
+      }
+    })
+    .sort((a, b) => a.order - b.order)
+})
+
+const positionLabels = computed(() =>
+  openf1.positions ? Array.from({ length: openf1.positions.laps + 1 }, (_, i) => (i === 0 ? 'Dép.' : `T${i}`)) : [],
+)
+
+const positionSeries = computed(() => {
+  if (!openf1.positions) return []
+  return [...openf1.positions.series.entries()]
+    .map(([number, values]) => {
+      const res = resultForNumber(number)
+      // Après un abandon, la courbe s'arrête au dernier tour bouclé
+      const lastLap = res && !res.classified ? res.laps : openf1.positions.laps
+      return {
+        id: String(number),
+        label: res?.driver ?? openf1.drivers?.get(number)?.code ?? String(number),
+        color: res?.color ?? openf1.drivers?.get(number)?.color ?? '#888',
+        values: values.slice(0, lastLap + 1).concat(new Array(Math.max(0, openf1.positions.laps - lastLap)).fill(null)),
+        highlight: res?.constructorId === prefs.favoriteTeamId || res?.pos <= 3,
+        order: res?.pos ?? 99,
+      }
+    })
+    .sort((a, b) => a.order - b.order)
+})
 </script>
 
-
 <style scoped>
+.small { font-size: 12px; }
+
 .rd-hero {
-  padding: 24px 0 40px;
-  border-bottom: 1px solid var(--border);
-  background: radial-gradient(ellipse at 30% 50%, rgba(232,0,45,0.05) 0%, transparent 70%);
+  position: relative;
+  padding: 32px 0 40px;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
 }
 
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--white-muted);
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 24px;
-  transition: color var(--transition);
+.rd-glow {
+  position: absolute;
+  right: -10%;
+  top: -30%;
+  width: 60%;
+  height: 160%;
+  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.18), transparent);
+  pointer-events: none;
 }
 
-.back-btn:hover { color: var(--white); }
-
-.rd-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
-}
-
-.rd-flag { font-size: 56px; line-height: 1; }
-.rd-title { flex: 1; }
-.rd-num { font-size: 12px; margin-bottom: 6px; }
-.rd-name { font-size: clamp(32px, 4vw, 52px); margin-bottom: 8px; }
-.rd-meta { font-size: 14px; }
-.rd-status { margin-left: auto; }
-
-.rd-info-grid {
-  display: flex;
+.rd-hero-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 32px;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
+.back {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.back:hover { color: var(--text); }
 
+.rd-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.rd-title { margin-bottom: 10px; }
+.rd-place { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-.ri-label {
+.rd-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: 24px;
+}
+
+.rd-facts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-weight: 700;
+}
+
+.rd-circuit { height: 240px; }
+
+.rd-body { padding-top: 32px; }
+
+.rd-tabs { margin-bottom: 16px; }
+
+.upcoming-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 16px;
+}
+
+.weekend-results { margin-top: 16px; }
+
+.wr-head {
+  flex-wrap: wrap;
+  padding: 12px 16px 4px;
+}
+
+.live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.past-winners { list-style: none; }
+
+.past-winners li {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 9px 0 9px 12px;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid var(--tc);
+  font-weight: 600;
+}
+
+.past-winners li:last-child { border-bottom: none; }
+
+/* Tableaux */
+.table-card { padding: 8px 0; overflow: hidden; }
+
+.res-head,
+.res-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 76px 52px minmax(0, 200px) 40px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+}
+
+.q-head,
+.q-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 90px 90px 90px 76px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+}
+
+.res-head,
+.q-head {
+  height: 36px;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--white-muted);
-  margin-bottom: 4px;
+  color: var(--text-muted);
+  border-left: 3px solid transparent;
 }
 
-.ri-val {
-  font-size: 14px;
-  font-weight: 500;
+.res-list { list-style: none; }
+
+.res-row,
+.q-row {
+  min-height: 52px;
+  border-top: 1px solid var(--line);
+  animation: rise 0.4s var(--ease) both;
 }
 
-/* Body */
-.rd-body { padding: 40px 0; }
+.res-row.out { opacity: 0.55; }
 
-/* Sessions */
-.sessions-section {
-  margin-bottom: 48px;
-}
+.c-pos { font-weight: 700; font-size: 16px; text-align: center; }
+.c-pts, .c-gap { text-align: right; }
+.c-pts { font-weight: 700; }
 
-.sessions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-}
-
-.session-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
+.c-driver {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  transition: transform var(--transition), border-color var(--transition);
+  min-width: 0;
+  line-height: 1.2;
 }
 
-.session-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255,255,255,0.2);
-}
-
-.sc-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--white);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.sc-time {
-  font-size: 14px;
-  color: var(--white-muted);
-}
-
-.quali-card {
-  border-color: rgba(232,0,45,0.3);
-}
-.quali-card .sc-name {
-  color: var(--red);
-}
-
-.sprint-quali-card {
-  border-color: rgba(255,128,0,0.3);
-}
-.sprint-quali-card .sc-name {
-  color: #FF8000;
-}
-
-.sprint-card {
-  border-color: rgba(212,175,55,0.3);
-}
-.sprint-card .sc-name {
-  color: var(--gold);
-}
-
-.race-card {
-  background: linear-gradient(135deg, rgba(232,0,45,0.1), transparent);
-  border-color: rgba(232,0,45,0.5);
-}
-.race-card .sc-name {
-  color: var(--red);
-  font-size: 15px;
-}
-.race-card .sc-time {
-  color: var(--white);
-  font-weight: 600;
-}
-
-.section-title {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-.results-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 32px;
-}
-
-.result-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 20px;
-}
-
-.result-top {
-  background: var(--surface2);
-}
-
-.rr-pos {
-  font-size: 24px;
-  min-width: 48px;
-}
-
-.rr-driver {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.rr-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--white);
-}
-
-.rr-link:hover .rr-name { color: var(--red); }
-
-.rr-code {
-  font-size: 13px;
-  font-weight: 700;
-  background: rgba(255,255,255,0.06);
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.rr-name { font-size: 15px; font-weight: 600; }
-.rr-team { font-size: 12px; }
-.rr-time { font-size: 13px; min-width: 120px; text-align: right; }
-.rr-medal { font-size: 20px; }
-
-/* Winner spotlight */
-.winner-spotlight {
-  background: linear-gradient(135deg, rgba(212,175,55,0.08), var(--surface));
-  border: 1px solid rgba(212,175,55,0.2);
-  border-radius: 16px;
-  padding: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
+.c-driver strong,
+.c-driver span {
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.ws-badge { margin-bottom: 12px; display: inline-flex; }
-.ws-name { font-size: 36px; margin-bottom: 4px; }
-.ws-team { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-.ws-time { font-size: 14px; }
-.ws-num {
-  font-size: 120px;
-  line-height: 1;
-  opacity: 0.1;
-  position: absolute;
-  right: 24px;
+.c-driver:hover strong { color: var(--accent); }
+
+.c-grid { display: flex; gap: 8px; font-size: 13px; }
+.gain { font-size: 11px; font-weight: 700; }
+
+.c-time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
 }
 
-/* Not run */
-.not-run {
-  text-align: center;
-  padding: 80px 24px;
+.fl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border-radius: 99px;
+  font-size: 10px;
+  background: rgba(176, 94, 255, 0.18);
+  color: #c79bff;
 }
 
-.nr-icon { font-size: 48px; margin-bottom: 16px; }
-.nr-title { font-size: 36px; margin-bottom: 8px; }
-.nr-sub { font-size: 15px; }
+.q-time { font-size: 13px; color: var(--text-dim); }
+.q-time.best { color: #c79bff; font-weight: 700; }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+.chart-skeleton { height: 360px; }
+
+@media (max-width: 900px) {
+  .rd-hero-grid { grid-template-columns: 1fr; }
+  .rd-circuit { height: 180px; }
 }
 
-@media (max-width: 768px) {
-  .result-row {
-    gap: 2px;
-  }
+@media (max-width: 640px) {
+  .res-head,
+  .res-row { grid-template-columns: 30px minmax(0, 1fr) minmax(0, 96px) 24px; padding: 0 10px; gap: 8px; }
+  .fl-time { display: none; }
+  .c-grid, .c-laps { display: none; }
+  .c-time { font-size: 11px; justify-content: flex-end; }
+  .q-head,
+  .q-row { grid-template-columns: 30px minmax(0, 1fr) 80px 64px; padding: 0 10px; gap: 8px; }
+  .q-head > :nth-child(3),
+  .q-head > :nth-child(4),
+  .q-row > :nth-child(3),
+  .q-row > :nth-child(4) { display: none; }
 }
-
-.blink { animation: blink 1s ease-in-out infinite; }
 </style>

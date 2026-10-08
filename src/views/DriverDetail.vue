@@ -1,301 +1,271 @@
 <template>
-  <div class="driver-detail" v-if="driver">
-    <!-- Hero -->
-    <div class="dd-hero" :style="{ '--tc': driver.color }">
-      <div class="dd-hero-bg" :style="{ background: `radial-gradient(ellipse at 80% 50%, ${driver.color}15 0%, transparent 70%)` }"></div>
+  <div v-if="driver" class="page driver-detail" :style="{ '--tc': driver.color }">
+    <header class="dd-hero">
+      <div class="dd-glow" aria-hidden="true"></div>
+      <span class="dd-number" aria-hidden="true">{{ driver.number || '' }}</span>
       <div class="container dd-hero-inner">
-        <router-link to="/drivers" class="back-btn">← Pilotes</router-link>
+        <router-link to="/drivers" class="back muted">← Pilotes</router-link>
         <div class="dd-header">
-          <div class="dd-avatar" :style="{ background: `linear-gradient(135deg, ${driver.color}33, ${driver.color}11)`, border: `2px solid ${driver.color}55` }">
-            <span class="dd-initials font-display" :style="{ color: driver.color }">{{ driver.shortName }}</span>
-          </div>
+          <DriverAvatar :driver="driver" :size="148" class="dd-avatar" />
           <div class="dd-title">
-            <div class="dd-number font-display" :style="{ color: driver.color }">{{ driver.number }}</div>
-            <h1 class="dd-name font-display">{{ driver.name }}</h1>
-            <div class="dd-meta">
-              <span class="dd-flag">
-                <img v-if="driver.flag.includes('http')" :src="driver.flag" style="width: 1.33em; height: 1em; object-fit: cover; border-radius: 0.15em; vertical-align: middle;" />
-                <span v-else>{{ driver.flag }}</span>
-              </span>
-              <span class="dd-nationality text-dim">{{ driver.nationality }}</span>
-              <span class="sep-dot text-muted">·</span>
-              <span class="dd-team" :style="{ color: driver.color }">{{ driver.team }}</span>
+            <div class="dd-team">
+              <router-link :to="`/teams/${driver.teamId}`">{{ driver.team }}</router-link>
+              <span class="muted">·</span>
+              <span class="mono muted">#{{ driver.number }}</span>
+            </div>
+            <h1 class="title-xl dd-name">
+              <span class="dd-first">{{ driver.givenName }}</span>
+              {{ driver.familyName }}
+            </h1>
+            <div class="dd-meta dim">
+              <Flag :src="driver.flag" :size="14" /> {{ driver.nationality }}
+              <template v-if="driver.dob"> · {{ age(driver.dob) }} ans</template>
             </div>
           </div>
-          <div class="dd-pts-block">
-            <div class="pts-big font-display" :style="{ color: driver.color }">{{ driver.points }}</div>
-            <div class="pts-big-label text-muted">Points {{ store.seasonYear }}</div>
-            <div class="dd-rank font-mono text-dim">P{{ ranking }} au classement</div>
+          <div class="dd-points">
+            <div class="mono dd-pts" v-countup="driver.points"></div>
+            <div class="eyebrow">Points {{ store.seasonYear }} · P{{ driver.position }}</div>
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Stats -->
     <div class="container dd-body">
-      <div class="dd-stats-grid">
-        <div class="stat-box">
-          <div class="stat-value font-mono">{{ careerStats ? careerStats.wins : '...' }}</div>
-          <div class="stat-label">Victoires (Carrière)</div>
+      <!-- Saison -->
+      <section class="section-tight">
+        <h2 class="title-md section-title">Saison {{ store.seasonYear }}</h2>
+        <div class="tiles">
+          <StatTile label="Victoires" :value="season.wins" />
+          <StatTile label="Podiums" :value="season.podiums" />
+          <StatTile label="Poles" :value="season.poles" />
+          <StatTile label="Meilleurs tours" :value="season.fastestLaps" />
+          <StatTile label="Moy. arrivée" :value="season.avgFinish" :decimals="1" :sub="season.bestFinish ? `Meilleur : P${season.bestFinish}` : ''" />
+          <StatTile label="Places gagnées" :value="season.gained" :sub="`${season.dnf} abandon${season.dnf > 1 ? 's' : ''}`" />
         </div>
-        <div class="stat-box">
-          <div class="stat-value font-mono">{{ careerStats ? careerStats.podiums : '...' }}</div>
-          <div class="stat-label">Podiums (Carrière)</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value font-mono">{{ careerStats ? careerStats.poles : '...' }}</div>
-          <div class="stat-label">Poles Position</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value font-mono">{{ careerStats ? careerStats.fastestLaps : '...' }}</div>
-          <div class="stat-label">Meilleurs Tours</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value font-mono">{{ careerStats ? careerStats.races : '...' }}</div>
-          <div class="stat-label">Courses Disputées</div>
-        </div>
-      </div>
+      </section>
 
-      <div class="dd-section">
-        <h2 class="dd-section-title font-display">À propos</h2>
-        <p class="dd-bio text-dim">{{ driver.bio }}</p>
-        <div class="dd-personal">
-          <div class="personal-row">
-            <span class="personal-label">Né le</span>
-            <span class="personal-val">{{ driver.dob }}</span>
-          </div>
-          <div class="personal-row">
-            <span class="personal-label">Numéro</span>
-            <span class="personal-val font-mono">#{{ driver.number }}</span>
-          </div>
-          <div class="personal-row">
-            <span class="personal-label">Nationalité</span>
-            <span class="personal-val">
-              <img v-if="driver.flag.includes('http')" :src="driver.flag" style="width: 1.33em; height: 1em; object-fit: cover; border-radius: 0.15em; vertical-align: middle;" />
-              <span v-else>{{ driver.flag }}</span>
-              {{ driver.nationality }}
+      <div class="dd-grid">
+        <section class="card">
+          <div class="card-head">
+            <h2 class="title-md">Résultats par manche</h2>
+            <span v-if="teammate" class="muted small legend">
+              <i class="lg-solid"></i>{{ driver.shortName }} <i class="lg-dash"></i>{{ teammate.shortName }}
             </span>
           </div>
-        </div>
+          <LineChart
+            v-if="resultsSeries[0].values.length > 1"
+            :series="resultsSeries"
+            :x-labels="roundLabels"
+            :height="260"
+            :y-min="1"
+            :y-max="maxPosition"
+            invert
+            :end-labels="false"
+            :format-y="(v) => `P${v}`"
+            :tooltip-title="(i) => completed[i]?.name"
+            aria-label="Position finale à chaque Grand Prix"
+          />
+          <p v-else class="empty">Pas encore assez de courses.</p>
+        </section>
+
+        <section v-if="teammate" class="card">
+          <div class="card-head">
+            <h2 class="title-md">Duel coéquipier</h2>
+            <span class="muted small">{{ duel.rounds }} GP ensemble</span>
+          </div>
+          <TeammateDuel :a="driver" :b="teammate" :duel="duel" :color="driver.color" />
+        </section>
       </div>
 
-      <!-- Bar chart for wins -->
-      <div class="dd-section">
-        <h2 class="dd-section-title font-display">Performance Saison</h2>
-        <div class="perf-bars">
-          <div class="perf-bar-row" v-for="(item, key) in perfItems" :key="key">
-            <div class="perf-label text-dim">{{ item.label }}</div>
-            <div class="perf-track">
-              <div class="perf-fill" :style="{ width: item.pct + '%', background: driver.color }"></div>
-            </div>
-            <div class="perf-val font-mono">{{ item.val }}</div>
-          </div>
+      <!-- Carrière -->
+      <section class="section-tight">
+        <h2 class="title-md section-title">Carrière</h2>
+        <div class="tiles">
+          <StatTile label="Saisons" :value="career?.seasons" />
+          <StatTile label="Grands Prix" :value="career?.races" />
+          <StatTile label="Victoires" :value="career?.wins" :sub="winRate" />
+          <StatTile label="Podiums" :value="career?.podiums" />
+          <StatTile label="Poles" :value="career?.poles" />
+          <StatTile label="Meilleurs tours" :value="career?.fastestLaps" />
         </div>
-      </div>
+      </section>
+
+      <section v-if="driver.bio" class="card bio">
+        <p class="dim">{{ driver.bio }}</p>
+        <a v-if="driver.url" :href="driver.url" target="_blank" rel="noopener" class="link-arrow">Wikipédia →</a>
+      </section>
     </div>
   </div>
 
-  <div v-else class="container" style="padding: 80px 24px; text-align: center;">
-    <div class="text-muted">Pilote introuvable</div>
-  </div>
+  <div v-else-if="!store.loading" class="container empty">Pilote introuvable pour cette saison.</div>
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import Flag from '@/components/Flag.vue'
+import DriverAvatar from '@/components/DriverAvatar.vue'
+import StatTile from '@/components/StatTile.vue'
+import TeammateDuel from '@/components/TeammateDuel.vue'
+import LineChart from '@/components/charts/LineChart.vue'
 import { useF1Store } from '@/stores/f1Store'
-import { fetchDriverCareerStats } from '@/services/f1Api'
+import { fetchDriverCareerStats } from '@/services/jolpica'
+import { driverSeasonStats, finishSeries, teammateDuel } from '@/utils/stats'
+import { age } from '@/utils/race'
 
 const route = useRoute()
 const store = useF1Store()
 
-// L'ID est désormais une string (ex: "hamilton", "max_verstappen")
 const driver = computed(() => store.getDriverById(route.params.id))
-const ranking = computed(() => store.driverStandings.findIndex(d => d.id === driver.value?.id) + 1)
+const teammate = computed(() =>
+  driver.value ? store.getDriversByTeam(driver.value.teamId).find((d) => d.id !== driver.value.id) : null,
+)
 
-const careerStats = ref(null)
+const season = computed(() => driverSeasonStats(route.params.id, store.races))
+const duel = computed(() => (teammate.value ? teammateDuel(driver.value.id, teammate.value.id, store.races) : null))
 
-watch(() => route.params.id, async (id) => {
-  if (!id) return
-  careerStats.value = null
-  careerStats.value = await fetchDriverCareerStats(id)
-}, { immediate: true })
+const completed = computed(() => store.completedRaces)
+const roundLabels = computed(() => completed.value.map((r) => `M${r.round}`))
+const maxPosition = computed(() => Math.max(20, ...completed.value.map((r) => r.results.length)))
 
-const perfItems = computed(() => {
-  if (!driver.value) return []
-  const leaders = store.driverStandings
-  const maxPts = leaders[0]?.points || 1
-  const maxWins = Math.max(...leaders.map(d => d.wins), 1)
-  
-  // Dans le store, .wins représente les victoires DE LA SAISON.
-  // Ce classement correspond à la forme du pilote sur la saison actuelle.
-  return [
-    { label: 'Points', val: driver.value.points, pct: (driver.value.points / maxPts) * 100 },
-    { label: 'Victoires', val: driver.value.wins, pct: (driver.value.wins / maxWins) * 100 },
+const resultsSeries = computed(() => {
+  const series = [
+    { id: driver.value.id, label: driver.value.shortName, color: driver.value.color, values: finishSeries(driver.value.id, store.races), highlight: true },
   ]
+  if (teammate.value) {
+    series.push({
+      id: teammate.value.id,
+      label: teammate.value.shortName,
+      color: '#9aa0aa',
+      values: finishSeries(teammate.value.id, store.races),
+      dashed: true,
+    })
+  }
+  return series
 })
+
+const career = ref(null)
+watch(
+  () => route.params.id,
+  async (id) => {
+    career.value = null
+    try {
+      career.value = await fetchDriverCareerStats(id)
+    } catch {
+      career.value = null
+    }
+  },
+  { immediate: true },
+)
+
+const winRate = computed(() =>
+  career.value?.races ? `${Math.round((career.value.wins / career.value.races) * 100)} % des GP` : '',
+)
 </script>
 
 <style scoped>
+.small { font-size: 12px; }
+
 .dd-hero {
   position: relative;
-  padding: 24px 0 40px;
-  border-bottom: 1px solid var(--border);
+  padding: 32px 0 40px;
+  border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
 
-.dd-hero-bg { position: absolute; inset: 0; pointer-events: none; }
-
-.dd-hero-inner { position: relative; z-index: 1; }
-
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--white-muted);
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 24px;
-  transition: color var(--transition);
+.dd-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 15% 60%, color-mix(in srgb, var(--tc) 28%, transparent), transparent 55%);
+  pointer-events: none;
 }
 
-.back-btn:hover { color: var(--white); }
+.dd-number {
+  position: absolute;
+  right: 2%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(160px, 26vw, 360px);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--tc);
+  opacity: 0.08;
+  pointer-events: none;
+  animation: rise 1s var(--ease) both;
+}
+
+.dd-hero-inner { position: relative; }
+
+.back {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.back:hover { color: var(--text); }
 
 .dd-header {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
   flex-wrap: wrap;
 }
 
-.dd-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 16px;
+.dd-avatar { animation: rise 0.6s var(--ease) both; }
+
+.dd-title { flex: 1; min-width: 240px; }
+
+.dd-team {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.dd-initials { font-size: 24px; letter-spacing: 0.05em; }
-
-.dd-title { flex: 1; min-width: 200px; }
-
-.dd-number {
-  font-size: 80px;
-  line-height: 1;
-  opacity: 0.2;
-  position: absolute;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.dd-name { font-size: clamp(36px, 4vw, 56px); margin-bottom: 8px; }
-
-.dd-meta {
-  display: flex;
-  align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  font-weight: 700;
+  color: var(--tc);
 }
 
-.dd-flag { font-size: 20px; }
-.dd-nationality { font-size: 15px; }
-.sep-dot { opacity: 0.4; }
-.dd-team { font-size: 15px; font-weight: 600; }
+.dd-name { margin: 6px 0 10px; }
+.dd-first { display: block; font-size: 0.4em; font-weight: 600; color: var(--text-dim); letter-spacing: 0; }
+.dd-meta { display: flex; align-items: center; gap: 8px; }
 
-.dd-pts-block {
-  text-align: right;
-  margin-left: auto;
-}
+.dd-points { text-align: right; }
+.dd-pts { font-size: 64px; font-weight: 700; line-height: 1; color: var(--tc); }
 
-.pts-big { font-size: 64px; line-height: 1; }
-.pts-big-label {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-top: 4px;
-}
+.dd-body { padding-top: 8px; }
 
-.dd-rank { font-size: 12px; margin-top: 4px; }
+.section-tight { margin-top: 32px; }
+.section-title { margin-bottom: 14px; }
 
-/* Body */
-.dd-body { padding: 40px 0; }
-
-.dd-stats-grid {
+.tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 12px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  gap: 10px;
 }
 
-.dd-section { margin-bottom: 40px; }
-
-.dd-section-title { font-size: 28px; margin-bottom: 16px; }
-
-.dd-bio {
-  font-size: 15px;
-  line-height: 1.7;
-  margin-bottom: 20px;
-}
-
-.dd-personal {
-  display: flex;
-  flex-wrap: wrap;
+.dd-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 16px;
+  margin-top: 32px;
 }
 
-.personal-row {
+.legend { display: flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 16px; height: 0; border-top: 3px solid var(--tc); margin-left: 6px; }
+.legend .lg-dash { border-top: 2px dashed #9aa0aa; }
+
+.bio {
+  margin-top: 32px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 16px;
+  gap: 10px;
 }
 
-.personal-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--white-muted);
+@media (max-width: 900px) {
+  .dd-grid { grid-template-columns: 1fr; }
+  .dd-points { text-align: left; }
+  .dd-pts { font-size: 48px; }
 }
 
-.personal-val { font-size: 14px; font-weight: 500; }
-
-/* Perf bars */
-.perf-bars { display: flex; flex-direction: column; gap: 16px; }
-
-.perf-bar-row {
-  display: grid;
-  grid-template-columns: 100px 1fr 48px;
-  align-items: center;
-  gap: 16px;
-}
-
-.perf-label { font-size: 13px; }
-
-.perf-track {
-  height: 6px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.perf-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 1s ease;
-}
-
-.perf-val {
-  font-size: 14px;
-  text-align: right;
+@media (max-width: 640px) {
+  .dd-header { gap: 16px; }
+  .dd-avatar { --size: 96px !important; }
 }
 </style>
