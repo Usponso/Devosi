@@ -1,0 +1,21 @@
+{
+  "0": "package.json",
+  "1": "NextRaceHero.vue",
+  "2": "TeamDetail.vue",
+  "3": "DriverDetail.vue",
+  "4": "index.js",
+  "5": "RaceDetail.vue",
+  "6": "HomeView.vue",
+  "7": "jolpica.js",
+  "8": "commit-msg",
+  "9": "babel.config.js",
+  "10": "commitlint.config.js",
+  "11": "LineChart.vue",
+  "12": "AppHeader.vue",
+  "13": "http.js",
+  "14": "Devosi",
+  "15": "Countdown.vue",
+  "16": "TyreStints.vue",
+  "17": "CLAUDE.md",
+  "18": ".claude/CLAUDE.md"
+}

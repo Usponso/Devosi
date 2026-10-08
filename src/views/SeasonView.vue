@@ -1,57 +1,76 @@
 <template>
-  <div class="season-page">
-    <div class="page-hero container">
-      <div class="page-hero-label badge badge-gray">Formule 1</div>
-      <h1 class="page-hero-title font-display">Saison {{ store.seasonYear }}</h1>
-      <p class="page-hero-sub text-dim">{{ store.races.length }} Grands Prix · {{ store.completedRaces.length }} disputés · {{ store.upcomingRaces.length }} à venir</p>
-    </div>
+  <div class="page season">
+    <header class="container page-head">
+      <div class="eyebrow">Formule 1 · {{ store.races.length }} Grands Prix</div>
+      <h1 class="title-lg">Calendrier {{ store.seasonYear }}</h1>
+      <p class="dim">
+        {{ store.completedRaces.length }} disputés · {{ store.upcomingRaces.length }} à venir ·
+        {{ sprintCount }} week-ends sprint
+      </p>
+    </header>
 
+    <!-- Frise : couleur de l'écurie gagnante -->
     <div class="container">
-      <!-- Filter -->
-      <div class="filters">
-        <button
-          v-for="f in filters"
-          :key="f.val"
-          class="filter-btn"
-          :class="{ active: activeFilter === f.val }"
-          @click="activeFilter = f.val"
-        >{{ f.label }}</button>
+      <div class="timeline" role="list" aria-label="Vainqueurs par manche">
+        <router-link
+          v-for="(race, i) in store.races"
+          :key="race.id"
+          :to="`/season/${race.id}`"
+          class="tl-item"
+          role="listitem"
+          :class="{ done: race.completed, next: race.id === store.nextRace?.id }"
+          :style="{ '--tc': winnerOf(race)?.color, animationDelay: `${i * 30}ms` }"
+          :title="`${shortRaceName(race.name)}${winnerOf(race) ? ' · ' + winnerOf(race).driverName : ''}`"
+        >
+          <span class="tl-bar"></span>
+          <span class="tl-code mono">{{ winnerOf(race)?.driver ?? (race.id === store.nextRace?.id ? 'NEXT' : '') }}</span>
+          <span class="tl-round mono muted">{{ race.round }}</span>
+        </router-link>
       </div>
 
-      <div class="races-list">
+      <div class="season-tools">
+        <div class="tabs">
+          <button
+            v-for="f in FILTERS"
+            :key="f.val"
+            class="tab"
+            :class="{ active: activeFilter === f.val }"
+            @click="activeFilter = f.val"
+          >{{ f.label }}</button>
+        </div>
+      </div>
+
+      <div class="race-grid">
         <router-link
           v-for="race in filteredRaces"
           :key="race.id"
           :to="`/season/${race.id}`"
-          class="race-item card card-clickable"
-          :class="{ completed: race.completed, next: isNext(race) }"
+          class="race-card card card-link"
+          :class="{ done: race.completed, next: race.id === store.nextRace?.id }"
+          v-reveal
         >
-          <div class="ri-num font-mono text-muted">{{ String(race.id).padStart(2, '0') }}</div>
-          <div class="ri-flag">
-            <img v-if="race.flag.includes('http')" :src="race.flag" style="width: 1.33em; height: 1em; object-fit: cover; border-radius: 0.15em; vertical-align: middle; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" />
-            <span v-else>{{ race.flag }}</span>
+          <div class="rc-top">
+            <span class="rc-round mono">{{ String(race.round).padStart(2, '0') }}</span>
+            <span v-if="race.id === store.nextRace?.id" class="badge badge-accent badge-live">Prochain</span>
+            <span v-else-if="race.sprint" class="badge"><Icon name="bolt" :size="11" /> Sprint</span>
           </div>
-          <div class="ri-info">
-            <div class="ri-name">{{ race.name }}</div>
-            <div class="ri-circuit text-dim">{{ race.circuit }}</div>
+          <div class="rc-circuit">
+            <CircuitMap :circuit-id="race.circuitId" small />
           </div>
-          <div class="ri-date">
-            <div class="ri-date-val font-mono">{{ formatShortDate(race.date) }}</div>
+          <div class="rc-name">
+            <Flag :src="race.flag" :alt="race.country" :size="13" />
+            <strong>{{ shortRaceName(race.name) }}</strong>
           </div>
-          <div class="ri-status">
-            <span v-if="isNext(race)" class="badge badge-red">
-              <span class="blink">●</span> Prochain
-            </span>
-            <span v-else-if="race.completed" class="badge badge-gray">Terminé</span>
-            <span v-else class="badge badge-gray" style="opacity:0.5">À venir</span>
+          <div class="rc-meta muted">
+            <span class="mono">{{ formatWeekendRange(race) }}</span>
+            <span>·</span>
+            <span class="rc-locality">{{ race.locality }}</span>
           </div>
-          <div class="ri-winner text-dim" v-if="race.completed && race.results.length">
-            🏆 {{ getDriverName(race.results[0].driver) }}
+          <div v-if="winnerOf(race)" class="rc-winner" :style="{ '--tc': winnerOf(race).color }">
+            <Icon name="trophy" :size="14" />
+            <span>{{ winnerOf(race).driverName }}</span>
           </div>
-          <div class="ri-winner text-muted" v-else-if="!race.completed && !isNext(race)">
-            —
-          </div>
-          <div class="ri-arrow text-muted">→</div>
+          <div v-else-if="race.completed" class="rc-winner muted">Résultats en attente</div>
         </router-link>
       </div>
     </div>
@@ -60,14 +79,19 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import Icon from '@/components/Icon.vue'
+import Flag from '@/components/Flag.vue'
+import CircuitMap from '@/components/CircuitMap.vue'
 import { useF1Store } from '@/stores/f1Store'
+import { winnerOf } from '@/utils/stats'
+import { formatWeekendRange, shortRaceName } from '@/utils/race'
 
 const store = useF1Store()
 
-const filters = [
+const FILTERS = [
   { val: 'all', label: 'Toutes' },
+  { val: 'upcoming', label: 'À venir' },
   { val: 'completed', label: 'Disputées' },
-  { val: 'upcoming', label: 'À venir' }
 ]
 
 const activeFilter = ref('all')
@@ -78,121 +102,141 @@ const filteredRaces = computed(() => {
   return store.races
 })
 
-const isNext = (race) => store.nextRace?.id === race.id
-
-const getDriverName = (code) => {
-  const d = store.drivers.find(d => d.shortName === code)
-  return d ? d.name : code
-}
-
-const formatShortDate = (dateStr) => {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-}
+const sprintCount = computed(() => store.races.filter((r) => r.sprint).length)
 </script>
 
 <style scoped>
-.filters {
+.page-head {
+  padding-top: 40px;
+  padding-bottom: 24px;
+}
+
+.page-head .title-lg { margin: 6px 0 8px; }
+
+/* Frise */
+.timeline {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
+  gap: 4px;
+  padding: 12px 0 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.filter-btn {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--white-dim);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.filter-btn:hover {
-  border-color: var(--border-hover);
-  color: var(--white);
-}
-
-.filter-btn.active {
-  background: var(--red);
-  border-color: var(--red);
-  color: white;
-}
-
-.races-list {
+.tl-item {
+  flex: 1;
+  min-width: 34px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-bottom: 48px;
-}
-
-.race-item {
-  display: grid;
-  grid-template-columns: 36px 32px 1fr 100px 100px 1fr 24px;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  text-decoration: none;
-  color: var(--white);
+  gap: 6px;
+  animation: rise 0.5s var(--ease) both;
 }
 
-.race-item.next {
-  border-color: var(--red);
-  background: linear-gradient(90deg, rgba(232,0,45,0.05) 0%, transparent 100%);
+.tl-bar {
+  width: 100%;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  transition: transform var(--t);
 }
 
-.race-item.completed {
-  opacity: 0.75;
+.tl-item.done .tl-bar {
+  background: linear-gradient(180deg, var(--tc, var(--text-muted)), color-mix(in srgb, var(--tc, var(--text-muted)) 40%, transparent));
+  border-color: transparent;
 }
 
-.race-item.completed:hover {
-  opacity: 1;
+.tl-item.next .tl-bar {
+  border: 2px dashed var(--accent);
+  background: var(--accent-soft);
 }
 
-.ri-num { font-size: 13px; }
-.ri-flag { font-size: 22px; }
-.ri-info { min-width: 0; }
+.tl-item:hover .tl-bar { transform: translateY(-3px); }
 
-.ri-name {
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
+.tl-code {
+  font-size: 10px;
+  font-weight: 700;
+  height: 12px;
+}
+
+.tl-round { font-size: 10px; }
+
+.season-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin: 24px 0 16px;
+}
+
+/* Cartes */
+.race-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+
+.race-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.ri-circuit {
+.race-card.done { opacity: 0.85; }
+.race-card.next { border-color: var(--accent-line); background: linear-gradient(160deg, var(--accent-soft), var(--surface) 60%); }
+
+.rc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rc-round {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.next .rc-round { color: var(--accent); }
+
+.rc-circuit {
+  height: 90px;
+  margin: 4px 0;
+}
+
+.race-card:hover :deep(.track-line) { stroke: var(--accent); }
+
+.rc-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.rc-meta {
+  display: flex;
+  gap: 6px;
   font-size: 12px;
-  margin-top: 2px;
+  min-width: 0;
 }
 
-.ri-date-val {
-  font-size: 13px;
-}
-
-.ri-winner {
-  font-size: 13px;
+.rc-locality {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.ri-arrow { font-size: 14px; }
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+.rc-winner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.blink { animation: blink 1s ease-in-out infinite; }
-
-@media (max-width: 768px) {
-  .race-item {
-    grid-template-columns: 28px 28px 1fr auto 20px;
-  }
-  .ri-date, .ri-winner { display: none; }
-}
+.rc-winner .icon { color: var(--tc, var(--gold)); }
 </style>
