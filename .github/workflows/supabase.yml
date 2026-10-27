@@ -1,0 +1,40 @@
+# Applique les migrations et le catalogue (seed) sur le projet Supabase de production
+# à chaque push sur main qui modifie la base. Le front reste déployé par Netlify.
+#
+# Secrets GitHub à créer (Settings > Secrets and variables > Actions) :
+#   SUPABASE_ACCESS_TOKEN  jeton personnel (supabase.com/dashboard/account/tokens)
+#   SUPABASE_PROJECT_ID    référence du projet (Project Settings > General)
+#   SUPABASE_DB_PASSWORD   mot de passe de la base (choisi à la création du projet)
+name: Base de données
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/seed.sql'
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.33.9
+
+      - name: Lier le projet
+        run: supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_ID }}"
+
+      # Le seed est idempotent : il met à jour les cartes et le contenu des albums
+      - name: Appliquer les migrations et le catalogue
+        run: supabase db push --include-seed

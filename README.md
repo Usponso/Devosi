@@ -33,6 +33,46 @@ Pour régénérer les tracés des circuits :
 $ node scripts/build-circuits.mjs chemin/vers/f1-circuits.geojson
 ```
 
+## Collection de cartes
+
+Packs gratuits (1 par heure, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** de la page Packs vend 1 pack pour 150 Pièces, 3 achats par jour au maximum.
+
+**Classeur** (`/collection`) : 21 albums thématiques façon Panini (champions, vainqueurs, Français, écuries, grille de la saison, Grands Prix par décennie, Monaco, Monza, Silverstone, Spa, courses mythiques, moments). Une carte peut figurer dans plusieurs albums ; un album complet rapporte une fois sa récompense en Pièces (250 à 800) et apparaît sur le profil public. Les albums sont définis dans `scripts/build-catalog.mjs` (`ALBUMS`).
+
+**Atelier** (`/atelier`), pour faire quelque chose des doublons (le dernier exemplaire d'une carte n'est jamais consommé) :
+
+- **Recycler** un doublon rapporte des Pièces : Commune 5, Rare 20, Épique 100, Légendaire 400, Mythique 2 000.
+- **Fabriquer** une carte manquante coûte 4 fois sa valeur de recyclage (Commune 20 … Mythique 8 000).
+- **Vitesse supérieure** : 5 doublons d'une rareté donnent 1 carte au hasard de la rareté supérieure.
+- **Finitions** : Chrome avec 5 exemplaires d'une carte, puis Or avec 10 (les exemplaires en trop sont consommés). Dans le classement, une carte Chrome compte double et une carte Or triple.
+
+- **Backend** : [Supabase](https://supabase.com) (connexion anonyme, Postgres). Les packs sont comptés et ouverts uniquement côté serveur (`supabase/migrations`), le client ne peut ni s'ajouter de packs ni choisir ses cartes.
+- **Catalogue** : généré par `node scripts/build-catalog.mjs` (pilotes, écuries et Grands Prix depuis 1950 via Jolpica, 50 moments historiques dans `scripts/catalog/moments.json`, photos sous licence libre de Wikimedia Commons avec crédits). Il produit `src/data/catalog.json` et `supabase/seed.sql`.
+
+### En local (Docker requis)
+
+```sh
+$ npx supabase start      # affiche l'URL et la clé « anon »
+$ cp .env.example .env.local   # puis y coller la clé anon
+$ npm run dev
+```
+
+### En production
+
+```sh
+$ npx supabase link --project-ref <ref-du-projet>
+$ npx supabase db push --include-seed
+```
+
+Puis, dans le projet Supabase :
+
+- **Authentication > Sign In / Providers** : activer *Allow anonymous sign-ins* et laisser *Confirm email* activé (sinon un email peut être relié sans vérification).
+- **Authentication > Emails** : dans les modèles *Magic Link*, *Confirm signup* et *Change Email Address*, afficher le code à 6 chiffres avec `{{ .Token }}` (voir `supabase/templates/code.html`). L'app demande un code, pas un lien.
+- **Authentication > Emails > SMTP** : configurer un vrai fournisseur d'emails (le service intégré de Supabase est limité à quelques envois par heure).
+- Renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` dans les variables d'environnement Netlify.
+
+Comptes : chacun joue d'abord en invité (session anonyme). « Sauvegarder ma collection » relie la session à un email (code à 6 chiffres, collection conservée) ; « J'ai déjà un compte » permet de se connecter depuis un autre appareil. Seuls les comptes reliés à un email et dotés d'un pseudo apparaissent dans le classement (`/joueurs`) et ont une vitrine publique (`/joueurs/<pseudo>`).
+
 ## Lancer le projet
 
 ### 1. Cloner le projet

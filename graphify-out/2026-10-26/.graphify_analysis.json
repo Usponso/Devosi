@@ -1,0 +1,230 @@
+{
+  "communities": {
+    "0": [
+      "package",
+      "package_dependencies",
+      "package_dependencies_pinia",
+      "package_dependencies_supabase_supabase_js",
+      "package_dependencies_vue",
+      "package_dependencies_vue_router",
+      "package_devdependencies",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitejs_plugin_vue",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_preview",
+      "package_type",
+      "package_version",
+      "ref_node_url",
+      "ref_pinia",
+      "ref_supabase_supabase_js",
+      "ref_vite",
+      "ref_vitejs_plugin_vue",
+      "src_lib_supabase",
+      "src_lib_supabase_supabase",
+      "vite_config"
+    ],
+    "1": [
+      "src_services_f1api",
+      "src_services_f1api_country_codes",
+      "src_services_f1api_fetchconstructorstandings",
+      "src_services_f1api_fetchdrivercareerstats",
+      "src_services_f1api_fetchdriverinfo",
+      "src_services_f1api_fetchdriversbyseason",
+      "src_services_f1api_fetchdriverstandings",
+      "src_services_f1api_fetchergast",
+      "src_services_f1api_fetchlastraceresults",
+      "src_services_f1api_fetchqualifyingresults",
+      "src_services_f1api_fetchraceresults",
+      "src_services_f1api_fetchseasonschedule",
+      "src_services_f1api_fetchseasonwithresults",
+      "src_services_f1api_fetchteamcareerstats",
+      "src_services_f1api_getcountryflag",
+      "src_services_f1api_getnationalityflag",
+      "src_services_f1api_getteamcolor",
+      "src_services_f1api_mapconstructorstanding",
+      "src_services_f1api_mapdriver",
+      "src_services_f1api_mapdriverstanding",
+      "src_services_f1api_maprace",
+      "src_services_f1api_mapracewithresults",
+      "src_services_f1api_nationality_codes",
+      "src_services_f1api_nationality_fr",
+      "src_services_f1api_team_colors"
+    ],
+    "2": [
+      "src_stores_f1store",
+      "src_stores_f1store_driver_bios",
+      "src_stores_f1store_team_meta",
+      "src_stores_f1store_usef1store",
+      "src_views_driversview",
+      "src_views_driversview_store",
+      "src_views_newsview",
+      "src_views_newsview_formatdate",
+      "src_views_newsview_getcatbadge",
+      "src_views_newsview_store",
+      "src_views_seasonview",
+      "src_views_seasonview_activefilter",
+      "src_views_seasonview_filteredraces",
+      "src_views_seasonview_filters",
+      "src_views_seasonview_formatshortdate",
+      "src_views_seasonview_getdrivername",
+      "src_views_seasonview_isnext",
+      "src_views_seasonview_store",
+      "src_views_teamsview",
+      "src_views_teamsview_store"
+    ],
+    "3": [
+      "ref_vue_router",
+      "src_router_index",
+      "src_router_index_router",
+      "src_router_index_routes",
+      "src_views_driverdetail",
+      "src_views_driverdetail_careerstats",
+      "src_views_driverdetail_driver",
+      "src_views_driverdetail_perfitems",
+      "src_views_driverdetail_ranking",
+      "src_views_driverdetail_route",
+      "src_views_driverdetail_store",
+      "src_views_teamdetail",
+      "src_views_teamdetail_careerstats",
+      "src_views_teamdetail_ranking",
+      "src_views_teamdetail_route",
+      "src_views_teamdetail_store",
+      "src_views_teamdetail_team",
+      "src_views_teamdetail_teamdrivers"
+    ],
+    "4": [
+      "ref_vue",
+      "src_app",
+      "src_app_store",
+      "src_assets_global",
+      "src_components_navbar",
+      "src_components_navbar_currentyear",
+      "src_components_navbar_mobileopen",
+      "src_components_navbar_onseasonchange",
+      "src_components_navbar_route",
+      "src_components_navbar_router",
+      "src_components_navbar_seasonyears",
+      "src_components_navbar_selectedvalue",
+      "src_components_navbar_store",
+      "src_main",
+      "src_main_app"
+    ],
+    "5": [
+      "src_views_racedetail",
+      "src_views_racedetail_formatdate",
+      "src_views_racedetail_formatdatetime",
+      "src_views_racedetail_getdriver",
+      "src_views_racedetail_getdrivercolor",
+      "src_views_racedetail_getdriverfullname",
+      "src_views_racedetail_getdriverid",
+      "src_views_racedetail_getdriverteam",
+      "src_views_racedetail_hassessions",
+      "src_views_racedetail_isnext",
+      "src_views_racedetail_race",
+      "src_views_racedetail_route",
+      "src_views_racedetail_store",
+      "src_views_racedetail_winner"
+    ],
+    "6": [
+      "src_views_homeview",
+      "src_views_homeview_countdown",
+      "src_views_homeview_formatdate",
+      "src_views_homeview_getdriverbycode",
+      "src_views_homeview_lastrace",
+      "src_views_homeview_seasonprogress",
+      "src_views_homeview_store",
+      "src_views_homeview_updatecountdown"
+    ],
+    "7": [
+      "src_data_mockdata",
+      "src_data_mockdata_drivers",
+      "src_data_mockdata_news",
+      "src_data_mockdata_races2025",
+      "src_data_mockdata_teams"
+    ],
+    "8": [
+      "husky_commit_msg",
+      "husky_commit_msg__entry"
+    ],
+    "9": [
+      "babel_config"
+    ],
+    "10": [
+      "commitlint_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.08333333333333333,
+    "1": 0.16333333333333333,
+    "2": 0.12105263157894737,
+    "3": 0.12418300653594772,
+    "4": 0.1523809523809524,
+    "5": 0.2087912087912088,
+    "6": 0.25,
+    "7": 0.4,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_services_f1api_fetchergast",
+      "label": "fetchErgast()",
+      "degree": 11
+    },
+    {
+      "id": "src_stores_f1store_usef1store",
+      "label": "useF1Store",
+      "degree": 11
+    },
+    {
+      "id": "ref_vue",
+      "label": "vue",
+      "degree": 9
+    },
+    {
+      "id": "ref_vue_router",
+      "label": "vue-router",
+      "degree": 6
+    },
+    {
+      "id": "src_views_racedetail_getdriver",
+      "label": "getDriver()",
+      "degree": 6
+    },
+    {
+      "id": "src_services_f1api_fetchseasonschedule",
+      "label": "fetchSeasonSchedule()",
+      "degree": 5
+    },
+    {
+      "id": "src_services_f1api_fetchraceresults",
+      "label": "fetchRaceResults()",
+      "degree": 5
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 4
+    },
+    {
+      "id": "src_services_f1api_fetchdriverstandings",
+      "label": "fetchDriverStandings()",
+      "degree": 4
+    },
+    {
+      "id": "src_services_f1api_fetchconstructorstandings",
+      "label": "fetchConstructorStandings()",
+      "degree": 4
+    }
+  ],
+  "surprises": [],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

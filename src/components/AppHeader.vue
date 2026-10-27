@@ -12,9 +12,14 @@
           :key="item.to"
           :to="item.to"
           class="nav-link"
-          :class="{ active: isActive(item) }"
+          :class="{ active: isActive(item), featured: item.featured }"
         >
-          {{ item.label }}
+          <template v-if="item.featured">
+            <Icon :name="item.icon" :size="15" />
+            <span class="featured-label">{{ item.label }}</span>
+            <span v-if="packBadge" class="nav-badge mono" :aria-label="`${packBadge} packs à ouvrir`">{{ packBadge }}</span>
+          </template>
+          <template v-else>{{ item.label }}</template>
         </router-link>
       </nav>
 
@@ -41,12 +46,14 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Icon from './Icon.vue'
-import { NAV_ITEMS } from './navItems'
+import { NAV_ITEMS, isNavActive } from './navItems'
 import { useF1Store } from '@/stores/f1Store'
 import { usePrefsStore } from '@/stores/prefsStore'
+import { usePackBadge } from '@/composables/usePackBadge'
 
 const store = useF1Store()
 const prefs = usePrefsStore()
+const packBadge = usePackBadge()
 const route = useRoute()
 const router = useRouter()
 
@@ -63,7 +70,7 @@ const selectedValue = computed(() =>
 
 const chipLabel = computed(() => `Écurie favorite : ${prefs.favoriteTeam?.name ?? 'aucune'}. Changer`)
 
-const isActive = (item) => (item.exact ? route.path === item.to : route.path.startsWith(item.to))
+const isActive = (item) => isNavActive(item, route.path)
 
 async function onSeasonChange(event) {
   await store.changeSeason(event.target.value)
@@ -153,6 +160,88 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .nav-link:hover,
 .nav-link.active { color: var(--text); }
 .nav-link.active::after { transform: scaleX(1); }
+
+.nav-link.featured {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  color: var(--text);
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(var(--surface-2), var(--surface-2)) padding-box,
+    conic-gradient(from var(--holo-spin), #ff4fd8, #5ad1ff, #ffe066, #7dff9b, #ff4fd8) border-box;
+  box-shadow: 0 0 18px rgb(255 79 216 / 0.16);
+  animation: holo-spin 6s linear infinite;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.nav-link.featured::after { display: none; }
+
+.nav-link.featured:hover,
+.nav-link.featured.active {
+  transform: translateY(-1px);
+  box-shadow: 0 0 24px rgb(255 79 216 / 0.3), 0 0 10px rgb(90 209 255 / 0.25);
+}
+
+.nav-link.featured.active {
+  background:
+    linear-gradient(var(--surface-3), var(--surface-3)) padding-box,
+    conic-gradient(from var(--holo-spin), #ff4fd8, #5ad1ff, #ffe066, #7dff9b, #ff4fd8) border-box;
+}
+
+.featured-label {
+  background: linear-gradient(100deg, #fff 40%, #ffc6f2 47%, #9be8ff 53%, #fff 60%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: label-shine 4.5s ease-in-out infinite;
+}
+
+.nav-badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--accent);
+  color: var(--on-accent);
+  animation: badge-ping 2s ease-out infinite;
+}
+
+/* Lien « Cartes » mis en avant : contour holographique comme les cartes Mythiques */
+@property --holo-spin {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes holo-spin {
+  to { --holo-spin: 360deg; }
+}
+
+@keyframes label-shine {
+  0%, 55% { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
+}
+
+@keyframes badge-ping {
+  0% { box-shadow: 0 0 0 2px var(--bg), 0 0 0 2px rgb(var(--accent-rgb) / 0.7); }
+  80%, 100% { box-shadow: 0 0 0 2px var(--bg), 0 0 0 9px rgb(var(--accent-rgb) / 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link.featured, .featured-label, .nav-badge { animation: none; }
+}
 
 .header-tools {
   display: flex;

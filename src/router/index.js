@@ -10,6 +10,12 @@ const routes = [
   { path: '/drivers/:id', component: () => import('@/views/DriverDetail.vue') },
   { path: '/teams', component: () => import('@/views/TeamsView.vue') },
   { path: '/teams/:id', component: () => import('@/views/TeamDetail.vue') },
+  { path: '/packs', component: () => import('@/views/PacksView.vue') },
+  { path: '/collection', component: () => import('@/views/CollectionView.vue') },
+  { path: '/collection/album/:id', component: () => import('@/views/AlbumView.vue') },
+  { path: '/atelier', component: () => import('@/views/AtelierView.vue') },
+  { path: '/joueurs', component: () => import('@/views/PlayersView.vue') },
+  { path: '/joueurs/:username', component: () => import('@/views/PlayerView.vue') },
   { path: '/news', component: () => import('@/views/NewsView.vue') },
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
