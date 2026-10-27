@@ -35,7 +35,7 @@ $ node scripts/build-circuits.mjs chemin/vers/f1-circuits.geojson
 
 ## Collection de cartes
 
-Packs gratuits (1 par heure, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** de la page Packs vend 1 pack pour 150 Pièces, 3 achats par jour au maximum.
+Packs gratuits (1 toutes les 30 minutes, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** de la page Packs vend 1 pack pour 150 Pièces, 3 achats par jour au maximum.
 
 **Classeur** (`/collection`) : 21 albums thématiques façon Panini (champions, vainqueurs, Français, écuries, grille de la saison, Grands Prix par décennie, Monaco, Monza, Silverstone, Spa, courses mythiques, moments). Une carte peut figurer dans plusieurs albums ; un album complet rapporte une fois sa récompense en Pièces (250 à 800) et apparaît sur le profil public. Les albums sont définis dans `scripts/build-catalog.mjs` (`ALBUMS`).
 

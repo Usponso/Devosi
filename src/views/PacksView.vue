@@ -49,7 +49,7 @@
           </div>
           <p class="dim timer">
             <template v-if="available >= max">Réserve pleine : ouvre un pack pour relancer le compteur.</template>
-            <template v-else>Prochain pack dans <span class="mono">{{ countdown }}</span> · 1 pack par heure</template>
+            <template v-else>Prochain pack dans <span class="mono">{{ countdown }}</span> · 1 pack toutes les 30 min</template>
           </p>
           <div class="actions">
             <button class="btn" :disabled="!available || busy" @click="openPack">

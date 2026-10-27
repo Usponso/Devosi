@@ -52,7 +52,7 @@ const title = computed(() => {
 const subtitle = computed(() => {
   if (!hasSession.value) return 'Pilotes, écuries, Grands Prix et moments de légende depuis 1950'
   if (available.value >= max.value) return 'Réserve pleine : ouvre-les pour continuer à en recevoir'
-  return countdown.value ? `Prochain pack dans ${countdown.value}` : '1 pack offert par heure'
+  return countdown.value ? `Prochain pack dans ${countdown.value}` : '1 pack offert toutes les 30 min'
 })
 
 async function tick() {
