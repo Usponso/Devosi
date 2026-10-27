@@ -17,10 +17,47 @@ const ECONOMY_ERRORS = {
   ALBUM_INCOMPLETE: "L'album n'est pas encore complet.",
   ALBUM_CLAIMED: 'Récompense déjà récupérée.',
   ALBUM_UNKNOWN: 'Album inconnu.',
+  AVATAR_NOT_OWNED: 'Tu ne possèdes pas cette carte.',
+  TITLE_LOCKED: 'Complète cet album pour débloquer son titre.',
+  TEAM_INVALID: 'Écurie inconnue.',
+  PROFILE_REQUIRED: 'Sauvegarde ta collection et choisis un pseudo pour ajouter des amis.',
+  PLAYER_UNKNOWN: 'Aucun joueur avec ce pseudo.',
+  FRIEND_SELF: 'Tu ne peux pas t’ajouter toi-même.',
+  FRIEND_LIMIT: 'Limite de demandes ou d’amis atteinte.',
+  REQUEST_UNKNOWN: 'Cette demande n’existe plus.',
 }
 
 /** Message lisible pour une erreur des fonctions de l'atelier (code = hint SQL) */
 export const economyMessage = (err) => ECONOMY_ERRORS[err?.code] ?? 'Une erreur est survenue, réessaie.'
+
+/** Titre de profil débloqué par chaque album (id de l'album → titre affiché sous le pseudo) */
+const ALBUM_TITLES = {
+  champions: 'Faiseur de champions',
+  vainqueurs: 'Chasseur de victoires',
+  podiums: 'Habitué du podium',
+  francais: 'Cocorico',
+  'ecuries-championnes': 'Stratège des constructeurs',
+  'ecuries-victorieuses': "Chef d'écurie",
+  'grille-2026': 'Paddock 2026',
+  'gp-1950': 'Pionnier des années 50',
+  'gp-1960': 'Mémoire des années 60',
+  'gp-1970': 'Mémoire des années 70',
+  'gp-1980': 'Ère turbo',
+  'gp-1990': 'Mémoire des années 90',
+  'gp-2000': 'Mémoire des années 2000',
+  'gp-2010': 'Ère hybride',
+  'gp-2020': 'Mémoire des années 2020',
+  monaco: 'Roi de Monaco',
+  monza: 'Tifoso de Monza',
+  silverstone: 'Seigneur de Silverstone',
+  spa: "Maître de l'Eau Rouge",
+  'courses-mythiques': 'Conteur de légendes',
+  moments: 'Gardien des légendes',
+}
+
+/** Titre affiché pour un album complété (repli sur le nom de l'album) */
+export const albumTitle = (albumId, albums = []) =>
+  ALBUM_TITLES[albumId] ?? albums.find((a) => a.id === albumId)?.title ?? null
 
 /** Ligne de description d'une carte (fiche détaillée) */
 export function describeCard(card) {

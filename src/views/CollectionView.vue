@@ -7,7 +7,15 @@
         <div class="head-actions">
           <CoinBalance />
           <button class="btn btn-ghost" @click="accountOpen = true">
-            <Icon :name="col.isGuest ? 'save' : 'user'" :size="16" />
+            <PlayerAvatar
+              v-if="col.isPlayer"
+              :card-id="col.profile.avatar"
+              :finish="col.finishes.get(col.profile.avatar) ?? 0"
+              :username="col.profile.username"
+              :team="col.profile.team"
+              :size="22"
+            />
+            <Icon v-else :name="col.isGuest ? 'save' : 'user'" :size="16" />
             {{ col.isGuest ? 'Sauvegarder ma collection' : col.profile?.username ? `@${col.profile.username}` : 'Mon compte' }}
           </button>
           <router-link to="/atelier" class="btn btn-ghost"><Icon name="hammer" :size="16" /> Atelier</router-link>
@@ -203,6 +211,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
+import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
 import AccountDialog from '@/components/cards/AccountDialog.vue'
 import CoinBalance from '@/components/cards/CoinBalance.vue'
 import AlbumShelf from '@/components/cards/AlbumShelf.vue'

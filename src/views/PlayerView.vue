@@ -8,14 +8,34 @@
     </div>
 
     <template v-else>
-      <header class="hero">
+      <header class="hero" :style="teamColor ? { '--tc': teamColor } : null">
         <div class="hero-glow" aria-hidden="true"></div>
         <div class="container hero-inner">
           <router-link to="/joueurs" class="back muted">← Joueurs</router-link>
           <div class="hero-row">
-            <div>
-              <div class="eyebrow">Rang {{ player.rank }} sur {{ player.players }} · membre depuis {{ formatDate(player.member_since, { month: 'long', year: 'numeric' }) }}</div>
-              <h1 class="title-xl name">{{ player.username }}</h1>
+            <div class="identity">
+              <PlayerAvatar
+                :card-id="player.avatar"
+                :finish="player.avatar_finish"
+                :username="player.username"
+                :team="player.team"
+                :size="96"
+                class="hero-avatar"
+              />
+              <div class="identity-text">
+                <div class="eyebrow">Rang {{ player.rank }} sur {{ player.players }} · membre depuis {{ formatDate(player.member_since, { month: 'long', year: 'numeric' }) }}</div>
+                <h1 class="title-xl name">{{ player.username }}</h1>
+                <div class="tags">
+                  <span v-if="playerTitle" class="title-badge"><Icon name="trophy" :size="13" /> {{ playerTitle }}</span>
+                  <span v-if="team" class="team-tag"><span class="team-swatch"></span>{{ team.name }}</span>
+                </div>
+                <div class="hero-actions">
+                  <button v-if="player.friendship === 'self'" class="btn btn-ghost" @click="editing = true">
+                    <Icon name="edit" :size="16" /> Personnaliser mon profil
+                  </button>
+                  <FriendButton v-else v-model:status="player.friendship" :username="player.username" />
+                </div>
+              </div>
             </div>
             <div class="score">
               <div class="mono score-num" v-countup="Number(player.score)"></div>
@@ -45,6 +65,7 @@
           <StatTile label="Cartes" :value="Number(player.owned)" :sub="`${percent} % de la collection`" />
           <StatTile label="Packs ouverts" :value="Number(player.packs_opened)" />
           <StatTile label="Rang" :value="`#${player.rank}`" :sub="`sur ${player.players} joueurs`" />
+          <StatTile label="Amis" :value="Number(player.friends ?? 0)" />
         </section>
 
         <section v-if="completedAlbums.length" class="card albums-done">
@@ -66,6 +87,8 @@
         </section>
       </div>
     </template>
+
+    <ProfileEditor :open="editing" @close="closeEditor" />
   </div>
 </template>
 
@@ -75,6 +98,11 @@ import { useRoute } from 'vue-router'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import StatTile from '@/components/StatTile.vue'
+import FriendButton from '@/components/cards/FriendButton.vue'
+import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
+import ProfileEditor from '@/components/cards/ProfileEditor.vue'
+import { PICKABLE_TEAMS, getTeamColor } from '@/data/teams'
+import { albumTitle } from '@/utils/cards'
 import { RARITIES, RARITY_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { fetchPlayer } from '@/services/collection'
 import { formatDate } from '@/utils/race'
@@ -84,24 +112,38 @@ const col = useCollectionStore()
 
 const player = ref(null)
 const loading = ref(true)
+const editing = ref(false)
+
+const playerTitle = computed(() => (player.value?.title ? albumTitle(player.value.title, col.albums) : null))
+const team = computed(() => PICKABLE_TEAMS.find((t) => t.id === player.value?.team) ?? null)
+const teamColor = computed(() => (player.value?.team ? getTeamColor(player.value.team) : null))
+
+async function load(username, quiet = false) {
+  if (!quiet) loading.value = true
+  try {
+    const [data] = await Promise.all([fetchPlayer(username), col.loadCatalog()])
+    player.value = data
+    // Mon propre profil : collection nécessaire pour l'éditeur (avatar, titres)
+    if (data?.friendship === 'self' && !col.ready) col.init()
+  } catch (err) {
+    console.error('[Joueur]', err)
+    player.value = null
+  } finally {
+    loading.value = false
+  }
+}
 
 watch(
   () => route.params.username,
-  async (username) => {
-    if (!username) return
-    loading.value = true
-    try {
-      const [data] = await Promise.all([fetchPlayer(username), col.loadCatalog()])
-      player.value = data
-    } catch (err) {
-      console.error('[Joueur]', err)
-      player.value = null
-    } finally {
-      loading.value = false
-    }
-  },
+  (username) => username && load(username),
   { immediate: true },
 )
+
+/** Les changements de l'éditeur apparaissent sur le profil public */
+function closeEditor() {
+  editing.value = false
+  load(route.params.username, true)
+}
 
 const completedAlbums = computed(() =>
   (player.value?.albums ?? []).map((id) => col.albums.find((a) => a.id === id)).filter(Boolean),
@@ -145,6 +187,61 @@ function rarityShare(rarity) {
   background: radial-gradient(ellipse at 80% 40%, rgb(var(--accent-rgb) / 0.22), transparent 60%);
   pointer-events: none;
 }
+
+/* Écurie favorite du joueur : le halo prend sa couleur */
+.hero[style] .hero-glow {
+  background:
+    radial-gradient(ellipse at 15% 60%, color-mix(in srgb, var(--tc) 30%, transparent), transparent 55%),
+    radial-gradient(ellipse at 85% 30%, color-mix(in srgb, var(--tc) 16%, transparent), transparent 60%);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
+.identity-text { min-width: 0; }
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.title-badge,
+.team-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.title-badge {
+  color: #ffe08a;
+  background: rgb(232 193 90 / 0.12);
+  border: 1px solid rgb(232 193 90 / 0.35);
+}
+
+.team-tag {
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.team-swatch {
+  width: 4px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--tc);
+}
+
+.hero-actions { margin-top: 14px; }
 
 .hero-inner { position: relative; }
 
@@ -219,6 +316,8 @@ function rarityShare(rarity) {
 
 @media (max-width: 760px) {
   .showcase { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .identity { align-items: flex-start; gap: 14px; }
+  .hero-avatar { --size: 64px !important; }
   .score { text-align: left; }
   .score-num { font-size: 44px; }
 }

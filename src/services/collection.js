@@ -130,7 +130,7 @@ async function rpc(name, params) {
   return data
 }
 
-/** { username, showcase, permanent } */
+/** { username, showcase, avatar, title, team, permanent, requests } */
 export async function fetchMyProfile() {
   await ensureSession()
   return rpc('my_profile')
@@ -138,11 +138,33 @@ export async function fetchMyProfile() {
 
 export const saveUsername = (username) => rpc('set_username', { p_username: username })
 export const saveShowcase = (cardIds) => rpc('set_showcase', { p_cards: cardIds })
+/** Avatar (carte possédée), titre (album complété) et écurie : null pour retirer */
+export const saveAvatar = (cardId) => rpc('set_avatar', { p_card: cardId })
+export const saveTitle = (albumId) => rpc('set_title', { p_album: albumId })
+export const saveTeam = (teamId) => rpc('set_team', { p_team: teamId })
 
-/** Classement (recherche par début de pseudo) : [{ rank, username, owned, score, showcase }] */
-export function fetchLeaderboard(query = '', offset = 0, limit = 50) {
-  return rpc('leaderboard', { p_query: query || null, p_limit: limit, p_offset: offset })
+/**
+ * Classement (recherche par début de pseudo), général ou entre amis :
+ * [{ rank, username, owned, score, showcase, avatar, avatar_finish, title, team }]
+ */
+export function fetchLeaderboard(query = '', offset = 0, limit = 50, friends = false) {
+  return rpc('leaderboard', { p_query: query || null, p_limit: limit, p_offset: offset, p_friends: friends })
 }
+
+// ---------------------------------------------------------------------------
+// Amis : chaque fonction renvoie la nouvelle relation (friends, outgoing, none)
+// ---------------------------------------------------------------------------
+
+/** { friends: [joueur], incoming: [joueur], outgoing: [joueur] } */
+export async function fetchFriends() {
+  await ensureSession()
+  return rpc('my_friends')
+}
+
+export const sendFriendRequest = (username) => rpc('send_friend_request', { p_username: username })
+export const respondFriendRequest = (username, accept) =>
+  rpc('respond_friend_request', { p_username: username, p_accept: accept })
+export const removeFriend = (username) => rpc('remove_friend', { p_username: username })
 
 /** Profil public, ou null si le pseudo n'existe pas */
 export function fetchPlayer(username) {

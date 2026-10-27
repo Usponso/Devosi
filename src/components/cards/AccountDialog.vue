@@ -21,7 +21,7 @@
 
           <div class="links">
             <router-link v-if="col.profile?.username" :to="`/joueurs/${col.profile.username}`" class="link-arrow" @click="close">
-              Voir ma vitrine publique →
+              Mon profil public : avatar, titre, amis →
             </router-link>
             <button class="link-quiet" :disabled="busy" @click="logout">Se déconnecter</button>
           </div>

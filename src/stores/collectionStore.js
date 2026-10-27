@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { usePrefsStore } from '@/stores/prefsStore'
 import {
   buyPack,
   claimAlbum,
@@ -13,7 +14,14 @@ import {
   fetchMyCards,
   fetchMyProfile,
   fetchPackStatus,
+  fetchFriends,
   isCollectionConfigured,
+  removeFriend,
+  respondFriendRequest,
+  saveAvatar,
+  saveTeam,
+  saveTitle,
+  sendFriendRequest,
   openPack,
   peekPackStatus,
   saveShowcase,
@@ -68,7 +76,8 @@ export const useCollectionStore = defineStore('collection', {
     owned: new Map(), // card_id → nombre d'exemplaires
     finishes: new Map(), // card_id → finition débloquée (1 Chrome, 2 Or)
     status: null, // réserve de packs (serveur)
-    profile: null, // { username, showcase, permanent }
+    profile: null, // { username, showcase, avatar, title, team, permanent, requests }
+    friends: null, // { friends, incoming, outgoing } (chargé à la demande)
     email: null, // email du compte (null pour une session invité)
     clockOffset: 0, // écart horloge serveur - horloge locale (ms)
     loading: false,
@@ -80,6 +89,10 @@ export const useCollectionStore = defineStore('collection', {
     ownedCount: (state) => state.owned.size,
     isGuest: (state) => !state.profile?.permanent,
     showcase: (state) => state.profile?.showcase ?? [],
+    /** Compte pouvant avoir des amis : relié à un email et doté d'un pseudo */
+    isPlayer: (state) => Boolean(state.profile?.permanent && state.profile?.username),
+    /** Demandes d'amis reçues en attente */
+    friendRequests: (state) => state.friends?.incoming.length ?? state.profile?.requests ?? 0,
     coins: (state) => state.status?.coins ?? 0,
     /** Progression des albums : Map(id → { owned, total, complete, claimed }) */
     albumStats: (state) =>
@@ -164,6 +177,9 @@ export const useCollectionStore = defineStore('collection', {
         this.profile = profile
         this.email = user?.is_anonymous ? null : user?.email ?? null
         this.ready = true
+        // Profil public sans écurie : on reprend l'écurie favorite choisie dans l'app
+        const favorite = usePrefsStore().favoriteTeamId
+        if (this.isPlayer && !profile.team && favorite) this.setTeam(favorite).catch(() => {})
       } catch (err) {
         console.error('[Collection]', err)
         this.error = err.message
@@ -181,6 +197,7 @@ export const useCollectionStore = defineStore('collection', {
       this.ready = false
       this.status = null
       this.profile = null
+      this.friends = null
       this.email = null
       this.loading = false
       await this.init()
@@ -196,6 +213,34 @@ export const useCollectionStore = defineStore('collection', {
       const next = current.includes(cardId) ? current.filter((id) => id !== cardId) : [...current, cardId]
       if (next.length > 5) throw Object.assign(new Error('5 cartes maximum'), { code: 'SHOWCASE_FULL' })
       this.profile = await saveShowcase(next)
+    },
+
+    async setAvatar(cardId) {
+      this.profile = await saveAvatar(cardId)
+    },
+
+    async setTitle(albumId) {
+      this.profile = await saveTitle(albumId)
+    },
+
+    async setTeam(teamId) {
+      this.profile = await saveTeam(teamId)
+    },
+
+    async loadFriends() {
+      this.friends = await fetchFriends()
+      return this.friends
+    },
+
+    /** Ajoute, accepte, refuse ou retire un ami ; renvoie la nouvelle relation */
+    async friendAction(action, username) {
+      const status =
+        action === 'add' ? await sendFriendRequest(username)
+        : action === 'accept' ? await respondFriendRequest(username, true)
+        : action === 'decline' ? await respondFriendRequest(username, false)
+        : await removeFriend(username)
+      if (this.friends || action === 'accept' || action === 'decline') await this.loadFriends()
+      return status
     },
 
     /** Applique les nouveaux nombres d'exemplaires renvoyés par le serveur */
