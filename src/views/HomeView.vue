@@ -36,6 +36,8 @@
         </div>
       </section>
 
+      <PacksWidget />
+
       <div class="home-grid">
         <!-- Classement pilotes -->
         <section class="card" v-reveal>
@@ -210,6 +212,7 @@ import TeammateDuel from '@/components/TeammateDuel.vue'
 import LineChart from '@/components/charts/LineChart.vue'
 import FormStrip from '@/components/charts/FormStrip.vue'
 import CarImage from '@/components/CarImage.vue'
+import PacksWidget from '@/components/cards/PacksWidget.vue'
 import { useF1Store } from '@/stores/f1Store'
 import { usePrefsStore } from '@/stores/prefsStore'
 import {

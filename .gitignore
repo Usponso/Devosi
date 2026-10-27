@@ -26,3 +26,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Cache du générateur de catalogue
+scripts/catalog/.cache/

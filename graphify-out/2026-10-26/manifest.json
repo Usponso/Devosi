@@ -1,0 +1,464 @@
+{
+  ".husky/commit-msg": {
+    "mtime": 1716482770.5134566,
+    "seen": 1791487163.716126,
+    "ast_hash": "97926a7bbd46a748dcee616fd6179d4b",
+    "semantic_hash": "97926a7bbd46a748dcee616fd6179d4b"
+  },
+  ".vscode/extensions.json": {
+    "mtime": 1716482770.5134566,
+    "seen": 1791487163.716126,
+    "ast_hash": "2272172db65f1ff28416e8a963de415e",
+    "semantic_hash": "2272172db65f1ff28416e8a963de415e"
+  },
+  "babel.config.js": {
+    "mtime": 1716482770.5146627,
+    "seen": 1791487163.716126,
+    "ast_hash": "a33048666e9ecf9acc6a5d42c32f2f3f",
+    "semantic_hash": "a33048666e9ecf9acc6a5d42c32f2f3f"
+  },
+  "commitlint.config.js": {
+    "mtime": 1716482770.5146627,
+    "seen": 1791487163.716126,
+    "ast_hash": "0191475213778b606055ddff3f2c3c4e",
+    "semantic_hash": "0191475213778b606055ddff3f2c3c4e"
+  },
+  "package.json": {
+    "mtime": 1793046997.8069074,
+    "seen": 1793048808.2457702,
+    "ast_hash": "de4e0ddf48e849d78bdf2020e3dd0efc",
+    "semantic_hash": ""
+  },
+  "src/App.vue": {
+    "mtime": 1791495435.5364542,
+    "seen": 1793048808.2457702,
+    "ast_hash": "1793444aef4f0954994dbab526b3d213",
+    "semantic_hash": ""
+  },
+  "src/main.js": {
+    "mtime": 1791495435.551493,
+    "seen": 1793048808.2457702,
+    "ast_hash": "b7c669b96813504b92dd4d6630ad214e",
+    "semantic_hash": ""
+  },
+  "src/router/index.js": {
+    "mtime": 1793048555.9406812,
+    "seen": 1793048808.2457702,
+    "ast_hash": "539858eecce275a91d94dfcb8301501f",
+    "semantic_hash": ""
+  },
+  "src/stores/f1Store.js": {
+    "mtime": 1791495435.5540006,
+    "seen": 1793048808.2457702,
+    "ast_hash": "e40482c730bb80e0373942fd74b7ee54",
+    "semantic_hash": ""
+  },
+  "src/views/DriverDetail.vue": {
+    "mtime": 1791495435.5565076,
+    "seen": 1793048808.2457702,
+    "ast_hash": "994b5075c30e0074a588b9b9f91cea31",
+    "semantic_hash": ""
+  },
+  "src/views/DriversView.vue": {
+    "mtime": 1791495435.5565076,
+    "seen": 1793048808.2457702,
+    "ast_hash": "1dc08cc5421a35eac5936e5c20ec5fb1",
+    "semantic_hash": ""
+  },
+  "src/views/HomeView.vue": {
+    "mtime": 1791495435.5575078,
+    "seen": 1793048808.2457702,
+    "ast_hash": "3a264aae0eab15a96b0d558c49ac4bdd",
+    "semantic_hash": ""
+  },
+  "src/views/NewsView.vue": {
+    "mtime": 1773343832.9947236,
+    "seen": 1791487163.716126,
+    "ast_hash": "f86fefb2692ed6ebf0eec00e7f3653b7",
+    "semantic_hash": "f86fefb2692ed6ebf0eec00e7f3653b7"
+  },
+  "src/views/RaceDetail.vue": {
+    "mtime": 1791495435.5575078,
+    "seen": 1793048808.2457702,
+    "ast_hash": "e5ba21f86b9a52eecb8c4427f3122dd4",
+    "semantic_hash": ""
+  },
+  "src/views/SeasonView.vue": {
+    "mtime": 1791495435.5585077,
+    "seen": 1793048808.2457702,
+    "ast_hash": "2e98e9f13755a3c3a0c5e99f65a0bee9",
+    "semantic_hash": ""
+  },
+  "src/views/TeamDetail.vue": {
+    "mtime": 1791495435.559508,
+    "seen": 1793048808.2457702,
+    "ast_hash": "ab9cf2adb6fdf8ba5ef2a98e7295ad95",
+    "semantic_hash": ""
+  },
+  "src/views/TeamsView.vue": {
+    "mtime": 1791495435.560511,
+    "seen": 1793048808.2457702,
+    "ast_hash": "c88343a3b30ebd4c78219e2899375c99",
+    "semantic_hash": ""
+  },
+  "vite.config.js": {
+    "mtime": 1773343832.996742,
+    "seen": 1791487163.716126,
+    "ast_hash": "4f0a965e9f280c6df41598f3fcd388d2",
+    "semantic_hash": "4f0a965e9f280c6df41598f3fcd388d2"
+  },
+  ".claude/launch.json": {
+    "mtime": 1791495435.5172777,
+    "seen": 1793048808.2447715,
+    "ast_hash": "b3f74dcc999982eb7213fa03e119f4b2",
+    "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1791495435.5182793,
+    "seen": 1793048808.2447715,
+    "ast_hash": "4fba65909a85ef6f7e59ed37c3138526",
+    "semantic_hash": ""
+  },
+  "scripts/build-circuits.mjs": {
+    "mtime": 1791495435.5364542,
+    "seen": 1793048808.2457702,
+    "ast_hash": "9056da7acd4bc33122db4604e68e756f",
+    "semantic_hash": ""
+  },
+  "src/components/AppHeader.vue": {
+    "mtime": 1793047355.1800146,
+    "seen": 1793048808.2457702,
+    "ast_hash": "f09e8834a9a212c69f863685d540415f",
+    "semantic_hash": ""
+  },
+  "src/components/CircuitMap.vue": {
+    "mtime": 1791495435.5399623,
+    "seen": 1793048808.2457702,
+    "ast_hash": "36540b0d9a258bdd9728fc7d1c608d8b",
+    "semantic_hash": ""
+  },
+  "src/components/Countdown.vue": {
+    "mtime": 1791495435.5409627,
+    "seen": 1793048808.2457702,
+    "ast_hash": "984ed9094194f2e250fa73596791a562",
+    "semantic_hash": ""
+  },
+  "src/components/DriverAvatar.vue": {
+    "mtime": 1791495435.5409627,
+    "seen": 1793048808.2457702,
+    "ast_hash": "444bfcafc3cc41bc96552715d5d6ff1d",
+    "semantic_hash": ""
+  },
+  "src/components/Flag.vue": {
+    "mtime": 1791495435.5409627,
+    "seen": 1793048808.2457702,
+    "ast_hash": "6ca0f4cee41fe1402fc0fc2fcd0cf36e",
+    "semantic_hash": ""
+  },
+  "src/components/Icon.vue": {
+    "mtime": 1793047355.25265,
+    "seen": 1793048808.2457702,
+    "ast_hash": "8ae1e92deaade747ee0b5ef3dd75005d",
+    "semantic_hash": ""
+  },
+  "src/components/MobileTabBar.vue": {
+    "mtime": 1793047355.2287686,
+    "seen": 1793048808.2457702,
+    "ast_hash": "f239f7e8b6e580ad9e25e2399cd660c3",
+    "semantic_hash": ""
+  },
+  "src/components/NextRaceHero.vue": {
+    "mtime": 1791495435.5429623,
+    "seen": 1793048808.2457702,
+    "ast_hash": "91b8aaa2f296f9e65d978609965dd33f",
+    "semantic_hash": ""
+  },
+  "src/components/StatTile.vue": {
+    "mtime": 1791495435.543983,
+    "seen": 1793048808.2457702,
+    "ast_hash": "b1fd383f7424453f5fa8a17fc9668a4e",
+    "semantic_hash": ""
+  },
+  "src/components/TeamPicker.vue": {
+    "mtime": 1791495435.543983,
+    "seen": 1793048808.2457702,
+    "ast_hash": "aaac4310abf640c2b913e366ef6d75fd",
+    "semantic_hash": ""
+  },
+  "src/components/TeammateDuel.vue": {
+    "mtime": 1791495435.543983,
+    "seen": 1793048808.2457702,
+    "ast_hash": "c8b414b3fa2e0241879e6dc3e3dd4972",
+    "semantic_hash": ""
+  },
+  "src/components/WeekendSchedule.vue": {
+    "mtime": 1791495435.5454874,
+    "seen": 1793048808.2457702,
+    "ast_hash": "8031c67b93ec569387244388583dc8b4",
+    "semantic_hash": ""
+  },
+  "src/components/charts/FormStrip.vue": {
+    "mtime": 1791495435.5454874,
+    "seen": 1793048808.2457702,
+    "ast_hash": "f5c6e05b4fee8ddb3080d0b442af6063",
+    "semantic_hash": ""
+  },
+  "src/components/charts/LineChart.vue": {
+    "mtime": 1791495435.5454874,
+    "seen": 1793048808.2457702,
+    "ast_hash": "cf2b833a4ae4f276f54671b9c4cf5947",
+    "semantic_hash": ""
+  },
+  "src/components/charts/TyreStints.vue": {
+    "mtime": 1791495435.546493,
+    "seen": 1793048808.2457702,
+    "ast_hash": "353e315164c364c13566e7c98c3a7210",
+    "semantic_hash": ""
+  },
+  "src/components/navItems.js": {
+    "mtime": 1793048555.95938,
+    "seen": 1793048808.2457702,
+    "ast_hash": "7f1f9650ccfc73dfe1035bb922344e14",
+    "semantic_hash": ""
+  },
+  "src/composables/useHeadshots.js": {
+    "mtime": 1791495435.5474927,
+    "seen": 1793048808.2457702,
+    "ast_hash": "e6c353e182359967a8d4c06fbc5927b4",
+    "semantic_hash": ""
+  },
+  "src/composables/useTeamTheme.js": {
+    "mtime": 1791495435.5474927,
+    "seen": 1793048808.2457702,
+    "ast_hash": "fd2c06edd09106e9b21779fdc3d959ae",
+    "semantic_hash": ""
+  },
+  "src/data/circuits.json": {
+    "mtime": 1791495435.5494933,
+    "seen": 1793048808.2457702,
+    "ast_hash": "666f82e61169e806c6875880c70c69bb",
+    "semantic_hash": ""
+  },
+  "src/data/nationalities.js": {
+    "mtime": 1791495435.5494933,
+    "seen": 1793048808.2457702,
+    "ast_hash": "41ede0dada4020e750806af701347242",
+    "semantic_hash": ""
+  },
+  "src/data/teams.js": {
+    "mtime": 1791495435.5504923,
+    "seen": 1793048808.2457702,
+    "ast_hash": "ba9db1c18f3aa686a478f80161edded9",
+    "semantic_hash": ""
+  },
+  "src/directives/countup.js": {
+    "mtime": 1791495435.5504923,
+    "seen": 1793048808.2457702,
+    "ast_hash": "b90ab1f37abbfbfcc71476a6775a7b36",
+    "semantic_hash": ""
+  },
+  "src/directives/reveal.js": {
+    "mtime": 1791495435.551493,
+    "seen": 1793048808.2457702,
+    "ast_hash": "06fc98646f1e6310ebe557858c7cff33",
+    "semantic_hash": ""
+  },
+  "src/services/http.js": {
+    "mtime": 1791495435.5529962,
+    "seen": 1793048808.2457702,
+    "ast_hash": "ebd7bb42e8c445e7f4cfcf10adc9379f",
+    "semantic_hash": ""
+  },
+  "src/services/jolpica.js": {
+    "mtime": 1791495435.5529962,
+    "seen": 1793048808.2457702,
+    "ast_hash": "9c6dd706b713c11fe38fb34cee2ccd0b",
+    "semantic_hash": ""
+  },
+  "src/services/openf1.js": {
+    "mtime": 1791495435.5529962,
+    "seen": 1793048808.2457702,
+    "ast_hash": "32cbb48da24c86a93f01a2c6b4b015ee",
+    "semantic_hash": ""
+  },
+  "src/services/weather.js": {
+    "mtime": 1791495435.5540006,
+    "seen": 1793048808.2457702,
+    "ast_hash": "a8a273ffa5dda63aff56a6d99cf9c9cf",
+    "semantic_hash": ""
+  },
+  "src/stores/prefsStore.js": {
+    "mtime": 1791495435.5540006,
+    "seen": 1793048808.2457702,
+    "ast_hash": "c0dd5eef205b80a132324fdb84cc737c",
+    "semantic_hash": ""
+  },
+  "src/utils/race.js": {
+    "mtime": 1791495435.5555036,
+    "seen": 1793048808.2457702,
+    "ast_hash": "47568b0d6fcdf798c3cb7032290ca848",
+    "semantic_hash": ""
+  },
+  "src/utils/stats.js": {
+    "mtime": 1791495435.5555036,
+    "seen": 1793048808.2457702,
+    "ast_hash": "069f7131d9983a55a2d9d79d43ff1c70",
+    "semantic_hash": ""
+  },
+  "src/views/StandingsView.vue": {
+    "mtime": 1791495435.5585077,
+    "seen": 1793048808.2457702,
+    "ast_hash": "4e3329f759360349f26da523c7ec2013",
+    "semantic_hash": ""
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1791495435.5172777,
+    "seen": 1793048808.2457702,
+    "ast_hash": "c232166e6492ba1ed955030b16979b05",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1791495435.5232782,
+    "seen": 1793048808.2457702,
+    "ast_hash": "8a6643a420fdad6bfb583523bc6cef16",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1793049632.7725947,
+    "seen": 1793049650.4928737,
+    "ast_hash": "a09e8b5a928d1a69ccfac92a524382dc",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1791495435.5339475,
+    "seen": 1793048808.2457702,
+    "ast_hash": "b154d2fc798507dc18b81f16eb712d7f",
+    "semantic_hash": ""
+  },
+  "public/favicon.svg": {
+    "mtime": 1773344973.7327366,
+    "seen": 1791489552.7662666,
+    "ast_hash": "274c88a8a397b312ec64e35d561d678e",
+    "semantic_hash": ""
+  },
+  "scripts/build-catalog.mjs": {
+    "mtime": 1793047605.4758348,
+    "seen": 1793048808.2457702,
+    "ast_hash": "7441e2d106ca8dddfbf19771d24c7c00",
+    "semantic_hash": ""
+  },
+  "scripts/catalog/moments.json": {
+    "mtime": 1793046889.1460886,
+    "seen": 1793048808.2457702,
+    "ast_hash": "99a85fc8b1f36a12590d6d80ef77fefc",
+    "semantic_hash": ""
+  },
+  "src/components/CarImage.vue": {
+    "mtime": 1791495435.5399623,
+    "seen": 1793048808.2457702,
+    "ast_hash": "83cc86ca273e417c1b4bb2b4708a1388",
+    "semantic_hash": ""
+  },
+  "src/components/GpIntro.vue": {
+    "mtime": 1791495435.5419636,
+    "seen": 1793048808.2457702,
+    "ast_hash": "c76e3759d18d9300287dbf2586cd18a1",
+    "semantic_hash": ""
+  },
+  "src/components/SessionResults.vue": {
+    "mtime": 1791495435.5429623,
+    "seen": 1793048808.2457702,
+    "ast_hash": "bac82e0cd961af00e31b5a2186569155",
+    "semantic_hash": ""
+  },
+  "src/components/cards/AccountDialog.vue": {
+    "mtime": 1793048438.2195604,
+    "seen": 1793048808.2457702,
+    "ast_hash": "37552e58f14740048a31771e662e6c19",
+    "semantic_hash": ""
+  },
+  "src/components/cards/F1Card.vue": {
+    "mtime": 1793048502.4215963,
+    "seen": 1793048808.2457702,
+    "ast_hash": "f03b931eabee7338507b4af8126f3211",
+    "semantic_hash": ""
+  },
+  "src/composables/useWeekendResults.js": {
+    "mtime": 1791495435.5484946,
+    "seen": 1793048808.2457702,
+    "ast_hash": "50fec9288287ab85cfd1a33ab3757828",
+    "semantic_hash": ""
+  },
+  "src/data/cars.js": {
+    "mtime": 1791495435.5484946,
+    "seen": 1793048808.2457702,
+    "ast_hash": "c232fee7e2286e4662fa9982357ea81a",
+    "semantic_hash": ""
+  },
+  "src/lib/supabase.js": {
+    "mtime": 1793047097.2909298,
+    "seen": 1793048808.2457702,
+    "ast_hash": "6a27e6be504495e93f14bd8dc96b0b71",
+    "semantic_hash": ""
+  },
+  "src/services/collection.js": {
+    "mtime": 1793048922.1407673,
+    "seen": 1793048969.9100773,
+    "ast_hash": "0281e42d104ed9a6d176411a1dc0e7d5",
+    "semantic_hash": ""
+  },
+  "src/stores/collectionStore.js": {
+    "mtime": 1793049597.9322643,
+    "seen": 1793049650.4903657,
+    "ast_hash": "ff42501fefaf74e2abee91663f2c9682",
+    "semantic_hash": ""
+  },
+  "src/utils/carLivery.js": {
+    "mtime": 1791495435.5555036,
+    "seen": 1793048808.2457702,
+    "ast_hash": "2fbff3d0e858add686511a430a7b2bb8",
+    "semantic_hash": ""
+  },
+  "src/utils/cards.js": {
+    "mtime": 1793048507.6701834,
+    "seen": 1793048808.2457702,
+    "ast_hash": "7981e1c513ae04986762b38cca81bb7d",
+    "semantic_hash": ""
+  },
+  "src/views/CollectionView.vue": {
+    "mtime": 1793048601.5784452,
+    "seen": 1793048808.2457702,
+    "ast_hash": "11496a9aadbdc54e1061ed3d75f3664b",
+    "semantic_hash": ""
+  },
+  "src/views/PacksView.vue": {
+    "mtime": 1793049643.476121,
+    "seen": 1793049650.4918697,
+    "ast_hash": "2bc9605d631619e98732346ebe7ff929",
+    "semantic_hash": ""
+  },
+  "src/views/PlayerView.vue": {
+    "mtime": 1793048548.5098033,
+    "seen": 1793048808.2457702,
+    "ast_hash": "f222349eddc4c44e101e3671afa224b7",
+    "semantic_hash": ""
+  },
+  "src/views/PlayersView.vue": {
+    "mtime": 1793048548.4690711,
+    "seen": 1793048808.2457702,
+    "ast_hash": "b327464de8c38596aced348c99d25778",
+    "semantic_hash": ""
+  },
+  "supabase/templates/code.html": {
+    "mtime": 1793048328.731596,
+    "seen": 1793048808.2457702,
+    "ast_hash": "3c9249ce8b05236ee2f8b7729cac9556",
+    "semantic_hash": ""
+  },
+  "src/assets/intro/f1-front.webp": {
+    "mtime": 1791495435.5389621,
+    "seen": 1793048808.2457702,
+    "ast_hash": "0fd3249a5d705f035cad9a15f7e48852",
+    "semantic_hash": ""
+  }
+}
