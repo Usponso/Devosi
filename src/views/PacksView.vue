@@ -128,7 +128,7 @@
           <div v-if="flipped" :key="`burst-${index}`" class="burst" :class="`r-${current.rarity}`"></div>
           <transition name="deal" mode="out-in">
             <div :key="index" class="current">
-              <F1Card :card="current" :face-down="!flipped" :is-new="flipped && current.isNew" :interactive="flipped" />
+              <F1Card :card="current" :face-down="!flipped" :is-new="flipped && current.isNew" :interactive="flipped" :zoomable="false" />
             </div>
           </transition>
         </div>
@@ -139,7 +139,7 @@
 
         <div class="tray">
           <div v-for="(c, i) in drawn" :key="i" class="tray-slot" :class="{ done: i < index || (i === index && flipped) }">
-            <F1Card v-if="i < index || (i === index && flipped)" :card="c" :interactive="false" />
+            <F1Card v-if="i < index || (i === index && flipped)" :card="c" :interactive="false" :zoomable="false" />
           </div>
         </div>
       </section>
@@ -154,7 +154,7 @@
           </div>
         </div>
         <div class="summary-grid">
-          <F1Card v-for="(c, i) in drawn" :key="i" :card="c" :is-new="c.isNew" class="summary-card" :style="{ animationDelay: `${i * 80}ms` }" />
+          <F1Card v-for="(c, i) in drawn" :key="i" :card="c" :is-new="c.isNew" :zoom-list="drawn" class="summary-card" :style="{ animationDelay: `${i * 80}ms` }" />
         </div>
       </section>
     </div>
@@ -242,7 +242,6 @@ async function openPack() {
   if (busy.value || !available.value) return
   busy.value = true
   message.value = ''
-  play('shake')
   try {
     // Petite attente minimale : le pack « tremble » avant de s'ouvrir
     const [cards] = await Promise.all([col.open(), new Promise((r) => setTimeout(r, 650))])
@@ -269,7 +268,6 @@ function advance() {
   if (index.value + 1 < drawn.value.length) {
     flipped.value = false
     index.value++
-    play('deal')
   } else {
     stage.value = 'summary'
   }
