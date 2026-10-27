@@ -191,7 +191,11 @@
       </div>
     </transition>
 
-    <AccountDialog :open="accountOpen" @close="accountOpen = false" />
+    <AccountDialog :open="accountOpen" @close="accountOpen = false" @done="notify" />
+
+    <transition name="toast">
+      <div v-if="notice" class="toast" role="status"><Icon name="check" :size="16" /> {{ notice }}</div>
+    </transition>
   </div>
 </template>
 
@@ -261,6 +265,15 @@ const view = ref(route.query.vue === 'cartes' ? 'cards' : 'albums')
 function setView(v) {
   view.value = v
   router.replace({ query: v === 'cards' ? { vue: 'cartes' } : {} })
+}
+
+// Confirmation après une action du compte (pseudo enregistré, connexion…)
+const notice = ref('')
+let noticeTimer = null
+function notify(message) {
+  notice.value = message
+  clearTimeout(noticeTimer)
+  noticeTimer = setTimeout(() => (notice.value = ''), 4500)
 }
 
 const PAGE = 60
@@ -486,6 +499,30 @@ onUnmounted(() => {
 .cell { display: block; text-align: left; border-radius: 10px; }
 .cell:not(.owned) { cursor: default; }
 .sentinel { height: 1px; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + var(--tabbar-h, 0px));
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--surface-3);
+  border: 1px solid var(--success, #3ecf8e);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.45);
+  transform: translateX(-50%);
+}
+
+.toast .icon { color: var(--success, #3ecf8e); }
+.toast-enter-active, .toast-leave-active { transition: opacity 0.25s ease, transform 0.3s var(--ease); }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translate(-50%, 12px); }
 
 .view-tabs { margin: 8px 0 22px; }
 .view-tabs .tab { display: inline-flex; align-items: center; gap: 6px; }

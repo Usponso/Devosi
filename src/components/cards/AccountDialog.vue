@@ -86,7 +86,8 @@ import { linkEmail, sendLoginCode, signOut, verifyLinkCode, verifyLoginCode } fr
 const props = defineProps({
   open: { type: Boolean, default: false },
 })
-const emit = defineEmits(['close'])
+// done : action terminée avec succès, la fenêtre se ferme et la page affiche le message
+const emit = defineEmits(['close', 'done'])
 
 const col = useCollectionStore()
 
@@ -155,13 +156,16 @@ const verifyCode = () =>
     await (mode.value === 'login' ? verifyLoginCode(email.value, code.value) : verifyLinkCode(email.value, code.value))
     await col.reload()
     username.value = col.profile?.username ?? ''
-    info.value = mode.value === 'login' ? 'Connecté : ta collection est chargée.' : 'Collection sauvegardée ! Choisis maintenant ton pseudo.'
+    // Compte qui a déjà un pseudo : plus rien à faire ici
+    if (col.profile?.username) return finish(`Connecté en tant que @${col.profile.username} : ta collection est chargée.`)
+    info.value = mode.value === 'login' ? 'Connecté ! Choisis maintenant ton pseudo.' : 'Collection sauvegardée ! Choisis maintenant ton pseudo.'
   })
 
 const submitUsername = () =>
   run(async () => {
+    const first = !col.profile?.username
     await col.setUsername(username.value)
-    info.value = 'Pseudo enregistré.'
+    finish(first ? `Bienvenue @${username.value} ! Tu apparais maintenant dans le classement.` : `Pseudo changé : @${username.value}`)
   })
 
 const logout = () =>
@@ -173,6 +177,11 @@ const logout = () =>
 
 function close() {
   emit('close')
+}
+
+function finish(message) {
+  emit('done', message)
+  close()
 }
 </script>
 

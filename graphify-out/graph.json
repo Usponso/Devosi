@@ -43,18 +43,6 @@
       "source_location": "L58"
     },
     {
-      "id": "src_components_countdown_pad",
-      "label": "pad()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "pad()",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L36"
-    },
-    {
       "id": "src_components_nextracehero_tick",
       "label": "tick()",
       "_callable": true,
@@ -65,18 +53,6 @@
       "norm_label": "tick()",
       "source_file": "src/components/NextRaceHero.vue",
       "source_location": "L103"
-    },
-    {
-      "id": "src_utils_race_age",
-      "label": "age()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "age()",
-      "source_file": "src/utils/race.js",
-      "source_location": "L70"
     },
     {
       "id": "src_utils_race_formatdate",
@@ -101,6 +77,18 @@
       "norm_label": "formatsessiontime()",
       "source_file": "src/utils/race.js",
       "source_location": "L55"
+    },
+    {
+      "id": "src_utils_race_formatshortdate",
+      "label": "formatShortDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "NextRaceHero.vue",
+      "file_type": "code",
+      "norm_label": "formatshortdate()",
+      "source_file": "src/utils/race.js",
+      "source_location": "L53"
     },
     {
       "id": "src_utils_race_formatweekendrange",
@@ -137,6 +125,18 @@
       "norm_label": "nextsession()",
       "source_file": "src/utils/race.js",
       "source_location": "L38"
+    },
+    {
+      "id": "src_utils_race_todate",
+      "label": "toDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "NextRaceHero.vue",
+      "file_type": "code",
+      "norm_label": "todate()",
+      "source_file": "src/utils/race.js",
+      "source_location": "L17"
     },
     {
       "id": "src_utils_race_weekendsessions",
@@ -235,256 +235,172 @@
       "source_location": "L133"
     },
     {
-      "id": "src_services_collection_buypack",
-      "label": "buyPack()",
+      "id": "src_composables_useweekendresults_useweekendresults",
+      "label": "useWeekendResults()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "buypack()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L181"
+      "norm_label": "useweekendresults()",
+      "source_file": "src/composables/useWeekendResults.js",
+      "source_location": "L20"
     },
     {
-      "id": "src_services_collection_claimalbum",
-      "label": "claimAlbum()",
+      "id": "src_composables_useweekendresults_useweekendresults_enrich",
+      "label": "enrich()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "claimalbum()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L198"
+      "norm_label": "enrich()",
+      "source_file": "src/composables/useWeekendResults.js",
+      "source_location": "L28"
     },
     {
-      "id": "src_services_collection_craftcard",
-      "label": "craftCard()",
+      "id": "src_composables_useweekendresults_useweekendresults_load",
+      "label": "load()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "craftcard()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L183"
+      "norm_label": "load()",
+      "source_file": "src/composables/useWeekendResults.js",
+      "source_location": "L42"
     },
     {
-      "id": "src_services_collection_currentuser",
-      "label": "currentUser()",
+      "id": "src_composables_useweekendresults_useweekendresults_schedulepoll",
+      "label": "schedulePoll()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "currentuser()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L82"
+      "norm_label": "schedulepoll()",
+      "source_file": "src/composables/useWeekendResults.js",
+      "source_location": "L87"
     },
     {
-      "id": "src_services_collection_ensuresession",
-      "label": "ensureSession()",
+      "id": "src_services_openf1_fetchlappositions",
+      "label": "fetchLapPositions()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "ensuresession()",
-      "source_file": "src/services/collection.js",
+      "norm_label": "fetchlappositions()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L75"
+    },
+    {
+      "id": "src_services_openf1_fetchopenf1",
+      "label": "fetchOpenF1()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "openf1.js",
+      "file_type": "code",
+      "norm_label": "fetchopenf1()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "src_services_openf1_fetchpits",
+      "label": "fetchPits()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "openf1.js",
+      "file_type": "code",
+      "norm_label": "fetchpits()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L60"
+    },
+    {
+      "id": "src_services_openf1_fetchsessiondrivers",
+      "label": "fetchSessionDrivers()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "openf1.js",
+      "file_type": "code",
+      "norm_label": "fetchsessiondrivers()",
+      "source_file": "src/services/openf1.js",
       "source_location": "L30"
     },
     {
-      "id": "src_services_collection_fetchmyalbums",
-      "label": "fetchMyAlbums()",
+      "id": "src_services_openf1_fetchsessionresult",
+      "label": "fetchSessionResult()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "fetchmyalbums()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L190"
+      "norm_label": "fetchsessionresult()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L166"
     },
     {
-      "id": "src_services_collection_fetchmycards",
-      "label": "fetchMyCards()",
+      "id": "src_services_openf1_fetchstints",
+      "label": "fetchStints()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "fetchmycards()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L153"
+      "norm_label": "fetchstints()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L47"
     },
     {
-      "id": "src_services_collection_fetchmyprofile",
-      "label": "fetchMyProfile()",
+      "id": "src_services_openf1_findsession",
+      "label": "findSession()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "fetchmyprofile()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L134"
+      "norm_label": "findsession()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L22"
     },
     {
-      "id": "src_services_collection_fetchpackstatus",
-      "label": "fetchPackStatus()",
+      "id": "src_services_openf1_findweekendsessions",
+      "label": "findWeekendSessions()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "fetchpackstatus()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L45"
+      "norm_label": "findweekendsessions()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L144"
     },
     {
-      "id": "src_services_collection_fetchplayer",
-      "label": "fetchPlayer()",
+      "id": "src_services_openf1_lastvalue",
+      "label": "lastValue()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "fetchplayer()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L148"
+      "norm_label": "lastvalue()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L160"
     },
     {
-      "id": "src_services_collection_onauthchange",
-      "label": "onAuthChange()",
+      "id": "src_views_racedetail_loadopenf1",
+      "label": "loadOpenF1()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "onauthchange()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L116"
-    },
-    {
-      "id": "src_services_collection_openpack",
-      "label": "openPack()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "openpack()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L64"
-    },
-    {
-      "id": "src_services_collection_peekpackstatus",
-      "label": "peekPackStatus()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "peekpackstatus()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L56"
-    },
-    {
-      "id": "src_services_collection_recyclecard",
-      "label": "recycleCard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "recyclecard()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L178"
-    },
-    {
-      "id": "src_services_collection_recycleduplicates",
-      "label": "recycleDuplicates()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "recycleduplicates()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L179"
-    },
-    {
-      "id": "src_services_collection_resetsession",
-      "label": "resetSession()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "resetsession()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L40"
-    },
-    {
-      "id": "src_services_collection_rpc",
-      "label": "rpc()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "rpc()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L126"
-    },
-    {
-      "id": "src_services_collection_saveshowcase",
-      "label": "saveShowcase()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "saveshowcase()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L140"
-    },
-    {
-      "id": "src_services_collection_saveusername",
-      "label": "saveUsername()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "saveusername()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L139"
-    },
-    {
-      "id": "src_services_collection_tradeup",
-      "label": "tradeUp()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "tradeup()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L185"
-    },
-    {
-      "id": "src_services_collection_upgradecard",
-      "label": "upgradeCard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "upgradecard()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L187"
+      "norm_label": "loadopenf1()",
+      "source_file": "src/views/RaceDetail.vue",
+      "source_location": "L361"
     },
     {
       "id": "src_views_albumview_go",
@@ -679,6 +595,18 @@
       "source_location": "L287"
     },
     {
+      "id": "src_utils_race_age",
+      "label": "age()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "DriverDetail.vue",
+      "file_type": "code",
+      "norm_label": "age()",
+      "source_file": "src/utils/race.js",
+      "source_location": "L70"
+    },
+    {
       "id": "src_utils_stats_finishseries",
       "label": "finishSeries()",
       "_callable": true,
@@ -696,11 +624,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "close()",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L174"
+      "source_location": "L178"
     },
     {
       "id": "src_components_cards_accountdialog_fail",
@@ -708,11 +636,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "fail()",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L123"
+      "source_location": "L124"
+    },
+    {
+      "id": "src_components_cards_accountdialog_finish",
+      "label": "finish()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "finish()",
+      "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L182"
     },
     {
       "id": "src_components_cards_accountdialog_logout",
@@ -720,11 +660,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "logout()",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L167"
+      "source_location": "L171"
     },
     {
       "id": "src_components_cards_accountdialog_run",
@@ -732,11 +672,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "run()",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L127"
+      "source_location": "L128"
     },
     {
       "id": "src_components_cards_accountdialog_sendcode",
@@ -744,11 +684,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "sendcode()",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L146"
+      "source_location": "L147"
     },
     {
       "id": "src_components_cards_accountdialog_submitusername",
@@ -756,11 +696,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "submitusername()",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L161"
+      "source_location": "L164"
     },
     {
       "id": "src_components_cards_accountdialog_switchmode",
@@ -768,11 +708,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "switchmode()",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L140"
+      "source_location": "L141"
     },
     {
       "id": "src_components_cards_accountdialog_verifycode",
@@ -780,11 +720,143 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "verifycode()",
       "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L154"
+    },
+    {
+      "id": "src_services_collection_buypack",
+      "label": "buyPack()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "buypack()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L181"
+    },
+    {
+      "id": "src_services_collection_claimalbum",
+      "label": "claimAlbum()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "claimalbum()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L198"
+    },
+    {
+      "id": "src_services_collection_craftcard",
+      "label": "craftCard()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "craftcard()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L183"
+    },
+    {
+      "id": "src_services_collection_currentuser",
+      "label": "currentUser()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "currentuser()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L82"
+    },
+    {
+      "id": "src_services_collection_ensuresession",
+      "label": "ensureSession()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "ensuresession()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L30"
+    },
+    {
+      "id": "src_services_collection_fetchleaderboard",
+      "label": "fetchLeaderboard()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "fetchleaderboard()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L143"
+    },
+    {
+      "id": "src_services_collection_fetchmyalbums",
+      "label": "fetchMyAlbums()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "fetchmyalbums()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L190"
+    },
+    {
+      "id": "src_services_collection_fetchmycards",
+      "label": "fetchMyCards()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "fetchmycards()",
+      "source_file": "src/services/collection.js",
       "source_location": "L153"
+    },
+    {
+      "id": "src_services_collection_fetchmyprofile",
+      "label": "fetchMyProfile()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "fetchmyprofile()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L134"
+    },
+    {
+      "id": "src_services_collection_fetchpackstatus",
+      "label": "fetchPackStatus()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "fetchpackstatus()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L45"
+    },
+    {
+      "id": "src_services_collection_fetchplayer",
+      "label": "fetchPlayer()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "fetchplayer()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L148"
     },
     {
       "id": "src_services_collection_linkemail",
@@ -792,11 +864,83 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "linkemail()",
       "source_file": "src/services/collection.js",
       "source_location": "L89"
+    },
+    {
+      "id": "src_services_collection_onauthchange",
+      "label": "onAuthChange()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "onauthchange()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L116"
+    },
+    {
+      "id": "src_services_collection_openpack",
+      "label": "openPack()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "openpack()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L64"
+    },
+    {
+      "id": "src_services_collection_peekpackstatus",
+      "label": "peekPackStatus()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "peekpackstatus()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L56"
+    },
+    {
+      "id": "src_services_collection_recyclecard",
+      "label": "recycleCard()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "recyclecard()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L178"
+    },
+    {
+      "id": "src_services_collection_recycleduplicates",
+      "label": "recycleDuplicates()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "recycleduplicates()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L179"
+    },
+    {
+      "id": "src_services_collection_resetsession",
+      "label": "resetSession()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "resetsession()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L40"
     },
     {
       "id": "src_services_collection_resolvesession",
@@ -804,11 +948,47 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "resolvesession()",
       "source_file": "src/services/collection.js",
       "source_location": "L12"
+    },
+    {
+      "id": "src_services_collection_rpc",
+      "label": "rpc()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "rpc()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L126"
+    },
+    {
+      "id": "src_services_collection_saveshowcase",
+      "label": "saveShowcase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "saveshowcase()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L140"
+    },
+    {
+      "id": "src_services_collection_saveusername",
+      "label": "saveUsername()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "saveusername()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L139"
     },
     {
       "id": "src_services_collection_sendlogincode",
@@ -816,7 +996,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "sendlogincode()",
       "source_file": "src/services/collection.js",
@@ -828,7 +1008,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "signout()",
       "source_file": "src/services/collection.js",
@@ -840,11 +1020,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "toerror()",
       "source_file": "src/services/collection.js",
       "source_location": "L76"
+    },
+    {
+      "id": "src_services_collection_tradeup",
+      "label": "tradeUp()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "tradeup()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L185"
+    },
+    {
+      "id": "src_services_collection_upgradecard",
+      "label": "upgradeCard()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "upgradecard()",
+      "source_file": "src/services/collection.js",
+      "source_location": "L187"
     },
     {
       "id": "src_services_collection_verifylinkcode",
@@ -852,7 +1056,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "verifylinkcode()",
       "source_file": "src/services/collection.js",
@@ -864,11 +1068,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "verifylogincode()",
       "source_file": "src/services/collection.js",
       "source_location": "L107"
+    },
+    {
+      "id": "src_views_playersview_load",
+      "label": "load()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "load()",
+      "source_file": "src/views/PlayersView.vue",
+      "source_location": "L85"
     },
     {
       "id": "src_views_atelierview_closereveal",
@@ -905,18 +1121,6 @@
       "norm_label": "normalize()",
       "source_file": "src/views/AtelierView.vue",
       "source_location": "L292"
-    },
-    {
-      "id": "src_views_atelierview_recycleall",
-      "label": "recycleAll()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "AtelierView.vue",
-      "file_type": "code",
-      "norm_label": "recycleall()",
-      "source_file": "src/views/AtelierView.vue",
-      "source_location": "L279"
     },
     {
       "id": "src_views_atelierview_run",
@@ -1024,7 +1228,7 @@
       "file_type": "code",
       "norm_label": "countby()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L301"
+      "source_location": "L314"
     },
     {
       "id": "src_views_collectionview_finishof",
@@ -1036,7 +1240,7 @@
       "file_type": "code",
       "norm_label": "finishof()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L230"
+      "source_location": "L234"
     },
     {
       "id": "src_views_collectionview_inshowcase",
@@ -1048,7 +1252,7 @@
       "file_type": "code",
       "norm_label": "inshowcase()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L307"
+      "source_location": "L320"
     },
     {
       "id": "src_views_collectionview_normalize",
@@ -1060,7 +1264,19 @@
       "file_type": "code",
       "norm_label": "normalize()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L278"
+      "source_location": "L291"
+    },
+    {
+      "id": "src_views_collectionview_notify",
+      "label": "notify()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "CollectionView.vue",
+      "file_type": "code",
+      "norm_label": "notify()",
+      "source_file": "src/views/CollectionView.vue",
+      "source_location": "L273"
     },
     {
       "id": "src_views_collectionview_onkey",
@@ -1072,7 +1288,7 @@
       "file_type": "code",
       "norm_label": "onkey()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L327"
+      "source_location": "L340"
     },
     {
       "id": "src_views_collectionview_percent",
@@ -1084,7 +1300,31 @@
       "file_type": "code",
       "norm_label": "percent()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L269"
+      "source_location": "L282"
+    },
+    {
+      "id": "src_views_collectionview_recycle",
+      "label": "recycle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "CollectionView.vue",
+      "file_type": "code",
+      "norm_label": "recycle()",
+      "source_file": "src/views/CollectionView.vue",
+      "source_location": "L255"
+    },
+    {
+      "id": "src_views_collectionview_runaction",
+      "label": "runAction()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "CollectionView.vue",
+      "file_type": "code",
+      "norm_label": "runaction()",
+      "source_file": "src/views/CollectionView.vue",
+      "source_location": "L242"
     },
     {
       "id": "src_views_collectionview_setview",
@@ -1096,7 +1336,7 @@
       "file_type": "code",
       "norm_label": "setview()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L261"
+      "source_location": "L265"
     },
     {
       "id": "src_views_collectionview_togglerarity",
@@ -1108,7 +1348,7 @@
       "file_type": "code",
       "norm_label": "togglerarity()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L272"
+      "source_location": "L285"
     },
     {
       "id": "src_views_collectionview_toggleshowcase",
@@ -1120,7 +1360,19 @@
       "file_type": "code",
       "norm_label": "toggleshowcase()",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L309"
+      "source_location": "L322"
+    },
+    {
+      "id": "src_views_collectionview_upgrade",
+      "label": "upgrade()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "CollectionView.vue",
+      "file_type": "code",
+      "norm_label": "upgrade()",
+      "source_file": "src/views/CollectionView.vue",
+      "source_location": "L258"
     },
     {
       "id": "scripts_build_catalog_count",
@@ -1423,6 +1675,18 @@
       "source_location": "L202"
     },
     {
+      "id": "src_utils_race_shortracename",
+      "label": "shortRaceName()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "HomeView.vue",
+      "file_type": "code",
+      "norm_label": "shortracename()",
+      "source_file": "src/utils/race.js",
+      "source_location": "L80"
+    },
+    {
       "id": "src_utils_stats_biggestmovers",
       "label": "biggestMovers()",
       "_callable": true,
@@ -1433,6 +1697,30 @@
       "norm_label": "biggestmovers()",
       "source_file": "src/utils/stats.js",
       "source_location": "L202"
+    },
+    {
+      "id": "src_utils_stats_winnerof",
+      "label": "winnerOf()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "HomeView.vue",
+      "file_type": "code",
+      "norm_label": "winnerof()",
+      "source_file": "src/utils/stats.js",
+      "source_location": "L234"
+    },
+    {
+      "id": "src_views_homeview_segmenttitle",
+      "label": "segmentTitle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "HomeView.vue",
+      "file_type": "code",
+      "norm_label": "segmenttitle()",
+      "source_file": "src/views/HomeView.vue",
+      "source_location": "L278"
     },
     {
       "id": "src_utils_carlivery_hextorgb",
@@ -1495,40 +1783,124 @@
       "source_location": "L49"
     },
     {
-      "id": "src_components_teampicker_close",
-      "label": "close()",
+      "id": "src_services_http_fetchwithretry",
+      "label": "fetchWithRetry()",
       "_callable": true,
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "close()",
-      "source_file": "src/components/TeamPicker.vue",
-      "source_location": "L39"
+      "norm_label": "fetchwithretry()",
+      "source_file": "src/services/http.js",
+      "source_location": "L57"
     },
     {
-      "id": "src_components_teampicker_onkey",
-      "label": "onKey()",
+      "id": "src_services_http_getjson",
+      "label": "getJSON()",
       "_callable": true,
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "onkey()",
-      "source_file": "src/components/TeamPicker.vue",
-      "source_location": "L44"
+      "norm_label": "getjson()",
+      "source_file": "src/services/http.js",
+      "source_location": "L112"
     },
     {
-      "id": "src_stores_prefsstore_load",
-      "label": "load()",
+      "id": "src_services_http_getqueue",
+      "label": "getQueue()",
       "_callable": true,
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "load()",
-      "source_file": "src/stores/prefsStore.js",
-      "source_location": "L6"
+      "norm_label": "getqueue()",
+      "source_file": "src/services/http.js",
+      "source_location": "L33"
+    },
+    {
+      "id": "src_services_http_purgecache",
+      "label": "purgeCache()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "purgecache()",
+      "source_file": "src/services/http.js",
+      "source_location": "L95"
+    },
+    {
+      "id": "src_services_http_readcache",
+      "label": "readCache()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "readcache()",
+      "source_file": "src/services/http.js",
+      "source_location": "L71"
+    },
+    {
+      "id": "src_services_http_schedule",
+      "label": "schedule()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "schedule()",
+      "source_file": "src/services/http.js",
+      "source_location": "L41"
+    },
+    {
+      "id": "src_services_http_sleep",
+      "label": "sleep()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "sleep()",
+      "source_file": "src/services/http.js",
+      "source_location": "L55"
+    },
+    {
+      "id": "src_services_http_writecache",
+      "label": "writeCache()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "writecache()",
+      "source_file": "src/services/http.js",
+      "source_location": "L80"
+    },
+    {
+      "id": "src_services_weather_describe",
+      "label": "describe()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "describe()",
+      "source_file": "src/services/weather.js",
+      "source_location": "L22"
+    },
+    {
+      "id": "src_services_weather_fetchsessionweather",
+      "label": "fetchSessionWeather()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "fetchsessionweather()",
+      "source_file": "src/services/weather.js",
+      "source_location": "L32"
     },
     {
       "id": "src_components_cards_f1card_onleave",
@@ -1571,12 +1943,24 @@
       "label": "rarityShare()",
       "_callable": true,
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "rarityshare()",
       "source_file": "src/views/PlayerView.vue",
       "source_location": "L112"
+    },
+    {
+      "id": "src_utils_stats_pointsprogression",
+      "label": "pointsProgression()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "TeamDetail.vue",
+      "file_type": "code",
+      "norm_label": "pointsprogression()",
+      "source_file": "src/utils/stats.js",
+      "source_location": "L22"
     },
     {
       "id": "src_views_teamdetail_togglefav",
@@ -1687,40 +2071,28 @@
       "source_location": "L71"
     },
     {
-      "id": "src_utils_race_todate",
-      "label": "toDate()",
+      "id": "src_composables_useheadshots_useheadshots",
+      "label": "useHeadshots()",
       "_callable": true,
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
-      "norm_label": "todate()",
-      "source_file": "src/utils/race.js",
-      "source_location": "L17"
+      "norm_label": "useheadshots()",
+      "source_file": "src/composables/useHeadshots.js",
+      "source_location": "L9"
     },
     {
-      "id": "src_components_charts_tyrestints_compoundcolor",
-      "label": "compoundColor()",
+      "id": "src_services_openf1_fetchlatestheadshots",
+      "label": "fetchLatestHeadshots()",
       "_callable": true,
       "_origin": "ast",
-      "community": 31,
-      "community_name": "TyreStints.vue",
+      "community": 30,
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
-      "norm_label": "compoundcolor()",
-      "source_file": "src/components/charts/TyreStints.vue",
-      "source_location": "L72"
-    },
-    {
-      "id": "src_components_charts_tyrestints_pct",
-      "label": "pct()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "TyreStints.vue",
-      "file_type": "code",
-      "norm_label": "pct()",
-      "source_file": "src/components/charts/TyreStints.vue",
-      "source_location": "L74"
+      "norm_label": "fetchlatestheadshots()",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L119"
     },
     {
       "id": "src_utils_stats_applyseasoncounts",
@@ -1915,12 +2287,60 @@
       "source_location": "L441"
     },
     {
+      "id": "src_components_cards_packswidget_tick",
+      "label": "tick()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "tick()",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L58"
+    },
+    {
+      "id": "src_components_charts_tyrestints_compoundcolor",
+      "label": "compoundColor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "compoundcolor()",
+      "source_file": "src/components/charts/TyreStints.vue",
+      "source_location": "L72"
+    },
+    {
+      "id": "src_components_charts_tyrestints_pct",
+      "label": "pct()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "pct()",
+      "source_file": "src/components/charts/TyreStints.vue",
+      "source_location": "L74"
+    },
+    {
+      "id": "src_components_countdown_pad",
+      "label": "pad()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "pad()",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L36"
+    },
+    {
       "id": "src_data_cars_carimage",
       "label": "carImage()",
       "_callable": true,
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "carimage()",
       "source_file": "src/data/cars.js",
@@ -1932,47 +2352,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "hascar()",
       "source_file": "src/views/TeamsView.vue",
       "source_location": "L65"
-    },
-    {
-      "id": "src_views_collectionview_recycle",
-      "label": "recycle()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "recycle",
-      "file_type": "code",
-      "norm_label": "recycle()",
-      "source_file": "src/views/CollectionView.vue",
-      "source_location": "L251"
-    },
-    {
-      "id": "src_views_collectionview_runaction",
-      "label": "runAction()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "recycle",
-      "file_type": "code",
-      "norm_label": "runaction()",
-      "source_file": "src/views/CollectionView.vue",
-      "source_location": "L238"
-    },
-    {
-      "id": "src_views_collectionview_upgrade",
-      "label": "upgrade()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "recycle",
-      "file_type": "code",
-      "norm_label": "upgrade()",
-      "source_file": "src/views/CollectionView.vue",
-      "source_location": "L254"
     },
     {
       "id": "src_utils_cards_describecard",
@@ -1997,18 +2381,6 @@
       "norm_label": "economymessage()",
       "source_file": "src/utils/cards.js",
       "source_location": "L23"
-    },
-    {
-      "id": "src_utils_cards_formatcoins",
-      "label": "formatCoins()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 36,
-      "community_name": "cards.js",
-      "file_type": "code",
-      "norm_label": "formatcoins()",
-      "source_file": "src/utils/cards.js",
-      "source_location": "L6"
     },
     {
       "id": "src_utils_cards_plural",
@@ -2052,7 +2424,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "DriversView.vue",
+      "community_name": "SeasonView.vue",
       "file_type": "code",
       "norm_label": "pillclass()",
       "source_file": "src/components/charts/FormStrip.vue",
@@ -2107,30 +2479,6 @@
       "source_location": "L514"
     },
     {
-      "id": "src_utils_stats_maxpoints",
-      "label": "maxPoints()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 39,
-      "community_name": "titleContention",
-      "file_type": "code",
-      "norm_label": "maxpoints()",
-      "source_file": "src/utils/stats.js",
-      "source_location": "L49"
-    },
-    {
-      "id": "src_utils_stats_titlecontention",
-      "label": "titleContention()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 39,
-      "community_name": "titleContention",
-      "file_type": "code",
-      "norm_label": "titlecontention()",
-      "source_file": "src/utils/stats.js",
-      "source_location": "L64"
-    },
-    {
       "id": "src_components_appheader_isactive",
       "label": "isActive()",
       "_callable": true,
@@ -2165,18 +2513,6 @@
       "norm_label": "onseasonchange()",
       "source_file": "src/components/AppHeader.vue",
       "source_location": "L75"
-    },
-    {
-      "id": "src_components_cards_packswidget_tick",
-      "label": "tick()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "tick()",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L58"
     },
     {
       "id": "src_components_mobiletabbar_isactive",
@@ -2215,52 +2551,52 @@
       "source_location": "L11"
     },
     {
-      "id": "src_utils_race_formatshortdate",
-      "label": "formatShortDate()",
+      "id": "src_components_sessionresults_formatgap",
+      "label": "formatGap()",
       "_callable": true,
       "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
+      "community": 41,
+      "community_name": "teams.js",
       "file_type": "code",
-      "norm_label": "formatshortdate()",
-      "source_file": "src/utils/race.js",
-      "source_location": "L53"
+      "norm_label": "formatgap()",
+      "source_file": "src/components/SessionResults.vue",
+      "source_location": "L59"
     },
     {
-      "id": "src_utils_race_shortracename",
-      "label": "shortRaceName()",
+      "id": "src_components_sessionresults_formatlap",
+      "label": "formatLap()",
       "_callable": true,
       "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
+      "community": 41,
+      "community_name": "teams.js",
       "file_type": "code",
-      "norm_label": "shortracename()",
-      "source_file": "src/utils/race.js",
-      "source_location": "L80"
+      "norm_label": "formatlap()",
+      "source_file": "src/components/SessionResults.vue",
+      "source_location": "L52"
     },
     {
-      "id": "src_utils_stats_winnerof",
-      "label": "winnerOf()",
+      "id": "src_components_teampicker_close",
+      "label": "close()",
       "_callable": true,
       "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
+      "community": 41,
+      "community_name": "teams.js",
       "file_type": "code",
-      "norm_label": "winnerof()",
-      "source_file": "src/utils/stats.js",
-      "source_location": "L234"
+      "norm_label": "close()",
+      "source_file": "src/components/TeamPicker.vue",
+      "source_location": "L39"
     },
     {
-      "id": "src_views_homeview_segmenttitle",
-      "label": "segmentTitle()",
+      "id": "src_components_teampicker_onkey",
+      "label": "onKey()",
       "_callable": true,
       "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
+      "community": 41,
+      "community_name": "teams.js",
       "file_type": "code",
-      "norm_label": "segmenttitle()",
-      "source_file": "src/views/HomeView.vue",
-      "source_location": "L278"
+      "norm_label": "onkey()",
+      "source_file": "src/components/TeamPicker.vue",
+      "source_location": "L44"
     },
     {
       "id": "src_composables_useteamtheme_hextorgb",
@@ -2268,7 +2604,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "hextorgb()",
       "source_file": "src/composables/useTeamTheme.js",
@@ -2280,7 +2616,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "luminance()",
       "source_file": "src/composables/useTeamTheme.js",
@@ -2292,7 +2628,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "readableon()",
       "source_file": "src/composables/useTeamTheme.js",
@@ -2304,7 +2640,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "useteamtheme()",
       "source_file": "src/composables/useTeamTheme.js",
@@ -2316,11 +2652,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "onrevalidate()",
       "source_file": "src/services/http.js",
       "source_location": "L28"
+    },
+    {
+      "id": "src_stores_prefsstore_load",
+      "label": "load()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "load()",
+      "source_file": "src/stores/prefsStore.js",
+      "source_location": "L6"
     },
     {
       "id": "src_components_cards_albumshelf_covercard",
@@ -2328,35 +2676,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 42,
-      "community_name": "Icon.vue",
+      "community_name": "formatCoins",
       "file_type": "code",
       "norm_label": "covercard()",
       "source_file": "src/components/cards/AlbumShelf.vue",
       "source_location": "L57"
     },
     {
-      "id": "src_services_collection_fetchleaderboard",
-      "label": "fetchLeaderboard()",
+      "id": "src_utils_cards_formatcoins",
+      "label": "formatCoins()",
       "_callable": true,
       "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
+      "community": 42,
+      "community_name": "formatCoins",
       "file_type": "code",
-      "norm_label": "fetchleaderboard()",
-      "source_file": "src/services/collection.js",
-      "source_location": "L143"
+      "norm_label": "formatcoins()",
+      "source_file": "src/utils/cards.js",
+      "source_location": "L6"
     },
     {
-      "id": "src_views_playersview_load",
-      "label": "load()",
+      "id": "src_views_atelierview_recycleall",
+      "label": "recycleAll()",
       "_callable": true,
       "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
+      "community": 42,
+      "community_name": "formatCoins",
       "file_type": "code",
-      "norm_label": "load()",
-      "source_file": "src/views/PlayersView.vue",
-      "source_location": "L85"
+      "norm_label": "recycleall()",
+      "source_file": "src/views/AtelierView.vue",
+      "source_location": "L279"
     },
     {
       "id": "scripts_build_catalog_commonssearch",
@@ -2443,30 +2791,6 @@
       "source_location": "L375"
     },
     {
-      "id": "src_components_sessionresults_formatgap",
-      "label": "formatGap()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "SessionResults.vue",
-      "file_type": "code",
-      "norm_label": "formatgap()",
-      "source_file": "src/components/SessionResults.vue",
-      "source_location": "L59"
-    },
-    {
-      "id": "src_components_sessionresults_formatlap",
-      "label": "formatLap()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "SessionResults.vue",
-      "file_type": "code",
-      "norm_label": "formatlap()",
-      "source_file": "src/components/SessionResults.vue",
-      "source_location": "L52"
-    },
-    {
       "id": "src_components_teammateduel_makerow",
       "label": "makeRow()",
       "_callable": true,
@@ -2477,18 +2801,6 @@
       "norm_label": "makerow()",
       "source_file": "src/components/TeammateDuel.vue",
       "source_location": "L40"
-    },
-    {
-      "id": "src_utils_stats_pointsprogression",
-      "label": "pointsProgression()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "pointsProgression",
-      "file_type": "code",
-      "norm_label": "pointsprogression()",
-      "source_file": "src/utils/stats.js",
-      "source_location": "L22"
     },
     {
       "id": "scripts_build_catalog_atcircuit",
@@ -2527,186 +2839,6 @@
       "source_location": "L654"
     },
     {
-      "id": "src_composables_useheadshots_useheadshots",
-      "label": "useHeadshots()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "useheadshots()",
-      "source_file": "src/composables/useHeadshots.js",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_composables_useweekendresults_useweekendresults",
-      "label": "useWeekendResults()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "useweekendresults()",
-      "source_file": "src/composables/useWeekendResults.js",
-      "source_location": "L20"
-    },
-    {
-      "id": "src_composables_useweekendresults_useweekendresults_enrich",
-      "label": "enrich()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "enrich()",
-      "source_file": "src/composables/useWeekendResults.js",
-      "source_location": "L28"
-    },
-    {
-      "id": "src_composables_useweekendresults_useweekendresults_load",
-      "label": "load()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "load()",
-      "source_file": "src/composables/useWeekendResults.js",
-      "source_location": "L42"
-    },
-    {
-      "id": "src_composables_useweekendresults_useweekendresults_schedulepoll",
-      "label": "schedulePoll()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "schedulepoll()",
-      "source_file": "src/composables/useWeekendResults.js",
-      "source_location": "L87"
-    },
-    {
-      "id": "src_services_openf1_fetchlappositions",
-      "label": "fetchLapPositions()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "fetchlappositions()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L75"
-    },
-    {
-      "id": "src_services_openf1_fetchlatestheadshots",
-      "label": "fetchLatestHeadshots()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "fetchlatestheadshots()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L119"
-    },
-    {
-      "id": "src_services_openf1_fetchopenf1",
-      "label": "fetchOpenF1()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "fetchopenf1()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L11"
-    },
-    {
-      "id": "src_services_openf1_fetchpits",
-      "label": "fetchPits()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "fetchpits()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L60"
-    },
-    {
-      "id": "src_services_openf1_fetchsessiondrivers",
-      "label": "fetchSessionDrivers()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "fetchsessiondrivers()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L30"
-    },
-    {
-      "id": "src_services_openf1_fetchsessionresult",
-      "label": "fetchSessionResult()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "fetchsessionresult()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L166"
-    },
-    {
-      "id": "src_services_openf1_fetchstints",
-      "label": "fetchStints()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "fetchstints()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L47"
-    },
-    {
-      "id": "src_services_openf1_findsession",
-      "label": "findSession()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "findsession()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L22"
-    },
-    {
-      "id": "src_services_openf1_findweekendsessions",
-      "label": "findWeekendSessions()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "findweekendsessions()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L144"
-    },
-    {
-      "id": "src_services_openf1_lastvalue",
-      "label": "lastValue()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "lastvalue()",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L160"
-    },
-    {
       "id": "src_views_racedetail_gainclass",
       "label": "gainClass()",
       "_callable": true,
@@ -2729,18 +2861,6 @@
       "norm_label": "gainlabel()",
       "source_file": "src/views/RaceDetail.vue",
       "source_location": "L301"
-    },
-    {
-      "id": "src_views_racedetail_loadopenf1",
-      "label": "loadOpenF1()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "loadopenf1()",
-      "source_file": "src/views/RaceDetail.vue",
-      "source_location": "L361"
     },
     {
       "id": "src_views_racedetail_qualigap",
@@ -2791,6 +2911,18 @@
       "source_location": "L698"
     },
     {
+      "id": "src_utils_stats_maxpoints",
+      "label": "maxPoints()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "StandingsView.vue",
+      "file_type": "code",
+      "norm_label": "maxpoints()",
+      "source_file": "src/utils/stats.js",
+      "source_location": "L49"
+    },
+    {
       "id": "src_utils_stats_recentform",
       "label": "recentForm()",
       "_callable": true,
@@ -2801,6 +2933,18 @@
       "norm_label": "recentform()",
       "source_file": "src/utils/stats.js",
       "source_location": "L125"
+    },
+    {
+      "id": "src_utils_stats_titlecontention",
+      "label": "titleContention()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "StandingsView.vue",
+      "file_type": "code",
+      "norm_label": "titlecontention()",
+      "source_file": "src/utils/stats.js",
+      "source_location": "L64"
     },
     {
       "id": "src_views_standingsview_onresize",
@@ -2885,102 +3029,6 @@
       "norm_label": "getteamcolor()",
       "source_file": "src/data/teams.js",
       "source_location": "L46"
-    },
-    {
-      "id": "src_services_http_fetchwithretry",
-      "label": "fetchWithRetry()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "fetchwithretry()",
-      "source_file": "src/services/http.js",
-      "source_location": "L57"
-    },
-    {
-      "id": "src_services_http_getjson",
-      "label": "getJSON()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "getjson()",
-      "source_file": "src/services/http.js",
-      "source_location": "L112"
-    },
-    {
-      "id": "src_services_http_getqueue",
-      "label": "getQueue()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "getqueue()",
-      "source_file": "src/services/http.js",
-      "source_location": "L33"
-    },
-    {
-      "id": "src_services_http_purgecache",
-      "label": "purgeCache()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "purgecache()",
-      "source_file": "src/services/http.js",
-      "source_location": "L95"
-    },
-    {
-      "id": "src_services_http_readcache",
-      "label": "readCache()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "readcache()",
-      "source_file": "src/services/http.js",
-      "source_location": "L71"
-    },
-    {
-      "id": "src_services_http_schedule",
-      "label": "schedule()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "schedule()",
-      "source_file": "src/services/http.js",
-      "source_location": "L41"
-    },
-    {
-      "id": "src_services_http_sleep",
-      "label": "sleep()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "sleep()",
-      "source_file": "src/services/http.js",
-      "source_location": "L55"
-    },
-    {
-      "id": "src_services_http_writecache",
-      "label": "writeCache()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "writecache()",
-      "source_file": "src/services/http.js",
-      "source_location": "L80"
     },
     {
       "id": "src_services_jolpica_buildurl",
@@ -3245,30 +3293,6 @@
       "norm_label": "tosession()",
       "source_file": "src/services/jolpica.js",
       "source_location": "L225"
-    },
-    {
-      "id": "src_services_weather_describe",
-      "label": "describe()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "describe()",
-      "source_file": "src/services/weather.js",
-      "source_location": "L22"
-    },
-    {
-      "id": "src_services_weather_fetchsessionweather",
-      "label": "fetchSessionWeather()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "fetchsessionweather()",
-      "source_file": "src/services/weather.js",
-      "source_location": "L32"
     },
     {
       "id": "package",
@@ -3557,6 +3581,17 @@
       "source_location": "L13"
     },
     {
+      "id": "ref_pinia",
+      "label": "pinia",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "pinia",
+      "source_file": "package.json",
+      "source_location": "L14"
+    },
+    {
       "id": "ref_supabase",
       "label": "supabase",
       "_origin": "ast",
@@ -3588,83 +3623,6 @@
       "norm_label": "@vitejs/plugin-vue",
       "source_file": "package.json",
       "source_location": "L19"
-    },
-    {
-      "id": "src_components_countdown",
-      "label": "Countdown.vue",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "countdown.vue",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_countdown_arialabel",
-      "label": "ariaLabel",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "arialabel",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L48"
-    },
-    {
-      "id": "src_components_countdown_emit",
-      "label": "emit",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "emit",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_components_countdown_now",
-      "label": "now",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "now",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L23"
-    },
-    {
-      "id": "src_components_countdown_props",
-      "label": "props",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "props",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L17"
-    },
-    {
-      "id": "src_components_countdown_remaining",
-      "label": "remaining",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "remaining",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L34"
-    },
-    {
-      "id": "src_components_countdown_units",
-      "label": "units",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "NextRaceHero.vue",
-      "file_type": "code",
-      "norm_label": "units",
-      "source_file": "src/components/Countdown.vue",
-      "source_location": "L38"
     },
     {
       "id": "src_components_nextracehero",
@@ -4074,103 +4032,70 @@
       "source_location": "L141"
     },
     {
-      "id": "src_services_collection",
-      "label": "collection.js",
+      "id": "vue",
+      "label": "vue",
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
+      "confidence": "EXTRACTED",
       "file_type": "code",
-      "norm_label": "collection.js",
-      "source_file": "src/services/collection.js",
+      "norm_label": "vue",
+      "source_file": "vue"
+    },
+    {
+      "id": "src_composables_useweekendresults",
+      "label": "useWeekendResults.js",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "openf1.js",
+      "file_type": "code",
+      "norm_label": "useweekendresults.js",
+      "source_file": "src/composables/useWeekendResults.js",
       "source_location": "L1"
     },
     {
-      "id": "src_services_collection_iscollectionconfigured",
-      "label": "isCollectionConfigured",
+      "id": "src_services_openf1",
+      "label": "openf1.js",
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "iscollectionconfigured",
-      "source_file": "src/services/collection.js",
-      "source_location": "L8"
-    },
-    {
-      "id": "src_stores_collectionstore",
-      "label": "collectionStore.js",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "collectionstore.js",
-      "source_file": "src/stores/collectionStore.js",
+      "norm_label": "openf1.js",
+      "source_file": "src/services/openf1.js",
       "source_location": "L1"
     },
     {
-      "id": "src_stores_collectionstore_card_types",
-      "label": "CARD_TYPES",
+      "id": "src_services_openf1_openf1_first_season",
+      "label": "OPENF1_FIRST_SEASON",
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "card_types",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L50"
+      "norm_label": "openf1_first_season",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L9"
     },
     {
-      "id": "src_stores_collectionstore_cards_per_pack",
-      "label": "CARDS_PER_PACK",
+      "id": "src_services_openf1_session_name_to_key",
+      "label": "SESSION_NAME_TO_KEY",
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "cards_per_pack",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L34"
+      "norm_label": "session_name_to_key",
+      "source_file": "src/services/openf1.js",
+      "source_location": "L129"
     },
     {
-      "id": "src_stores_collectionstore_finishes",
-      "label": "FINISHES",
+      "id": "src_stores_f1store_usef1store",
+      "label": "useF1Store",
       "_origin": "ast",
       "community": 12,
-      "community_name": "collectionStore.js",
+      "community_name": "openf1.js",
       "file_type": "code",
-      "norm_label": "finishes",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L38"
-    },
-    {
-      "id": "src_stores_collectionstore_rarity_rank",
-      "label": "RARITY_RANK",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "rarity_rank",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L47"
-    },
-    {
-      "id": "src_stores_collectionstore_rarity_value",
-      "label": "RARITY_VALUE",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "rarity_value",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L43"
-    },
-    {
-      "id": "src_stores_collectionstore_trade_up_cost",
-      "label": "TRADE_UP_COST",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "collectionStore.js",
-      "file_type": "code",
-      "norm_label": "trade_up_cost",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L36"
+      "norm_label": "usef1store",
+      "source_file": "src/stores/f1Store.js",
+      "source_location": "L16"
     },
     {
       "id": "src_views_albumview",
@@ -4492,17 +4417,6 @@
       "source_location": "L119"
     },
     {
-      "id": "src_views_driverdetail_duel",
-      "label": "duel",
-      "_origin": "ast",
-      "community": 16,
-      "community_name": "DriverDetail.vue",
-      "file_type": "code",
-      "norm_label": "duel",
-      "source_file": "src/views/DriverDetail.vue",
-      "source_location": "L125"
-    },
-    {
       "id": "src_views_driverdetail_maxposition",
       "label": "maxPosition",
       "_origin": "ast",
@@ -4643,7 +4557,7 @@
       "label": "AccountDialog.vue",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "accountdialog.vue",
       "source_file": "src/components/cards/AccountDialog.vue",
@@ -4654,106 +4568,106 @@
       "label": "busy",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "busy",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L98"
+      "source_location": "L99"
     },
     {
       "id": "src_components_cards_accountdialog_code",
       "label": "code",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "code",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L96"
+      "source_location": "L97"
     },
     {
       "id": "src_components_cards_accountdialog_col",
       "label": "col",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "col",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L91"
+      "source_location": "L92"
     },
     {
       "id": "src_components_cards_accountdialog_email",
       "label": "email",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "email",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L95"
+      "source_location": "L96"
     },
     {
       "id": "src_components_cards_accountdialog_emit",
       "label": "emit",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "emit",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L89"
+      "source_location": "L90"
     },
     {
       "id": "src_components_cards_accountdialog_error",
       "label": "error",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "error",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L99"
+      "source_location": "L100"
     },
     {
       "id": "src_components_cards_accountdialog_info",
       "label": "info",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "info",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L100"
+      "source_location": "L101"
     },
     {
       "id": "src_components_cards_accountdialog_messages",
       "label": "MESSAGES",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "messages",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L114"
+      "source_location": "L115"
     },
     {
       "id": "src_components_cards_accountdialog_mode",
       "label": "mode",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "mode",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L93"
+      "source_location": "L94"
     },
     {
       "id": "src_components_cards_accountdialog_props",
       "label": "props",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "props",
       "source_file": "src/components/cards/AccountDialog.vue",
@@ -4764,22 +4678,198 @@
       "label": "step",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "step",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L94"
+      "source_location": "L95"
     },
     {
       "id": "src_components_cards_accountdialog_username",
       "label": "username",
       "_origin": "ast",
       "community": 19,
-      "community_name": "AccountDialog.vue",
+      "community_name": "collectionStore.js",
       "file_type": "code",
       "norm_label": "username",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L97"
+      "source_location": "L98"
+    },
+    {
+      "id": "src_lib_supabase",
+      "label": "supabase.js",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "supabase.js",
+      "source_file": "src/lib/supabase.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_lib_supabase_supabase",
+      "label": "supabase",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "supabase",
+      "source_file": "src/lib/supabase.js",
+      "source_location": "L7"
+    },
+    {
+      "id": "src_services_collection",
+      "label": "collection.js",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "collection.js",
+      "source_file": "src/services/collection.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_services_collection_iscollectionconfigured",
+      "label": "isCollectionConfigured",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "iscollectionconfigured",
+      "source_file": "src/services/collection.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "src_stores_collectionstore",
+      "label": "collectionStore.js",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "collectionstore.js",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_stores_collectionstore_cards_per_pack",
+      "label": "CARDS_PER_PACK",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "cards_per_pack",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L34"
+    },
+    {
+      "id": "src_stores_collectionstore_rarity_rank",
+      "label": "RARITY_RANK",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "rarity_rank",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L47"
+    },
+    {
+      "id": "src_views_playersview",
+      "label": "PlayersView.vue",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "playersview.vue",
+      "source_file": "src/views/PlayersView.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_views_playersview_col",
+      "label": "col",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "col",
+      "source_file": "src/views/PlayersView.vue",
+      "source_location": "L77"
+    },
+    {
+      "id": "src_views_playersview_hasmore",
+      "label": "hasMore",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "hasmore",
+      "source_file": "src/views/PlayersView.vue",
+      "source_location": "L81"
+    },
+    {
+      "id": "src_views_playersview_loading",
+      "label": "loading",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "loading",
+      "source_file": "src/views/PlayersView.vue",
+      "source_location": "L80"
+    },
+    {
+      "id": "src_views_playersview_players",
+      "label": "players",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "players",
+      "source_file": "src/views/PlayersView.vue",
+      "source_location": "L79"
+    },
+    {
+      "id": "src_views_playersview_query",
+      "label": "query",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "code",
+      "norm_label": "query",
+      "source_file": "src/views/PlayersView.vue",
+      "source_location": "L78"
+    },
+    {
+      "id": "ref_supabase_supabase_js",
+      "label": "@supabase/supabase-js",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "collectionStore.js",
+      "file_type": "concept",
+      "norm_label": "@supabase/supabase-js",
+      "source_file": "package.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "src_stores_collectionstore_rarity_value",
+      "label": "RARITY_VALUE",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "AtelierView.vue",
+      "file_type": "code",
+      "norm_label": "rarity_value",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L43"
+    },
+    {
+      "id": "src_stores_collectionstore_trade_up_cost",
+      "label": "TRADE_UP_COST",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "AtelierView.vue",
+      "file_type": "code",
+      "norm_label": "trade_up_cost",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L36"
     },
     {
       "id": "src_views_atelierview",
@@ -5046,6 +5136,28 @@
       "source_location": "L323"
     },
     {
+      "id": "src_stores_collectionstore_card_types",
+      "label": "CARD_TYPES",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "CollectionView.vue",
+      "file_type": "code",
+      "norm_label": "card_types",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L50"
+    },
+    {
+      "id": "src_stores_collectionstore_finishes",
+      "label": "FINISHES",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "CollectionView.vue",
+      "file_type": "code",
+      "norm_label": "finishes",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L38"
+    },
+    {
       "id": "src_views_collectionview",
       "label": "CollectionView.vue",
       "_origin": "ast",
@@ -5065,7 +5177,7 @@
       "file_type": "code",
       "norm_label": "accountopen",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L224"
+      "source_location": "L228"
     },
     {
       "id": "src_views_collectionview_actionbusy",
@@ -5076,7 +5188,7 @@
       "file_type": "code",
       "norm_label": "actionbusy",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L233"
+      "source_location": "L237"
     },
     {
       "id": "src_views_collectionview_actionerror",
@@ -5087,7 +5199,7 @@
       "file_type": "code",
       "norm_label": "actionerror",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L235"
+      "source_location": "L239"
     },
     {
       "id": "src_views_collectionview_actionmsg",
@@ -5098,7 +5210,7 @@
       "file_type": "code",
       "norm_label": "actionmsg",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L234"
+      "source_location": "L238"
     },
     {
       "id": "src_views_collectionview_col",
@@ -5109,7 +5221,7 @@
       "file_type": "code",
       "norm_label": "col",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L217"
+      "source_location": "L221"
     },
     {
       "id": "src_views_collectionview_copies",
@@ -5120,7 +5232,7 @@
       "file_type": "code",
       "norm_label": "copies",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L229"
+      "source_location": "L233"
     },
     {
       "id": "src_views_collectionview_filtered",
@@ -5131,7 +5243,7 @@
       "file_type": "code",
       "norm_label": "filtered",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L283"
+      "source_location": "L296"
     },
     {
       "id": "src_views_collectionview_limit",
@@ -5142,7 +5254,7 @@
       "file_type": "code",
       "norm_label": "limit",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L267"
+      "source_location": "L280"
     },
     {
       "id": "src_views_collectionview_nextfinish",
@@ -5153,7 +5265,18 @@
       "file_type": "code",
       "norm_label": "nextfinish",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L231"
+      "source_location": "L235"
+    },
+    {
+      "id": "src_views_collectionview_notice",
+      "label": "notice",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "CollectionView.vue",
+      "file_type": "code",
+      "norm_label": "notice",
+      "source_file": "src/views/CollectionView.vue",
+      "source_location": "L271"
     },
     {
       "id": "src_views_collectionview_ownedbytype",
@@ -5164,7 +5287,7 @@
       "file_type": "code",
       "norm_label": "ownedbytype",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L299"
+      "source_location": "L312"
     },
     {
       "id": "src_views_collectionview_ownedonly",
@@ -5175,7 +5298,7 @@
       "file_type": "code",
       "norm_label": "ownedonly",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L221"
+      "source_location": "L225"
     },
     {
       "id": "src_views_collectionview_query",
@@ -5186,7 +5309,7 @@
       "file_type": "code",
       "norm_label": "query",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L222"
+      "source_location": "L226"
     },
     {
       "id": "src_views_collectionview_rarities",
@@ -5197,7 +5320,7 @@
       "file_type": "code",
       "norm_label": "rarities",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L220"
+      "source_location": "L224"
     },
     {
       "id": "src_views_collectionview_route",
@@ -5208,7 +5331,7 @@
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L258"
+      "source_location": "L262"
     },
     {
       "id": "src_views_collectionview_router",
@@ -5219,7 +5342,7 @@
       "file_type": "code",
       "norm_label": "router",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L259"
+      "source_location": "L263"
     },
     {
       "id": "src_views_collectionview_searching",
@@ -5230,7 +5353,7 @@
       "file_type": "code",
       "norm_label": "searching",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L281"
+      "source_location": "L294"
     },
     {
       "id": "src_views_collectionview_selected",
@@ -5241,7 +5364,7 @@
       "file_type": "code",
       "norm_label": "selected",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L223"
+      "source_location": "L227"
     },
     {
       "id": "src_views_collectionview_sentinel",
@@ -5252,7 +5375,7 @@
       "file_type": "code",
       "norm_label": "sentinel",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L324"
+      "source_location": "L337"
     },
     {
       "id": "src_views_collectionview_showcasebusy",
@@ -5263,7 +5386,7 @@
       "file_type": "code",
       "norm_label": "showcasebusy",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L225"
+      "source_location": "L229"
     },
     {
       "id": "src_views_collectionview_showcasecards",
@@ -5274,7 +5397,7 @@
       "file_type": "code",
       "norm_label": "showcasecards",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L306"
+      "source_location": "L319"
     },
     {
       "id": "src_views_collectionview_showcaseerror",
@@ -5285,7 +5408,7 @@
       "file_type": "code",
       "norm_label": "showcaseerror",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L226"
+      "source_location": "L230"
     },
     {
       "id": "src_views_collectionview_totalbytype",
@@ -5296,7 +5419,7 @@
       "file_type": "code",
       "norm_label": "totalbytype",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L298"
+      "source_location": "L311"
     },
     {
       "id": "src_views_collectionview_type",
@@ -5307,7 +5430,7 @@
       "file_type": "code",
       "norm_label": "type",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L219"
+      "source_location": "L223"
     },
     {
       "id": "src_views_collectionview_value",
@@ -5318,7 +5441,7 @@
       "file_type": "code",
       "norm_label": "value",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L232"
+      "source_location": "L236"
     },
     {
       "id": "src_views_collectionview_view",
@@ -5329,7 +5452,7 @@
       "file_type": "code",
       "norm_label": "view",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L260"
+      "source_location": "L264"
     },
     {
       "id": "src_views_collectionview_visible",
@@ -5340,7 +5463,7 @@
       "file_type": "code",
       "norm_label": "visible",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L295"
+      "source_location": "L308"
     },
     {
       "id": "scripts_build_catalog",
@@ -6432,103 +6555,92 @@
       "source_location": "L16"
     },
     {
-      "id": "src_components_teampicker",
-      "label": "TeamPicker.vue",
+      "id": "src_services_http",
+      "label": "http.js",
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "teampicker.vue",
-      "source_file": "src/components/TeamPicker.vue",
+      "norm_label": "http.js",
+      "source_file": "src/services/http.js",
       "source_location": "L1"
     },
     {
-      "id": "src_components_teampicker_prefs",
-      "label": "prefs",
+      "id": "src_services_http_host_rate",
+      "label": "HOST_RATE",
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "prefs",
-      "source_file": "src/components/TeamPicker.vue",
-      "source_location": "L37"
+      "norm_label": "host_rate",
+      "source_file": "src/services/http.js",
+      "source_location": "L18"
     },
     {
-      "id": "src_data_teams_pickable_teams",
-      "label": "PICKABLE_TEAMS",
+      "id": "src_services_http_inflight",
+      "label": "inflight",
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "pickable_teams",
-      "source_file": "src/data/teams.js",
-      "source_location": "L51"
+      "norm_label": "inflight",
+      "source_file": "src/services/http.js",
+      "source_location": "L24"
     },
     {
-      "id": "src_stores_prefsstore",
-      "label": "prefsStore.js",
+      "id": "src_services_http_queues",
+      "label": "queues",
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "prefsstore.js",
-      "source_file": "src/stores/prefsStore.js",
+      "norm_label": "queues",
+      "source_file": "src/services/http.js",
+      "source_location": "L23"
+    },
+    {
+      "id": "src_services_http_revalidatelisteners",
+      "label": "revalidateListeners",
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "revalidatelisteners",
+      "source_file": "src/services/http.js",
+      "source_location": "L25"
+    },
+    {
+      "id": "src_services_http_ttl",
+      "label": "TTL",
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "ttl",
+      "source_file": "src/services/http.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "src_services_weather",
+      "label": "weather.js",
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "http.js",
+      "file_type": "code",
+      "norm_label": "weather.js",
+      "source_file": "src/services/weather.js",
       "source_location": "L1"
     },
     {
-      "id": "src_stores_prefsstore_useprefsstore",
-      "label": "usePrefsStore",
+      "id": "src_services_weather_wmo",
+      "label": "WMO",
       "_origin": "ast",
       "community": 26,
-      "community_name": "prefsStore.js",
+      "community_name": "http.js",
       "file_type": "code",
-      "norm_label": "useprefsstore",
-      "source_file": "src/stores/prefsStore.js",
-      "source_location": "L15"
-    },
-    {
-      "id": "src_views_teamsview",
-      "label": "TeamsView.vue",
-      "_origin": "ast",
-      "community": 26,
-      "community_name": "prefsStore.js",
-      "file_type": "code",
-      "norm_label": "teamsview.vue",
-      "source_file": "src/views/TeamsView.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_views_teamsview_leaderpoints",
-      "label": "leaderPoints",
-      "_origin": "ast",
-      "community": 26,
-      "community_name": "prefsStore.js",
-      "file_type": "code",
-      "norm_label": "leaderpoints",
-      "source_file": "src/views/TeamsView.vue",
-      "source_location": "L64"
-    },
-    {
-      "id": "src_views_teamsview_prefs",
-      "label": "prefs",
-      "_origin": "ast",
-      "community": 26,
-      "community_name": "prefsStore.js",
-      "file_type": "code",
-      "norm_label": "prefs",
-      "source_file": "src/views/TeamsView.vue",
-      "source_location": "L63"
-    },
-    {
-      "id": "src_views_teamsview_store",
-      "label": "store",
-      "_origin": "ast",
-      "community": 26,
-      "community_name": "prefsStore.js",
-      "file_type": "code",
-      "norm_label": "store",
-      "source_file": "src/views/TeamsView.vue",
-      "source_location": "L62"
+      "norm_label": "wmo",
+      "source_file": "src/services/weather.js",
+      "source_location": "L11"
     },
     {
       "id": "src_components_cards_f1card",
@@ -6707,6 +6819,39 @@
       "source_location": "L36"
     },
     {
+      "id": "src_components_stattile",
+      "label": "StatTile.vue",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "F1Card.vue",
+      "file_type": "code",
+      "norm_label": "stattile.vue",
+      "source_file": "src/components/StatTile.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_stores_collectionstore_rarities",
+      "label": "RARITIES",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "F1Card.vue",
+      "file_type": "code",
+      "norm_label": "rarities",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L27"
+    },
+    {
+      "id": "src_stores_collectionstore_rarity_label",
+      "label": "RARITY_LABEL",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "F1Card.vue",
+      "file_type": "code",
+      "norm_label": "rarity_label",
+      "source_file": "src/stores/collectionStore.js",
+      "source_location": "L48"
+    },
+    {
       "id": "src_stores_collectionstore_type_label",
       "label": "TYPE_LABEL",
       "_origin": "ast",
@@ -6718,44 +6863,11 @@
       "source_location": "L56"
     },
     {
-      "id": "src_components_stattile",
-      "label": "StatTile.vue",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
-      "file_type": "code",
-      "norm_label": "stattile.vue",
-      "source_file": "src/components/StatTile.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_stores_collectionstore_rarities",
-      "label": "RARITIES",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
-      "file_type": "code",
-      "norm_label": "rarities",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L27"
-    },
-    {
-      "id": "src_stores_collectionstore_rarity_label",
-      "label": "RARITY_LABEL",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
-      "file_type": "code",
-      "norm_label": "rarity_label",
-      "source_file": "src/stores/collectionStore.js",
-      "source_location": "L48"
-    },
-    {
       "id": "src_views_playerview",
       "label": "PlayerView.vue",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "playerview.vue",
       "source_file": "src/views/PlayerView.vue",
@@ -6765,8 +6877,8 @@
       "id": "src_views_playerview_col",
       "label": "col",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "col",
       "source_file": "src/views/PlayerView.vue",
@@ -6776,8 +6888,8 @@
       "id": "src_views_playerview_completedalbums",
       "label": "completedAlbums",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "completedalbums",
       "source_file": "src/views/PlayerView.vue",
@@ -6787,8 +6899,8 @@
       "id": "src_views_playerview_loading",
       "label": "loading",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "loading",
       "source_file": "src/views/PlayerView.vue",
@@ -6798,8 +6910,8 @@
       "id": "src_views_playerview_percent",
       "label": "percent",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "percent",
       "source_file": "src/views/PlayerView.vue",
@@ -6809,8 +6921,8 @@
       "id": "src_views_playerview_player",
       "label": "player",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "player",
       "source_file": "src/views/PlayerView.vue",
@@ -6820,8 +6932,8 @@
       "id": "src_views_playerview_route",
       "label": "route",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/views/PlayerView.vue",
@@ -6831,12 +6943,100 @@
       "id": "src_views_playerview_showcasecards",
       "label": "showcaseCards",
       "_origin": "ast",
-      "community": 28,
-      "community_name": "PlayerView.vue",
+      "community": 27,
+      "community_name": "F1Card.vue",
       "file_type": "code",
       "norm_label": "showcasecards",
       "source_file": "src/views/PlayerView.vue",
       "source_location": "L109"
+    },
+    {
+      "id": "src_components_cards_coinbalance",
+      "label": "CoinBalance.vue",
+      "_origin": "ast",
+      "community": 28,
+      "community_name": "Icon.vue",
+      "file_type": "code",
+      "norm_label": "coinbalance.vue",
+      "source_file": "src/components/cards/CoinBalance.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_cards_coinbalance_col",
+      "label": "col",
+      "_origin": "ast",
+      "community": 28,
+      "community_name": "Icon.vue",
+      "file_type": "code",
+      "norm_label": "col",
+      "source_file": "src/components/cards/CoinBalance.vue",
+      "source_location": "L14"
+    },
+    {
+      "id": "src_components_icon",
+      "label": "Icon.vue",
+      "_origin": "ast",
+      "community": 28,
+      "community_name": "Icon.vue",
+      "file_type": "code",
+      "norm_label": "icon.vue",
+      "source_file": "src/components/Icon.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_icon_icons",
+      "label": "ICONS",
+      "_origin": "ast",
+      "community": 28,
+      "community_name": "Icon.vue",
+      "file_type": "code",
+      "norm_label": "icons",
+      "source_file": "src/components/Icon.vue",
+      "source_location": "L27"
+    },
+    {
+      "id": "src_components_icon_paths",
+      "label": "paths",
+      "_origin": "ast",
+      "community": 28,
+      "community_name": "Icon.vue",
+      "file_type": "code",
+      "norm_label": "paths",
+      "source_file": "src/components/Icon.vue",
+      "source_location": "L69"
+    },
+    {
+      "id": "src_components_icon_props",
+      "label": "props",
+      "_origin": "ast",
+      "community": 28,
+      "community_name": "Icon.vue",
+      "file_type": "code",
+      "norm_label": "props",
+      "source_file": "src/components/Icon.vue",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_views_homeview_progression",
+      "label": "progression",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "TeamDetail.vue",
+      "file_type": "code",
+      "norm_label": "progression",
+      "source_file": "src/views/HomeView.vue",
+      "source_location": "L256"
+    },
+    {
+      "id": "src_views_standingsview_progression",
+      "label": "progression",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "TeamDetail.vue",
+      "file_type": "code",
+      "norm_label": "progression",
+      "source_file": "src/views/StandingsView.vue",
+      "source_location": "L174"
     },
     {
       "id": "src_views_teamdetail",
@@ -6883,15 +7083,15 @@
       "source_location": "L143"
     },
     {
-      "id": "src_views_teamdetail_duel",
-      "label": "duel",
+      "id": "src_views_teamdetail_hascar",
+      "label": "hasCar",
       "_origin": "ast",
       "community": 29,
       "community_name": "TeamDetail.vue",
       "file_type": "code",
-      "norm_label": "duel",
+      "norm_label": "hascar",
       "source_file": "src/views/TeamDetail.vue",
-      "source_location": "L144"
+      "source_location": "L147"
     },
     {
       "id": "src_views_teamdetail_isfav",
@@ -6925,6 +7125,17 @@
       "norm_label": "prefs",
       "source_file": "src/views/TeamDetail.vue",
       "source_location": "L140"
+    },
+    {
+      "id": "src_views_teamdetail_progression",
+      "label": "progression",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "TeamDetail.vue",
+      "file_type": "code",
+      "norm_label": "progression",
+      "source_file": "src/views/TeamDetail.vue",
+      "source_location": "L156"
     },
     {
       "id": "src_views_teamdetail_route",
@@ -7081,44 +7292,11 @@
       "source_location": "L64"
     },
     {
-      "id": "ref_pinia",
-      "label": "pinia",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "index.js",
-      "file_type": "concept",
-      "norm_label": "pinia",
-      "source_file": "package.json",
-      "source_location": "L14"
-    },
-    {
-      "id": "ref_vue_router",
-      "label": "vue-router",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "index.js",
-      "file_type": "concept",
-      "norm_label": "vue-router",
-      "source_file": "package.json",
-      "source_location": "L16"
-    },
-    {
-      "id": "vue",
-      "label": "vue",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "confidence": "EXTRACTED",
-      "file_type": "code",
-      "norm_label": "vue",
-      "source_file": "vue"
-    },
-    {
       "id": "src_components_driveravatar",
       "label": "DriverAvatar.vue",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
       "norm_label": "driveravatar.vue",
       "source_file": "src/components/DriverAvatar.vue",
@@ -7129,7 +7307,7 @@
       "label": "failed",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
       "norm_label": "failed",
       "source_file": "src/components/DriverAvatar.vue",
@@ -7140,7 +7318,7 @@
       "label": "headshots",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
       "norm_label": "headshots",
       "source_file": "src/components/DriverAvatar.vue",
@@ -7151,7 +7329,7 @@
       "label": "photo",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
       "norm_label": "photo",
       "source_file": "src/components/DriverAvatar.vue",
@@ -7162,7 +7340,7 @@
       "label": "props",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
       "norm_label": "props",
       "source_file": "src/components/DriverAvatar.vue",
@@ -7173,187 +7351,33 @@
       "label": "store",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
       "norm_label": "store",
       "source_file": "src/components/DriverAvatar.vue",
       "source_location": "L18"
     },
     {
-      "id": "src_composables_useweekendresults",
-      "label": "useWeekendResults.js",
+      "id": "src_composables_useheadshots",
+      "label": "useHeadshots.js",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
-      "norm_label": "useweekendresults.js",
-      "source_file": "src/composables/useWeekendResults.js",
+      "norm_label": "useheadshots.js",
+      "source_file": "src/composables/useHeadshots.js",
       "source_location": "L1"
     },
     {
-      "id": "src_data_teams",
-      "label": "teams.js",
+      "id": "src_composables_useheadshots_headshots",
+      "label": "headshots",
       "_origin": "ast",
       "community": 30,
-      "community_name": "vue",
+      "community_name": "DriverAvatar.vue",
       "file_type": "code",
-      "norm_label": "teams.js",
-      "source_file": "src/data/teams.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_data_teams_default_accent",
-      "label": "DEFAULT_ACCENT",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "default_accent",
-      "source_file": "src/data/teams.js",
-      "source_location": "L44"
-    },
-    {
-      "id": "src_data_teams_driver_bios",
-      "label": "DRIVER_BIOS",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "driver_bios",
-      "source_file": "src/data/teams.js",
-      "source_location": "L158"
-    },
-    {
-      "id": "src_data_teams_team_colors",
-      "label": "TEAM_COLORS",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "team_colors",
-      "source_file": "src/data/teams.js",
-      "source_location": "L6"
-    },
-    {
-      "id": "src_data_teams_team_liveries",
-      "label": "TEAM_LIVERIES",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "team_liveries",
-      "source_file": "src/data/teams.js",
-      "source_location": "L188"
-    },
-    {
-      "id": "src_data_teams_team_meta",
-      "label": "TEAM_META",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "team_meta",
-      "source_file": "src/data/teams.js",
-      "source_location": "L66"
-    },
-    {
-      "id": "src_stores_f1store",
-      "label": "f1Store.js",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "f1store.js",
-      "source_file": "src/stores/f1Store.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_stores_f1store_current_year",
-      "label": "CURRENT_YEAR",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "current_year",
-      "source_file": "src/stores/f1Store.js",
-      "source_location": "L14"
-    },
-    {
-      "id": "src_stores_f1store_usef1store",
-      "label": "useF1Store",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "code",
-      "norm_label": "usef1store",
-      "source_file": "src/stores/f1Store.js",
-      "source_location": "L16"
-    },
-    {
-      "id": "ref_vue",
-      "label": "vue",
-      "_origin": "ast",
-      "community": 30,
-      "community_name": "vue",
-      "file_type": "concept",
-      "norm_label": "vue",
-      "source_file": "package.json",
-      "source_location": "L15"
-    },
-    {
-      "id": "src_components_charts_tyrestints",
-      "label": "TyreStints.vue",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "TyreStints.vue",
-      "file_type": "code",
-      "norm_label": "tyrestints.vue",
-      "source_file": "src/components/charts/TyreStints.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_charts_tyrestints_compound_fr",
-      "label": "COMPOUND_FR",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "TyreStints.vue",
-      "file_type": "code",
-      "norm_label": "compound_fr",
-      "source_file": "src/components/charts/TyreStints.vue",
-      "source_location": "L56"
-    },
-    {
-      "id": "src_components_charts_tyrestints_compound_var",
-      "label": "COMPOUND_VAR",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "TyreStints.vue",
-      "file_type": "code",
-      "norm_label": "compound_var",
-      "source_file": "src/components/charts/TyreStints.vue",
-      "source_location": "L64"
-    },
-    {
-      "id": "src_components_charts_tyrestints_props",
-      "label": "props",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "TyreStints.vue",
-      "file_type": "code",
-      "norm_label": "props",
-      "source_file": "src/components/charts/TyreStints.vue",
-      "source_location": "L50"
-    },
-    {
-      "id": "src_components_charts_tyrestints_usedcompounds",
-      "label": "usedCompounds",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "TyreStints.vue",
-      "file_type": "code",
-      "norm_label": "usedcompounds",
-      "source_file": "src/components/charts/TyreStints.vue",
-      "source_location": "L76"
+      "norm_label": "headshots",
+      "source_file": "src/composables/useHeadshots.js",
+      "source_location": "L5"
     },
     {
       "id": "src_utils_stats",
@@ -7367,11 +7391,154 @@
       "source_location": "L1"
     },
     {
+      "id": "src_views_driverdetail_duel",
+      "label": "duel",
+      "_origin": "ast",
+      "community": 32,
+      "community_name": "stats.js",
+      "file_type": "code",
+      "norm_label": "duel",
+      "source_file": "src/views/DriverDetail.vue",
+      "source_location": "L125"
+    },
+    {
+      "id": "src_views_teamdetail_duel",
+      "label": "duel",
+      "_origin": "ast",
+      "community": 32,
+      "community_name": "stats.js",
+      "file_type": "code",
+      "norm_label": "duel",
+      "source_file": "src/views/TeamDetail.vue",
+      "source_location": "L144"
+    },
+    {
+      "id": "src_components_cards_packswidget",
+      "label": "PacksWidget.vue",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "packswidget.vue",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_cards_packswidget_available",
+      "label": "available",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "available",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L36"
+    },
+    {
+      "id": "src_components_cards_packswidget_col",
+      "label": "col",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "col",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L27"
+    },
+    {
+      "id": "src_components_cards_packswidget_countdown",
+      "label": "countdown",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "countdown",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L40"
+    },
+    {
+      "id": "src_components_cards_packswidget_hassession",
+      "label": "hasSession",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "hassession",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L30"
+    },
+    {
+      "id": "src_components_cards_packswidget_max",
+      "label": "max",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "max",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L37"
+    },
+    {
+      "id": "src_components_cards_packswidget_now",
+      "label": "now",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "now",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L31"
+    },
+    {
+      "id": "src_components_cards_packswidget_ready",
+      "label": "ready",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "ready",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L29"
+    },
+    {
+      "id": "src_components_cards_packswidget_stacksize",
+      "label": "stackSize",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "stacksize",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L38"
+    },
+    {
+      "id": "src_components_cards_packswidget_subtitle",
+      "label": "subtitle",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "subtitle",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L52"
+    },
+    {
+      "id": "src_components_cards_packswidget_title",
+      "label": "title",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "title",
+      "source_file": "src/components/cards/PacksWidget.vue",
+      "source_location": "L46"
+    },
+    {
       "id": "src_components_carimage",
       "label": "CarImage.vue",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "carimage.vue",
       "source_file": "src/components/CarImage.vue",
@@ -7382,7 +7549,7 @@
       "label": "failed",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "failed",
       "source_file": "src/components/CarImage.vue",
@@ -7393,7 +7560,7 @@
       "label": "props",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "props",
       "source_file": "src/components/CarImage.vue",
@@ -7404,18 +7571,150 @@
       "label": "src",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "src",
       "source_file": "src/components/CarImage.vue",
       "source_location": "L28"
     },
     {
+      "id": "src_components_charts_tyrestints",
+      "label": "TyreStints.vue",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "tyrestints.vue",
+      "source_file": "src/components/charts/TyreStints.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_charts_tyrestints_compound_fr",
+      "label": "COMPOUND_FR",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "compound_fr",
+      "source_file": "src/components/charts/TyreStints.vue",
+      "source_location": "L56"
+    },
+    {
+      "id": "src_components_charts_tyrestints_compound_var",
+      "label": "COMPOUND_VAR",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "compound_var",
+      "source_file": "src/components/charts/TyreStints.vue",
+      "source_location": "L64"
+    },
+    {
+      "id": "src_components_charts_tyrestints_props",
+      "label": "props",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "props",
+      "source_file": "src/components/charts/TyreStints.vue",
+      "source_location": "L50"
+    },
+    {
+      "id": "src_components_charts_tyrestints_usedcompounds",
+      "label": "usedCompounds",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "usedcompounds",
+      "source_file": "src/components/charts/TyreStints.vue",
+      "source_location": "L76"
+    },
+    {
+      "id": "src_components_countdown",
+      "label": "Countdown.vue",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "countdown.vue",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_countdown_arialabel",
+      "label": "ariaLabel",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "arialabel",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L48"
+    },
+    {
+      "id": "src_components_countdown_emit",
+      "label": "emit",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "emit",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_components_countdown_now",
+      "label": "now",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "now",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L23"
+    },
+    {
+      "id": "src_components_countdown_props",
+      "label": "props",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "props",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L17"
+    },
+    {
+      "id": "src_components_countdown_remaining",
+      "label": "remaining",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "remaining",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L34"
+    },
+    {
+      "id": "src_components_countdown_units",
+      "label": "units",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "units",
+      "source_file": "src/components/Countdown.vue",
+      "source_location": "L38"
+    },
+    {
       "id": "src_data_cars",
       "label": "cars.js",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "cars.js",
       "source_file": "src/data/cars.js",
@@ -7426,7 +7725,7 @@
       "label": "BASE_2024",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "base_2024",
       "source_file": "src/data/cars.js",
@@ -7437,7 +7736,7 @@
       "label": "CAR_SLUGS",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "car_slugs",
       "source_file": "src/data/cars.js",
@@ -7448,44 +7747,66 @@
       "label": "FRONT_VIEW_SEASONS",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
       "norm_label": "front_view_seasons",
       "source_file": "src/data/cars.js",
       "source_location": "L34"
     },
     {
-      "id": "src_views_teamdetail_hascar",
-      "label": "hasCar",
+      "id": "src_views_teamsview",
+      "label": "TeamsView.vue",
       "_origin": "ast",
       "community": 34,
-      "community_name": "CarImage.vue",
+      "community_name": "vue",
       "file_type": "code",
-      "norm_label": "hascar",
-      "source_file": "src/views/TeamDetail.vue",
-      "source_location": "L147"
-    },
-    {
-      "id": "src_components_cards_coinbalance",
-      "label": "CoinBalance.vue",
-      "_origin": "ast",
-      "community": 36,
-      "community_name": "cards.js",
-      "file_type": "code",
-      "norm_label": "coinbalance.vue",
-      "source_file": "src/components/cards/CoinBalance.vue",
+      "norm_label": "teamsview.vue",
+      "source_file": "src/views/TeamsView.vue",
       "source_location": "L1"
     },
     {
-      "id": "src_components_cards_coinbalance_col",
-      "label": "col",
+      "id": "src_views_teamsview_leaderpoints",
+      "label": "leaderPoints",
       "_origin": "ast",
-      "community": 36,
-      "community_name": "cards.js",
+      "community": 34,
+      "community_name": "vue",
       "file_type": "code",
-      "norm_label": "col",
-      "source_file": "src/components/cards/CoinBalance.vue",
-      "source_location": "L14"
+      "norm_label": "leaderpoints",
+      "source_file": "src/views/TeamsView.vue",
+      "source_location": "L64"
+    },
+    {
+      "id": "src_views_teamsview_prefs",
+      "label": "prefs",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "prefs",
+      "source_file": "src/views/TeamsView.vue",
+      "source_location": "L63"
+    },
+    {
+      "id": "src_views_teamsview_store",
+      "label": "store",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "code",
+      "norm_label": "store",
+      "source_file": "src/views/TeamsView.vue",
+      "source_location": "L62"
+    },
+    {
+      "id": "ref_vue",
+      "label": "vue",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "vue",
+      "file_type": "concept",
+      "norm_label": "vue",
+      "source_file": "package.json",
+      "source_location": "L15"
     },
     {
       "id": "src_utils_cards",
@@ -7510,22 +7831,11 @@
       "source_location": "L8"
     },
     {
-      "id": "src_views_packsview_buyblocker",
-      "label": "buyBlocker",
-      "_origin": "ast",
-      "community": 36,
-      "community_name": "cards.js",
-      "file_type": "code",
-      "norm_label": "buyblocker",
-      "source_file": "src/views/PacksView.vue",
-      "source_location": "L170"
-    },
-    {
       "id": "src_components_charts_formstrip",
       "label": "FormStrip.vue",
       "_origin": "ast",
       "community": 37,
-      "community_name": "DriversView.vue",
+      "community_name": "SeasonView.vue",
       "file_type": "code",
       "norm_label": "formstrip.vue",
       "source_file": "src/components/charts/FormStrip.vue",
@@ -7536,7 +7846,7 @@
       "label": "Flag.vue",
       "_origin": "ast",
       "community": 37,
-      "community_name": "DriversView.vue",
+      "community_name": "SeasonView.vue",
       "file_type": "code",
       "norm_label": "flag.vue",
       "source_file": "src/components/Flag.vue",
@@ -7547,7 +7857,7 @@
       "label": "DriversView.vue",
       "_origin": "ast",
       "community": 37,
-      "community_name": "DriversView.vue",
+      "community_name": "SeasonView.vue",
       "file_type": "code",
       "norm_label": "driversview.vue",
       "source_file": "src/views/DriversView.vue",
@@ -7558,7 +7868,7 @@
       "label": "prefs",
       "_origin": "ast",
       "community": 37,
-      "community_name": "DriversView.vue",
+      "community_name": "SeasonView.vue",
       "file_type": "code",
       "norm_label": "prefs",
       "source_file": "src/views/DriversView.vue",
@@ -7569,11 +7879,77 @@
       "label": "store",
       "_origin": "ast",
       "community": 37,
-      "community_name": "DriversView.vue",
+      "community_name": "SeasonView.vue",
       "file_type": "code",
       "norm_label": "store",
       "source_file": "src/views/DriversView.vue",
       "source_location": "L50"
+    },
+    {
+      "id": "src_views_seasonview",
+      "label": "SeasonView.vue",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "SeasonView.vue",
+      "file_type": "code",
+      "norm_label": "seasonview.vue",
+      "source_file": "src/views/SeasonView.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_views_seasonview_activefilter",
+      "label": "activeFilter",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "SeasonView.vue",
+      "file_type": "code",
+      "norm_label": "activefilter",
+      "source_file": "src/views/SeasonView.vue",
+      "source_location": "L97"
+    },
+    {
+      "id": "src_views_seasonview_filteredraces",
+      "label": "filteredRaces",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "SeasonView.vue",
+      "file_type": "code",
+      "norm_label": "filteredraces",
+      "source_file": "src/views/SeasonView.vue",
+      "source_location": "L99"
+    },
+    {
+      "id": "src_views_seasonview_filters",
+      "label": "FILTERS",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "SeasonView.vue",
+      "file_type": "code",
+      "norm_label": "filters",
+      "source_file": "src/views/SeasonView.vue",
+      "source_location": "L91"
+    },
+    {
+      "id": "src_views_seasonview_sprintcount",
+      "label": "sprintCount",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "SeasonView.vue",
+      "file_type": "code",
+      "norm_label": "sprintcount",
+      "source_file": "src/views/SeasonView.vue",
+      "source_location": "L105"
+    },
+    {
+      "id": "src_views_seasonview_store",
+      "label": "store",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "SeasonView.vue",
+      "file_type": "code",
+      "norm_label": "store",
+      "source_file": "src/views/SeasonView.vue",
+      "source_location": "L89"
     },
     {
       "id": "src_components_gpintro_emit",
@@ -7585,28 +7961,6 @@
       "norm_label": "emit",
       "source_file": "src/components/GpIntro.vue",
       "source_location": "L109"
-    },
-    {
-      "id": "src_views_homeview_contention",
-      "label": "contention",
-      "_origin": "ast",
-      "community": 39,
-      "community_name": "titleContention",
-      "file_type": "code",
-      "norm_label": "contention",
-      "source_file": "src/views/HomeView.vue",
-      "source_location": "L252"
-    },
-    {
-      "id": "src_views_standingsview_contention",
-      "label": "contention",
-      "_origin": "ast",
-      "community": 39,
-      "community_name": "titleContention",
-      "file_type": "code",
-      "norm_label": "contention",
-      "source_file": "src/views/StandingsView.vue",
-      "source_location": "L196"
     },
     {
       "id": "src_components_appheader",
@@ -7730,127 +8084,6 @@
       "source_location": "L54"
     },
     {
-      "id": "src_components_cards_packswidget",
-      "label": "PacksWidget.vue",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "packswidget.vue",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_cards_packswidget_available",
-      "label": "available",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "available",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L36"
-    },
-    {
-      "id": "src_components_cards_packswidget_col",
-      "label": "col",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "col",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L27"
-    },
-    {
-      "id": "src_components_cards_packswidget_countdown",
-      "label": "countdown",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "countdown",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L40"
-    },
-    {
-      "id": "src_components_cards_packswidget_hassession",
-      "label": "hasSession",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "hassession",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L30"
-    },
-    {
-      "id": "src_components_cards_packswidget_max",
-      "label": "max",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "max",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L37"
-    },
-    {
-      "id": "src_components_cards_packswidget_now",
-      "label": "now",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "now",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L31"
-    },
-    {
-      "id": "src_components_cards_packswidget_ready",
-      "label": "ready",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "ready",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L29"
-    },
-    {
-      "id": "src_components_cards_packswidget_stacksize",
-      "label": "stackSize",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "stacksize",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L38"
-    },
-    {
-      "id": "src_components_cards_packswidget_subtitle",
-      "label": "subtitle",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "subtitle",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L52"
-    },
-    {
-      "id": "src_components_cards_packswidget_title",
-      "label": "title",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "AppHeader.vue",
-      "file_type": "code",
-      "norm_label": "title",
-      "source_file": "src/components/cards/PacksWidget.vue",
-      "source_location": "L46"
-    },
-    {
       "id": "src_components_mobiletabbar",
       "label": "MobileTabBar.vue",
       "_origin": "ast",
@@ -7928,88 +8161,22 @@
       "source_location": "L60"
     },
     {
-      "id": "src_views_racedetail_winner",
-      "label": "winner",
+      "id": "ref_vue_router",
+      "label": "vue-router",
       "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
-      "file_type": "code",
-      "norm_label": "winner",
-      "source_file": "src/views/RaceDetail.vue",
-      "source_location": "L237"
-    },
-    {
-      "id": "src_views_seasonview",
-      "label": "SeasonView.vue",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
-      "file_type": "code",
-      "norm_label": "seasonview.vue",
-      "source_file": "src/views/SeasonView.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_views_seasonview_activefilter",
-      "label": "activeFilter",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
-      "file_type": "code",
-      "norm_label": "activefilter",
-      "source_file": "src/views/SeasonView.vue",
-      "source_location": "L97"
-    },
-    {
-      "id": "src_views_seasonview_filteredraces",
-      "label": "filteredRaces",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
-      "file_type": "code",
-      "norm_label": "filteredraces",
-      "source_file": "src/views/SeasonView.vue",
-      "source_location": "L99"
-    },
-    {
-      "id": "src_views_seasonview_filters",
-      "label": "FILTERS",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
-      "file_type": "code",
-      "norm_label": "filters",
-      "source_file": "src/views/SeasonView.vue",
-      "source_location": "L91"
-    },
-    {
-      "id": "src_views_seasonview_sprintcount",
-      "label": "sprintCount",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
-      "file_type": "code",
-      "norm_label": "sprintcount",
-      "source_file": "src/views/SeasonView.vue",
-      "source_location": "L105"
-    },
-    {
-      "id": "src_views_seasonview_store",
-      "label": "store",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "SeasonView.vue",
-      "file_type": "code",
-      "norm_label": "store",
-      "source_file": "src/views/SeasonView.vue",
-      "source_location": "L89"
+      "community": 4,
+      "community_name": "AppHeader.vue",
+      "file_type": "concept",
+      "norm_label": "vue-router",
+      "source_file": "package.json",
+      "source_location": "L16"
     },
     {
       "id": "src_app",
       "label": "App.vue",
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "app.vue",
       "source_file": "src/App.vue",
@@ -8020,7 +8187,7 @@
       "label": "stopRevalidate",
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "stoprevalidate",
       "source_file": "src/App.vue",
@@ -8031,29 +8198,194 @@
       "label": "store",
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "store",
       "source_file": "src/App.vue",
       "source_location": "L50"
     },
     {
+      "id": "src_components_sessionresults",
+      "label": "SessionResults.vue",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "sessionresults.vue",
+      "source_file": "src/components/SessionResults.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_sessionresults_limitedrows",
+      "label": "limitedRows",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "limitedrows",
+      "source_file": "src/components/SessionResults.vue",
+      "source_location": "L49"
+    },
+    {
+      "id": "src_components_sessionresults_prefs",
+      "label": "prefs",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "prefs",
+      "source_file": "src/components/SessionResults.vue",
+      "source_location": "L47"
+    },
+    {
+      "id": "src_components_sessionresults_props",
+      "label": "props",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "props",
+      "source_file": "src/components/SessionResults.vue",
+      "source_location": "L40"
+    },
+    {
+      "id": "src_components_teampicker",
+      "label": "TeamPicker.vue",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "teampicker.vue",
+      "source_file": "src/components/TeamPicker.vue",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_teampicker_prefs",
+      "label": "prefs",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "prefs",
+      "source_file": "src/components/TeamPicker.vue",
+      "source_location": "L37"
+    },
+    {
       "id": "src_composables_useteamtheme",
       "label": "useTeamTheme.js",
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "useteamtheme.js",
       "source_file": "src/composables/useTeamTheme.js",
       "source_location": "L1"
     },
     {
+      "id": "src_data_teams",
+      "label": "teams.js",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "teams.js",
+      "source_file": "src/data/teams.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_data_teams_default_accent",
+      "label": "DEFAULT_ACCENT",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "default_accent",
+      "source_file": "src/data/teams.js",
+      "source_location": "L44"
+    },
+    {
+      "id": "src_data_teams_driver_bios",
+      "label": "DRIVER_BIOS",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "driver_bios",
+      "source_file": "src/data/teams.js",
+      "source_location": "L158"
+    },
+    {
+      "id": "src_data_teams_pickable_teams",
+      "label": "PICKABLE_TEAMS",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "pickable_teams",
+      "source_file": "src/data/teams.js",
+      "source_location": "L51"
+    },
+    {
+      "id": "src_data_teams_team_colors",
+      "label": "TEAM_COLORS",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "team_colors",
+      "source_file": "src/data/teams.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "src_data_teams_team_liveries",
+      "label": "TEAM_LIVERIES",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "team_liveries",
+      "source_file": "src/data/teams.js",
+      "source_location": "L188"
+    },
+    {
+      "id": "src_data_teams_team_meta",
+      "label": "TEAM_META",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "team_meta",
+      "source_file": "src/data/teams.js",
+      "source_location": "L66"
+    },
+    {
+      "id": "src_stores_prefsstore",
+      "label": "prefsStore.js",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "prefsstore.js",
+      "source_file": "src/stores/prefsStore.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_stores_prefsstore_useprefsstore",
+      "label": "usePrefsStore",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "teams.js",
+      "file_type": "code",
+      "norm_label": "useprefsstore",
+      "source_file": "src/stores/prefsStore.js",
+      "source_location": "L15"
+    },
+    {
       "id": "src_views_teamdetail_onteamcolor",
       "label": "onTeamColor",
       "_origin": "ast",
       "community": 41,
-      "community_name": "App.vue",
+      "community_name": "teams.js",
       "file_type": "code",
       "norm_label": "onteamcolor",
       "source_file": "src/views/TeamDetail.vue",
@@ -8064,7 +8396,7 @@
       "label": "AlbumShelf.vue",
       "_origin": "ast",
       "community": 42,
-      "community_name": "Icon.vue",
+      "community_name": "formatCoins",
       "file_type": "code",
       "norm_label": "albumshelf.vue",
       "source_file": "src/components/cards/AlbumShelf.vue",
@@ -8075,7 +8407,7 @@
       "label": "col",
       "_origin": "ast",
       "community": 42,
-      "community_name": "Icon.vue",
+      "community_name": "formatCoins",
       "file_type": "code",
       "norm_label": "col",
       "source_file": "src/components/cards/AlbumShelf.vue",
@@ -8086,165 +8418,22 @@
       "label": "sections",
       "_origin": "ast",
       "community": 42,
-      "community_name": "Icon.vue",
+      "community_name": "formatCoins",
       "file_type": "code",
       "norm_label": "sections",
       "source_file": "src/components/cards/AlbumShelf.vue",
       "source_location": "L46"
     },
     {
-      "id": "src_components_icon",
-      "label": "Icon.vue",
+      "id": "src_views_packsview_buyblocker",
+      "label": "buyBlocker",
       "_origin": "ast",
       "community": 42,
-      "community_name": "Icon.vue",
+      "community_name": "formatCoins",
       "file_type": "code",
-      "norm_label": "icon.vue",
-      "source_file": "src/components/Icon.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_icon_icons",
-      "label": "ICONS",
-      "_origin": "ast",
-      "community": 42,
-      "community_name": "Icon.vue",
-      "file_type": "code",
-      "norm_label": "icons",
-      "source_file": "src/components/Icon.vue",
-      "source_location": "L27"
-    },
-    {
-      "id": "src_components_icon_paths",
-      "label": "paths",
-      "_origin": "ast",
-      "community": 42,
-      "community_name": "Icon.vue",
-      "file_type": "code",
-      "norm_label": "paths",
-      "source_file": "src/components/Icon.vue",
-      "source_location": "L69"
-    },
-    {
-      "id": "src_components_icon_props",
-      "label": "props",
-      "_origin": "ast",
-      "community": 42,
-      "community_name": "Icon.vue",
-      "file_type": "code",
-      "norm_label": "props",
-      "source_file": "src/components/Icon.vue",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_views_playersview",
-      "label": "PlayersView.vue",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
-      "file_type": "code",
-      "norm_label": "playersview.vue",
-      "source_file": "src/views/PlayersView.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_views_playersview_col",
-      "label": "col",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
-      "file_type": "code",
-      "norm_label": "col",
-      "source_file": "src/views/PlayersView.vue",
-      "source_location": "L77"
-    },
-    {
-      "id": "src_views_playersview_hasmore",
-      "label": "hasMore",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
-      "file_type": "code",
-      "norm_label": "hasmore",
-      "source_file": "src/views/PlayersView.vue",
-      "source_location": "L81"
-    },
-    {
-      "id": "src_views_playersview_loading",
-      "label": "loading",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
-      "file_type": "code",
-      "norm_label": "loading",
-      "source_file": "src/views/PlayersView.vue",
-      "source_location": "L80"
-    },
-    {
-      "id": "src_views_playersview_players",
-      "label": "players",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
-      "file_type": "code",
-      "norm_label": "players",
-      "source_file": "src/views/PlayersView.vue",
-      "source_location": "L79"
-    },
-    {
-      "id": "src_views_playersview_query",
-      "label": "query",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "PlayersView.vue",
-      "file_type": "code",
-      "norm_label": "query",
-      "source_file": "src/views/PlayersView.vue",
-      "source_location": "L78"
-    },
-    {
-      "id": "src_components_sessionresults",
-      "label": "SessionResults.vue",
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "SessionResults.vue",
-      "file_type": "code",
-      "norm_label": "sessionresults.vue",
-      "source_file": "src/components/SessionResults.vue",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_sessionresults_limitedrows",
-      "label": "limitedRows",
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "SessionResults.vue",
-      "file_type": "code",
-      "norm_label": "limitedrows",
-      "source_file": "src/components/SessionResults.vue",
-      "source_location": "L49"
-    },
-    {
-      "id": "src_components_sessionresults_prefs",
-      "label": "prefs",
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "SessionResults.vue",
-      "file_type": "code",
-      "norm_label": "prefs",
-      "source_file": "src/components/SessionResults.vue",
-      "source_location": "L47"
-    },
-    {
-      "id": "src_components_sessionresults_props",
-      "label": "props",
-      "_origin": "ast",
-      "community": 45,
-      "community_name": "SessionResults.vue",
-      "file_type": "code",
-      "norm_label": "props",
-      "source_file": "src/components/SessionResults.vue",
-      "source_location": "L40"
+      "norm_label": "buyblocker",
+      "source_file": "src/views/PacksView.vue",
+      "source_location": "L170"
     },
     {
       "id": "src_components_teammateduel",
@@ -8278,127 +8467,6 @@
       "norm_label": "rows",
       "source_file": "src/components/TeammateDuel.vue",
       "source_location": "L59"
-    },
-    {
-      "id": "src_views_homeview_progression",
-      "label": "progression",
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "pointsProgression",
-      "file_type": "code",
-      "norm_label": "progression",
-      "source_file": "src/views/HomeView.vue",
-      "source_location": "L256"
-    },
-    {
-      "id": "src_views_standingsview_progression",
-      "label": "progression",
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "pointsProgression",
-      "file_type": "code",
-      "norm_label": "progression",
-      "source_file": "src/views/StandingsView.vue",
-      "source_location": "L174"
-    },
-    {
-      "id": "src_views_teamdetail_progression",
-      "label": "progression",
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "pointsProgression",
-      "file_type": "code",
-      "norm_label": "progression",
-      "source_file": "src/views/TeamDetail.vue",
-      "source_location": "L156"
-    },
-    {
-      "id": "src_lib_supabase",
-      "label": "supabase.js",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "supabase.js",
-      "file_type": "code",
-      "norm_label": "supabase.js",
-      "source_file": "src/lib/supabase.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_lib_supabase_supabase",
-      "label": "supabase",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "supabase.js",
-      "file_type": "code",
-      "norm_label": "supabase",
-      "source_file": "src/lib/supabase.js",
-      "source_location": "L7"
-    },
-    {
-      "id": "ref_supabase_supabase_js",
-      "label": "@supabase/supabase-js",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "supabase.js",
-      "file_type": "concept",
-      "norm_label": "@supabase/supabase-js",
-      "source_file": "package.json",
-      "source_location": "L12"
-    },
-    {
-      "id": "src_composables_useheadshots",
-      "label": "useHeadshots.js",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "useheadshots.js",
-      "source_file": "src/composables/useHeadshots.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_composables_useheadshots_headshots",
-      "label": "headshots",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "headshots",
-      "source_file": "src/composables/useHeadshots.js",
-      "source_location": "L5"
-    },
-    {
-      "id": "src_services_openf1",
-      "label": "openf1.js",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "openf1.js",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_services_openf1_openf1_first_season",
-      "label": "OPENF1_FIRST_SEASON",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "openf1_first_season",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_services_openf1_session_name_to_key",
-      "label": "SESSION_NAME_TO_KEY",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "RaceDetail.vue",
-      "file_type": "code",
-      "norm_label": "session_name_to_key",
-      "source_file": "src/services/openf1.js",
-      "source_location": "L129"
     },
     {
       "id": "src_views_racedetail",
@@ -8687,6 +8755,17 @@
       "source_location": "L253"
     },
     {
+      "id": "src_views_racedetail_winner",
+      "label": "winner",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "RaceDetail.vue",
+      "file_type": "code",
+      "norm_label": "winner",
+      "source_file": "src/views/RaceDetail.vue",
+      "source_location": "L237"
+    },
+    {
       "id": "scripts_build_catalog_values",
       "label": "values",
       "_origin": "ast",
@@ -8696,6 +8775,17 @@
       "norm_label": "values",
       "source_file": "scripts/build-catalog.mjs",
       "source_location": "L699"
+    },
+    {
+      "id": "src_views_homeview_contention",
+      "label": "contention",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "StandingsView.vue",
+      "file_type": "code",
+      "norm_label": "contention",
+      "source_file": "src/views/HomeView.vue",
+      "source_location": "L252"
     },
     {
       "id": "src_views_standingsview",
@@ -8740,6 +8830,17 @@
       "norm_label": "chartseries",
       "source_file": "src/views/StandingsView.vue",
       "source_location": "L177"
+    },
+    {
+      "id": "src_views_standingsview_contention",
+      "label": "contention",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "StandingsView.vue",
+      "file_type": "code",
+      "norm_label": "contention",
+      "source_file": "src/views/StandingsView.vue",
+      "source_location": "L196"
     },
     {
       "id": "src_views_standingsview_filter",
@@ -8874,72 +8975,6 @@
       "source_location": "L42"
     },
     {
-      "id": "src_services_http",
-      "label": "http.js",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "http.js",
-      "source_file": "src/services/http.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_services_http_host_rate",
-      "label": "HOST_RATE",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "host_rate",
-      "source_file": "src/services/http.js",
-      "source_location": "L18"
-    },
-    {
-      "id": "src_services_http_inflight",
-      "label": "inflight",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "inflight",
-      "source_file": "src/services/http.js",
-      "source_location": "L24"
-    },
-    {
-      "id": "src_services_http_queues",
-      "label": "queues",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "queues",
-      "source_file": "src/services/http.js",
-      "source_location": "L23"
-    },
-    {
-      "id": "src_services_http_revalidatelisteners",
-      "label": "revalidateListeners",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "revalidatelisteners",
-      "source_file": "src/services/http.js",
-      "source_location": "L25"
-    },
-    {
-      "id": "src_services_http_ttl",
-      "label": "TTL",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "jolpica.js",
-      "file_type": "code",
-      "norm_label": "ttl",
-      "source_file": "src/services/http.js",
-      "source_location": "L11"
-    },
-    {
       "id": "src_services_jolpica",
       "label": "jolpica.js",
       "_origin": "ast",
@@ -8962,26 +8997,26 @@
       "source_location": "L15"
     },
     {
-      "id": "src_services_weather",
-      "label": "weather.js",
+      "id": "src_stores_f1store",
+      "label": "f1Store.js",
       "_origin": "ast",
       "community": 7,
       "community_name": "jolpica.js",
       "file_type": "code",
-      "norm_label": "weather.js",
-      "source_file": "src/services/weather.js",
+      "norm_label": "f1store.js",
+      "source_file": "src/stores/f1Store.js",
       "source_location": "L1"
     },
     {
-      "id": "src_services_weather_wmo",
-      "label": "WMO",
+      "id": "src_stores_f1store_current_year",
+      "label": "CURRENT_YEAR",
       "_origin": "ast",
       "community": 7,
       "community_name": "jolpica.js",
       "file_type": "code",
-      "norm_label": "wmo",
-      "source_file": "src/services/weather.js",
-      "source_location": "L11"
+      "norm_label": "current_year",
+      "source_file": "src/stores/f1Store.js",
+      "source_location": "L14"
     },
     {
       "id": "husky_commit_msg",
@@ -9569,7 +9604,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L175",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_cards_accountdialog_finish",
+      "target": "src_components_cards_accountdialog_emit",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_cards_accountdialog_finish",
+      "target": "src_components_cards_accountdialog_close",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -9581,7 +9640,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L168",
+      "source_location": "L172",
       "weight": 1.0
     },
     {
@@ -9593,7 +9652,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L169",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -9605,7 +9664,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L134",
+      "source_location": "L135",
       "weight": 1.0
     },
     {
@@ -9617,7 +9676,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L147",
+      "source_location": "L148",
       "weight": 1.0
     },
     {
@@ -9629,7 +9688,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L148",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
@@ -9641,7 +9700,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L148",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
@@ -9653,7 +9712,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L162",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_cards_accountdialog_submitusername",
+      "target": "src_components_cards_accountdialog_finish",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L168",
       "weight": 1.0
     },
     {
@@ -9665,7 +9736,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -9677,7 +9748,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L155",
+      "source_location": "L156",
       "weight": 1.0
     },
     {
@@ -9689,7 +9760,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L155",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_cards_accountdialog_verifycode",
+      "target": "src_components_cards_accountdialog_finish",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -11837,7 +11920,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L284",
+      "source_location": "L297",
       "weight": 1.0
     },
     {
@@ -11849,7 +11932,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L231",
+      "source_location": "L235",
       "weight": 1.0
     },
     {
@@ -11861,7 +11944,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L278",
+      "source_location": "L291",
       "weight": 1.0
     },
     {
@@ -11873,7 +11956,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L299",
+      "source_location": "L312",
       "weight": 1.0
     },
     {
@@ -11885,7 +11968,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L252",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -11897,7 +11980,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L252",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -11909,7 +11992,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L252",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -11921,7 +12004,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L245",
+      "source_location": "L249",
       "weight": 1.0
     },
     {
@@ -11933,7 +12016,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L313",
+      "source_location": "L326",
       "weight": 1.0
     },
     {
@@ -11945,7 +12028,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L298",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -11957,7 +12040,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L255",
+      "source_location": "L259",
       "weight": 1.0
     },
     {
@@ -11969,7 +12052,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L255",
+      "source_location": "L259",
       "weight": 1.0
     },
     {
@@ -13950,7 +14033,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -13962,7 +14045,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -13974,7 +14057,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -13986,7 +14069,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -13998,7 +14081,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -14010,7 +14093,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -14022,7 +14105,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -14034,7 +14117,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L215",
+      "source_location": "L219",
       "weight": 1.0
     },
     {
@@ -14046,7 +14129,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L215",
+      "source_location": "L219",
       "weight": 1.0
     },
     {
@@ -14058,7 +14141,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L215",
+      "source_location": "L219",
       "weight": 1.0
     },
     {
@@ -16446,7 +16529,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L199",
+      "source_location": "L203",
       "weight": 1.0
     },
     {
@@ -16458,7 +16541,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L200",
+      "source_location": "L204",
       "weight": 1.0
     },
     {
@@ -16470,7 +16553,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L201",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -16482,7 +16565,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L202",
+      "source_location": "L206",
       "weight": 1.0
     },
     {
@@ -16494,7 +16577,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L203",
+      "source_location": "L207",
       "weight": 1.0
     },
     {
@@ -16506,7 +16589,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L204",
+      "source_location": "L208",
       "weight": 1.0
     },
     {
@@ -16518,7 +16601,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L205",
+      "source_location": "L209",
       "weight": 1.0
     },
     {
@@ -16530,7 +16613,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -16542,7 +16625,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L215",
+      "source_location": "L219",
       "weight": 1.0
     },
     {
@@ -19145,7 +19228,7 @@
     },
     {
       "source": "src_components_cards_accountdialog",
-      "target": "src_components_cards_accountdialog_info",
+      "target": "src_components_cards_accountdialog_error",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -19156,13 +19239,24 @@
     },
     {
       "source": "src_components_cards_accountdialog",
+      "target": "src_components_cards_accountdialog_info",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_cards_accountdialog",
       "target": "src_components_cards_accountdialog_messages",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L114",
+      "source_location": "L115",
       "weight": 1.0
     },
     {
@@ -19173,7 +19267,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L123",
+      "source_location": "L124",
       "weight": 1.0
     },
     {
@@ -19184,7 +19278,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -19195,7 +19289,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L140",
+      "source_location": "L141",
       "weight": 1.0
     },
     {
@@ -19206,7 +19300,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L146",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -19217,7 +19311,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L153",
+      "source_location": "L154",
       "weight": 1.0
     },
     {
@@ -19228,7 +19322,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L161",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -19239,7 +19333,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L167",
+      "source_location": "L171",
       "weight": 1.0
     },
     {
@@ -19250,7 +19344,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L174",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_cards_accountdialog",
+      "target": "src_components_cards_accountdialog_finish",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/cards/AccountDialog.vue",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -19272,7 +19377,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L89",
+      "source_location": "L90",
       "weight": 1.0
     },
     {
@@ -19283,7 +19388,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L91",
+      "source_location": "L92",
       "weight": 1.0
     },
     {
@@ -19294,7 +19399,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0
     },
     {
@@ -19305,7 +19410,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L94",
+      "source_location": "L95",
       "weight": 1.0
     },
     {
@@ -19316,7 +19421,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L95",
+      "source_location": "L96",
       "weight": 1.0
     },
     {
@@ -19327,7 +19432,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L96",
+      "source_location": "L97",
       "weight": 1.0
     },
     {
@@ -19338,23 +19443,12 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/cards/AccountDialog.vue",
-      "source_location": "L97",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_cards_accountdialog",
-      "target": "src_components_cards_accountdialog_busy",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/cards/AccountDialog.vue",
       "source_location": "L98",
       "weight": 1.0
     },
     {
       "source": "src_components_cards_accountdialog",
-      "target": "src_components_cards_accountdialog_error",
+      "target": "src_components_cards_accountdialog_busy",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23507,7 +23601,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L217",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -23518,7 +23612,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L219",
+      "source_location": "L223",
       "weight": 1.0
     },
     {
@@ -23529,7 +23623,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L220",
+      "source_location": "L224",
       "weight": 1.0
     },
     {
@@ -23540,7 +23634,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L221",
+      "source_location": "L225",
       "weight": 1.0
     },
     {
@@ -23551,7 +23645,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L222",
+      "source_location": "L226",
       "weight": 1.0
     },
     {
@@ -23562,7 +23656,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L223",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -23573,7 +23667,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L224",
+      "source_location": "L228",
       "weight": 1.0
     },
     {
@@ -23584,7 +23678,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L225",
+      "source_location": "L229",
       "weight": 1.0
     },
     {
@@ -23595,7 +23689,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L226",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -23606,7 +23700,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L229",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -23617,7 +23711,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L230",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -23628,7 +23722,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L231",
+      "source_location": "L235",
       "weight": 1.0
     },
     {
@@ -23639,7 +23733,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L232",
+      "source_location": "L236",
       "weight": 1.0
     },
     {
@@ -23650,7 +23744,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L233",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -23661,7 +23755,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L234",
+      "source_location": "L238",
       "weight": 1.0
     },
     {
@@ -23672,7 +23766,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L235",
+      "source_location": "L239",
       "weight": 1.0
     },
     {
@@ -23683,7 +23777,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L238",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -23694,7 +23788,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L251",
+      "source_location": "L255",
       "weight": 1.0
     },
     {
@@ -23705,7 +23799,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L254",
+      "source_location": "L258",
       "weight": 1.0
     },
     {
@@ -23716,7 +23810,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L258",
+      "source_location": "L262",
       "weight": 1.0
     },
     {
@@ -23727,7 +23821,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L259",
+      "source_location": "L263",
       "weight": 1.0
     },
     {
@@ -23738,7 +23832,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L260",
+      "source_location": "L264",
       "weight": 1.0
     },
     {
@@ -23749,7 +23843,29 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L261",
+      "source_location": "L265",
+      "weight": 1.0
+    },
+    {
+      "source": "src_views_collectionview",
+      "target": "src_views_collectionview_notice",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/views/CollectionView.vue",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "src_views_collectionview",
+      "target": "src_views_collectionview_notify",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/views/CollectionView.vue",
+      "source_location": "L273",
       "weight": 1.0
     },
     {
@@ -23760,7 +23876,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L267",
+      "source_location": "L280",
       "weight": 1.0
     },
     {
@@ -23771,7 +23887,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L269",
+      "source_location": "L282",
       "weight": 1.0
     },
     {
@@ -23782,7 +23898,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L272",
+      "source_location": "L285",
       "weight": 1.0
     },
     {
@@ -23793,7 +23909,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L278",
+      "source_location": "L291",
       "weight": 1.0
     },
     {
@@ -23804,7 +23920,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L281",
+      "source_location": "L294",
       "weight": 1.0
     },
     {
@@ -23815,7 +23931,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L283",
+      "source_location": "L296",
       "weight": 1.0
     },
     {
@@ -23826,7 +23942,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L295",
+      "source_location": "L308",
       "weight": 1.0
     },
     {
@@ -23837,7 +23953,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L298",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -23848,7 +23964,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L299",
+      "source_location": "L312",
       "weight": 1.0
     },
     {
@@ -23859,7 +23975,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L301",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -23870,7 +23986,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L306",
+      "source_location": "L319",
       "weight": 1.0
     },
     {
@@ -23881,7 +23997,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L307",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
@@ -23892,7 +24008,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L309",
+      "source_location": "L322",
       "weight": 1.0
     },
     {
@@ -23903,7 +24019,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L324",
+      "source_location": "L337",
       "weight": 1.0
     },
     {
@@ -25790,7 +25906,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/views/CollectionView.vue",
-      "source_location": "L338",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -25855,5 +25971,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f44e5c8af37b7cb7972aaf878a0928c307a17992"
+  "built_at_commit": "16d8fef60e025842b2a7e7020d3789918d1cf06a"
 }

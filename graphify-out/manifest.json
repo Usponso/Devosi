@@ -24,8 +24,8 @@
     "semantic_hash": "0191475213778b606055ddff3f2c3c4e"
   },
   "package.json": {
-    "mtime": 1793046997.8069074,
-    "seen": 1793048808.2457702,
+    "mtime": 1793106240.9796786,
+    "seen": 1793106691.9460618,
     "ast_hash": "de4e0ddf48e849d78bdf2020e3dd0efc",
     "semantic_hash": ""
   },
@@ -42,8 +42,8 @@
     "semantic_hash": ""
   },
   "src/router/index.js": {
-    "mtime": 1793102298.5067134,
-    "seen": 1793102431.1235743,
+    "mtime": 1793106240.9892316,
+    "seen": 1793106691.9500637,
     "ast_hash": "61b52b495f23a544922226ca82d07cda",
     "semantic_hash": ""
   },
@@ -66,9 +66,9 @@
     "semantic_hash": ""
   },
   "src/views/HomeView.vue": {
-    "mtime": 1793055754.9125347,
-    "seen": 1793055827.4732347,
-    "ast_hash": "daee319b1d60c5cf33409e825b45fadf",
+    "mtime": 1793106240.992973,
+    "seen": 1793106691.9511526,
+    "ast_hash": "31e04d47e0603245be3336aa126e8e7a",
     "semantic_hash": ""
   },
   "src/views/NewsView.vue": {
@@ -126,8 +126,8 @@
     "semantic_hash": ""
   },
   "src/components/AppHeader.vue": {
-    "mtime": 1793101077.888611,
-    "seen": 1793101115.3426826,
+    "mtime": 1793106240.9806783,
+    "seen": 1793106691.9460618,
     "ast_hash": "2dfc81e9bda4388384649fe9c76eef64",
     "semantic_hash": ""
   },
@@ -156,14 +156,14 @@
     "semantic_hash": ""
   },
   "src/components/Icon.vue": {
-    "mtime": 1793102540.3741615,
-    "seen": 1793102558.0142012,
+    "mtime": 1793106240.9816759,
+    "seen": 1793106691.9470599,
     "ast_hash": "b4b7f1c4439f23acee881cfd2c2ff026",
     "semantic_hash": ""
   },
   "src/components/MobileTabBar.vue": {
-    "mtime": 1793101077.888611,
-    "seen": 1793101115.3436825,
+    "mtime": 1793106240.9816759,
+    "seen": 1793106691.9470599,
     "ast_hash": "8df4a5f561e42485c78ba356cd87ef47",
     "semantic_hash": ""
   },
@@ -216,8 +216,8 @@
     "semantic_hash": ""
   },
   "src/components/navItems.js": {
-    "mtime": 1793101034.322901,
-    "seen": 1793101115.345731,
+    "mtime": 1793106240.984182,
+    "seen": 1793106691.9490635,
     "ast_hash": "728eca4df2abaa26671638342b12cf2a",
     "semantic_hash": ""
   },
@@ -324,9 +324,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793102423.4169745,
-    "seen": 1793102431.127056,
-    "ast_hash": "76e48cfa4a244c54ea9402c30ae736b0",
+    "mtime": 1793106240.95863,
+    "seen": 1793106691.9521532,
+    "ast_hash": "64711015044a88aa10211a8b351883d4",
     "semantic_hash": ""
   },
   "index.html": {
@@ -342,15 +342,15 @@
     "semantic_hash": ""
   },
   "scripts/build-catalog.mjs": {
-    "mtime": 1793102358.7234468,
-    "seen": 1793102431.1175475,
-    "ast_hash": "0ca37a2300fb5f61503f6864e16655e3",
+    "mtime": 1793106240.9796786,
+    "seen": 1793106691.9460618,
+    "ast_hash": "aff2e928f1e5d7a85360ba84f4702ef8",
     "semantic_hash": ""
   },
   "scripts/catalog/moments.json": {
-    "mtime": 1793056431.7948406,
-    "seen": 1793057752.5304904,
-    "ast_hash": "2adff0ab10c974592f8a357b99e2d422",
+    "mtime": 1793106240.9806783,
+    "seen": 1793106691.9460618,
+    "ast_hash": "5634779237689fc676233e5d1d093b67",
     "semantic_hash": ""
   },
   "src/components/CarImage.vue": {
@@ -372,14 +372,14 @@
     "semantic_hash": ""
   },
   "src/components/cards/AccountDialog.vue": {
-    "mtime": 1793048438.2195604,
-    "seen": 1793048808.2457702,
-    "ast_hash": "37552e58f14740048a31771e662e6c19",
+    "mtime": 1793106609.957162,
+    "seen": 1793106691.948065,
+    "ast_hash": "6a28c085f055ed77ff3291956bb96722",
     "semantic_hash": ""
   },
   "src/components/cards/F1Card.vue": {
-    "mtime": 1793100244.9970465,
-    "seen": 1793100676.189418,
+    "mtime": 1793106240.984182,
+    "seen": 1793106691.948065,
     "ast_hash": "fdb573a1dce339b359183ae08354b9e1",
     "semantic_hash": ""
   },
@@ -396,20 +396,20 @@
     "semantic_hash": ""
   },
   "src/lib/supabase.js": {
-    "mtime": 1793047097.2909298,
-    "seen": 1793048808.2457702,
-    "ast_hash": "6a27e6be504495e93f14bd8dc96b0b71",
+    "mtime": 1793106240.9882333,
+    "seen": 1793106691.9500637,
+    "ast_hash": "a7e45df2fa67f12840a071f6a41fbe7d",
     "semantic_hash": ""
   },
   "src/services/collection.js": {
-    "mtime": 1793102298.5047095,
-    "seen": 1793102431.1235743,
+    "mtime": 1793106240.9892316,
+    "seen": 1793106691.9500637,
     "ast_hash": "b4f8ddbc0d12b31ef9aa0bd9c54067a7",
     "semantic_hash": ""
   },
   "src/stores/collectionStore.js": {
-    "mtime": 1793102298.5057118,
-    "seen": 1793102431.1250505,
+    "mtime": 1793106240.9892316,
+    "seen": 1793106691.9500637,
     "ast_hash": "2d3e3287e6a2f3e552366f28e7f41b99",
     "semantic_hash": ""
   },
@@ -420,39 +420,39 @@
     "semantic_hash": ""
   },
   "src/utils/cards.js": {
-    "mtime": 1793102298.5057118,
-    "seen": 1793102431.1250505,
+    "mtime": 1793106240.990353,
+    "seen": 1793106691.9511526,
     "ast_hash": "0d2686d3d27a46732fa77d64bfd71fc4",
     "semantic_hash": ""
   },
   "src/views/CollectionView.vue": {
-    "mtime": 1793102540.3000503,
-    "seen": 1793102558.0193024,
-    "ast_hash": "7e1e14182f12cd4bbc15477df8d41010",
+    "mtime": 1793106609.958666,
+    "seen": 1793106691.9511526,
+    "ast_hash": "298996e6cf0ee48427e4779fee81a73b",
     "semantic_hash": ""
   },
   "src/views/PacksView.vue": {
-    "mtime": 1793101932.7827797,
-    "seen": 1793101993.0412567,
+    "mtime": 1793106240.992973,
+    "seen": 1793106691.9511526,
     "ast_hash": "94d4dd668ca0be3024518ec883036a53",
     "semantic_hash": ""
   },
   "src/views/PlayerView.vue": {
-    "mtime": 1793102305.8501637,
-    "seen": 1793102431.1260536,
-    "ast_hash": "6bfd59a921a5ce9b8877854a827f0e31",
+    "mtime": 1793106240.9939773,
+    "seen": 1793106691.9511526,
+    "ast_hash": "346f94b4365b460bb221936750730c49",
     "semantic_hash": ""
   },
   "src/views/PlayersView.vue": {
-    "mtime": 1793101943.7260568,
-    "seen": 1793101993.0412567,
-    "ast_hash": "0da81bd459cd085261d07764a7190451",
+    "mtime": 1793106240.9939773,
+    "seen": 1793106691.9511526,
+    "ast_hash": "5c6fb56b235ba1abacbba19fcb4cc585",
     "semantic_hash": ""
   },
   "supabase/templates/code.html": {
-    "mtime": 1793048328.731596,
-    "seen": 1793048808.2457702,
-    "ast_hash": "3c9249ce8b05236ee2f8b7729cac9556",
+    "mtime": 1793106240.9980915,
+    "seen": 1793106691.9521532,
+    "ast_hash": "c1c25cb1a723670b5eda119428294e48",
     "semantic_hash": ""
   },
   "src/assets/intro/f1-front.webp": {
@@ -462,39 +462,45 @@
     "semantic_hash": ""
   },
   "src/components/cards/PacksWidget.vue": {
-    "mtime": 1793055788.4859257,
-    "seen": 1793055827.4692178,
-    "ast_hash": "99be818c544fd2f92375ffccb9bf59cc",
+    "mtime": 1793106240.984182,
+    "seen": 1793106691.948065,
+    "ast_hash": "8661526b8429ac23cf23567d0248b4f7",
     "semantic_hash": ""
   },
   "src/views/AtelierView.vue": {
-    "mtime": 1793102298.5067134,
-    "seen": 1793102431.1250505,
+    "mtime": 1793106240.9909678,
+    "seen": 1793106691.9511526,
     "ast_hash": "62eb8e2c57cfdc43a7db88d4cf97d675",
     "semantic_hash": ""
   },
   "src/composables/usePackBadge.js": {
-    "mtime": 1793101042.721651,
-    "seen": 1793101115.345731,
-    "ast_hash": "2524364a250092b24852abf2a8a6a296",
+    "mtime": 1793106240.9851873,
+    "seen": 1793106691.9490635,
+    "ast_hash": "e3c4e1ffbc025b5b85da3071c0b90d15",
     "semantic_hash": ""
   },
   "src/components/cards/CoinBalance.vue": {
-    "mtime": 1793101932.1121645,
-    "seen": 1793101993.0338569,
-    "ast_hash": "17437f59a8b67990e30c100baf426393",
+    "mtime": 1793106240.9836764,
+    "seen": 1793106691.948065,
+    "ast_hash": "eb458dd753d00ec51cb369d95f170595",
     "semantic_hash": ""
   },
   "src/components/cards/AlbumShelf.vue": {
-    "mtime": 1793102358.4016104,
-    "seen": 1793102431.1195507,
-    "ast_hash": "f1b27c4b2b82445da91dc0857c593c02",
+    "mtime": 1793106240.9826763,
+    "seen": 1793106691.948065,
+    "ast_hash": "c49c5dfa9c18099bdc453d35c68fb9c1",
     "semantic_hash": ""
   },
   "src/views/AlbumView.vue": {
-    "mtime": 1793102358.4248526,
-    "seen": 1793102431.1250505,
-    "ast_hash": "d692a5d04c5da7e0dee4949b90608c10",
+    "mtime": 1793106240.9909678,
+    "seen": 1793106691.9511526,
+    "ast_hash": "dbd683fbc29ad276f81e4646da7a302c",
+    "semantic_hash": ""
+  },
+  ".github/workflows/supabase.yml": {
+    "mtime": 1793106240.9570894,
+    "seen": 1793106691.9521532,
+    "ast_hash": "e21985970fa22fe42b895d3dcbdd9e4b",
     "semantic_hash": ""
   }
 }
