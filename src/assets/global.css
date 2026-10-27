@@ -405,7 +405,8 @@ img {
 }
 
 /* Modale ouverte : page en arrière-plan figée */
-.modal-open {
+.modal-open,
+.viewer-open {
   overflow: hidden;
 }
 

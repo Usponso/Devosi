@@ -94,7 +94,7 @@
                 </span>
                 <span class="c-showcase">
                   <span v-for="id in p.showcase.slice(0, 5)" :key="id" class="mini">
-                    <F1Card v-if="col.byId.get(id)" :card="col.byId.get(id)" :interactive="false" />
+                    <F1Card v-if="col.byId.get(id)" :card="col.byId.get(id)" :interactive="false" :zoomable="false" />
                   </span>
                 </span>
                 <span class="mono c-num">{{ p.owned }}</span>

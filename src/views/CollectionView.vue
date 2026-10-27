@@ -62,11 +62,11 @@
           </div>
           <div class="showcase-slots">
             <template v-for="i in 5" :key="i">
-              <button v-if="showcaseCards[i - 1]" class="slot filled" @click="selected = showcaseCards[i - 1]">
-                <F1Card :card="showcaseCards[i - 1]" />
-              </button>
+              <div v-if="showcaseCards[i - 1]" class="slot filled">
+                <F1Card :card="showcaseCards[i - 1]" :zoom-list="showcaseCards" />
+              </div>
               <div v-else class="slot empty-slot">
-                <span class="muted">Clique sur une de tes cartes puis « Mettre en vitrine »</span>
+                <span class="muted">Ouvre une de tes cartes puis « Mettre en vitrine »</span>
               </div>
             </template>
           </div>
@@ -118,14 +118,12 @@
         </p>
 
         <div class="grid">
-          <component
-            :is="col.owned.has(card.id) ? 'button' : 'div'"
+          <div
             v-for="card in visible"
             :key="card.id"
             class="cell"
             :class="{ owned: col.owned.has(card.id) }"
             :aria-label="col.owned.has(card.id) ? card.name : `Carte ${card.n} non découverte`"
-            @click="col.owned.has(card.id) && (selected = card)"
           >
             <F1Card
               :card="card"
@@ -133,8 +131,9 @@
               :count="col.owned.get(card.id) ?? 0"
               :finish="col.finishes.get(card.id) ?? 0"
               :interactive="col.owned.has(card.id)"
+              :zoom-list="ownedVisible"
             />
-          </component>
+          </div>
         </div>
         <div ref="sentinel" class="sentinel"></div>
         <p v-if="!filtered.length && !col.loading" class="empty">Aucune carte ne correspond à ces filtres.</p>
@@ -142,62 +141,6 @@
       </template>
     </div>
 
-    <!-- Fiche détaillée (cartes possédées uniquement) -->
-    <transition name="fade">
-      <div v-if="selected" class="detail-backdrop" @click.self="selected = null">
-        <div class="detail card" role="dialog" aria-modal="true" :aria-label="selected.name">
-          <button class="close" aria-label="Fermer" @click="selected = null"><Icon name="x" /></button>
-          <div class="detail-card">
-            <F1Card :card="selected" :count="copies" :finish="finishOf(selected)" />
-          </div>
-          <div class="detail-info">
-            <div class="eyebrow">{{ TYPE_LABEL[selected.type] }} · {{ RARITY_LABEL[selected.rarity] }} · #{{ String(selected.n).padStart(4, '0') }}</div>
-            <h2 class="title-md">{{ selected.name }}</h2>
-            <p class="dim">{{ describe(selected) }}</p>
-            <p v-if="selected.text" class="dim">{{ selected.text }}</p>
-            <p v-if="selected.quote" class="quote">« {{ selected.quote }} »</p>
-            <p class="owned-line">
-              Possédée ×{{ copies }}
-              <span v-if="finishOf(selected)" class="finish-chip" :class="`f-${finishOf(selected)}`">{{ FINISHES[finishOf(selected)].label }}</span>
-            </p>
-
-            <!-- Doublons : finition et recyclage -->
-            <div class="dup-actions">
-              <div v-if="nextFinish" class="upgrade">
-                <div class="upgrade-head">
-                  <span>Finition <b>{{ nextFinish.label }}</b></span>
-                  <span class="mono muted">{{ Math.min(copies, nextFinish.copies) }}/{{ nextFinish.copies }}</span>
-                </div>
-                <span class="meter"><span :class="`f-${nextFinish.id}`" :style="{ width: `${Math.min(1, copies / nextFinish.copies) * 100}%` }"></span></span>
-                <button v-if="copies >= nextFinish.copies" class="btn" :disabled="actionBusy" @click="upgrade">
-                  <Icon name="star" :size="16" /> Améliorer en {{ nextFinish.label }} ({{ nextFinish.copies - 1 }} doublons)
-                </button>
-              </div>
-              <div v-if="copies > 1" class="recycle-row">
-                <button class="btn btn-ghost" :disabled="actionBusy" @click="recycle(1)">
-                  <Icon name="recycle" :size="16" /> Recycler 1 · +{{ value.recycle }}
-                </button>
-                <button v-if="copies > 2" class="btn btn-ghost" :disabled="actionBusy" @click="recycle(copies - 1)">
-                  <Icon name="recycle" :size="16" /> Recycler les {{ copies - 1 }} doublons · +{{ formatCoins(value.recycle * (copies - 1)) }}
-                </button>
-              </div>
-              <p v-if="actionMsg" class="small" :class="actionError ? 'error' : 'accent'">{{ actionMsg }}</p>
-            </div>
-
-            <button class="btn showcase-btn" :class="{ 'btn-ghost': inShowcase(selected) }" :disabled="showcaseBusy" @click="toggleShowcase(selected)">
-              <Icon :name="inShowcase(selected) ? 'check' : 'star'" :size="16" />
-              {{ inShowcase(selected) ? 'Retirer de la vitrine' : 'Mettre en vitrine' }}
-            </button>
-            <p v-if="showcaseError" class="error small">{{ showcaseError }}</p>
-
-            <p v-if="selected.photo" class="credit muted">
-              Photo : {{ selected.photo.author }} ·
-              <a :href="selected.photo.source" target="_blank" rel="noopener">{{ selected.photo.license }}</a>, via Wikimedia Commons
-            </p>
-          </div>
-        </div>
-      </div>
-    </transition>
 
     <AccountDialog :open="accountOpen" @close="accountOpen = false" @done="notify" />
 
@@ -216,16 +159,7 @@ import AccountDialog from '@/components/cards/AccountDialog.vue'
 import CoinBalance from '@/components/cards/CoinBalance.vue'
 import AlbumShelf from '@/components/cards/AlbumShelf.vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  CARD_TYPES,
-  FINISHES,
-  RARITIES,
-  RARITY_LABEL,
-  RARITY_VALUE,
-  TYPE_LABEL,
-  useCollectionStore,
-} from '@/stores/collectionStore'
-import { describeCard, economyMessage, formatCoins } from '@/utils/cards'
+import { CARD_TYPES, RARITIES, useCollectionStore } from '@/stores/collectionStore'
 
 const col = useCollectionStore()
 
@@ -233,39 +167,7 @@ const type = ref('all')
 const rarities = ref(new Set())
 const ownedOnly = ref(false)
 const query = ref('')
-const selected = ref(null)
 const accountOpen = ref(false)
-const showcaseBusy = ref(false)
-const showcaseError = ref('')
-
-// Doublons de la carte affichée
-const copies = computed(() => (selected.value ? col.owned.get(selected.value.id) ?? 0 : 0))
-const finishOf = (card) => col.finishes.get(card.id) ?? 0
-const nextFinish = computed(() => (selected.value ? FINISHES[finishOf(selected.value) + 1] ?? null : null))
-const value = computed(() => RARITY_VALUE[selected.value?.rarity] ?? RARITIES[0])
-const actionBusy = ref(false)
-const actionMsg = ref('')
-const actionError = ref(false)
-watch(selected, () => (actionMsg.value = ''))
-
-async function runAction(fn) {
-  actionBusy.value = true
-  actionError.value = false
-  try {
-    actionMsg.value = await fn()
-  } catch (err) {
-    actionError.value = true
-    actionMsg.value = economyMessage(err)
-  } finally {
-    actionBusy.value = false
-  }
-}
-
-const recycle = (qty) =>
-  runAction(async () => `+${formatCoins(await col.recycle(selected.value.id, qty))} Pièces`)
-
-const upgrade = () =>
-  runAction(async () => `Finition ${FINISHES[await col.upgrade(selected.value.id)].label} débloquée !`)
 
 // Vue : classeur d'albums (par défaut) ou toutes les cartes
 const route = useRoute()
@@ -289,7 +191,6 @@ const PAGE = 60
 const limit = ref(PAGE)
 
 const percent = (a = 0, b = 0) => (b ? Math.round((a / b) * 100) : 0)
-const describe = describeCard
 
 function toggleRarity(id) {
   const next = new Set(rarities.value)
@@ -315,6 +216,8 @@ const filtered = computed(() => {
 })
 
 const visible = computed(() => filtered.value.slice(0, limit.value))
+// Visionneuse : flèches entre les cartes possédées affichées
+const ownedVisible = computed(() => visible.value.filter((c) => col.owned.has(c.id)))
 watch([type, rarities, ownedOnly, query], () => (limit.value = PAGE))
 
 const totalByType = computed(() => countBy(col.cards))
@@ -326,27 +229,10 @@ function countBy(cards) {
 
 // Vitrine
 const showcaseCards = computed(() => col.showcase.map((id) => col.byId.get(id)).filter(Boolean))
-const inShowcase = (card) => col.showcase.includes(card.id)
-
-async function toggleShowcase(card) {
-  showcaseBusy.value = true
-  showcaseError.value = ''
-  try {
-    await col.toggleShowcase(card.id)
-  } catch (err) {
-    showcaseError.value = err.code === 'SHOWCASE_FULL' ? 'Ta vitrine est pleine : retires-en une carte d’abord.' : err.message
-  } finally {
-    showcaseBusy.value = false
-  }
-}
-
-watch(selected, () => (showcaseError.value = ''))
 
 // Chargement progressif au défilement
 const sentinel = ref(null)
 let observer = null
-
-const onKey = (e) => e.key === 'Escape' && (selected.value = null)
 
 onMounted(() => {
   col.init()
@@ -357,12 +243,10 @@ onMounted(() => {
     { rootMargin: '600px' },
   )
   watch(sentinel, (el) => el && observer.observe(el), { immediate: true })
-  window.addEventListener('keydown', onKey)
 })
 
 onUnmounted(() => {
   observer?.disconnect()
-  window.removeEventListener('keydown', onKey)
 })
 </script>
 
@@ -548,71 +432,6 @@ onUnmounted(() => {
   color: #2a1c00;
 }
 
-/* Fiche */
-.detail-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  display: grid;
-  place-items: center;
-  padding: 16px;
-  background: rgba(5, 6, 8, 0.88);
-}
-
-.detail {
-  position: relative;
-  display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  gap: 28px;
-  width: min(760px, 100%);
-  max-height: calc(100vh - 32px);
-  overflow-y: auto;
-  padding: 28px;
-}
-
-.close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  padding: 6px;
-  color: var(--text-muted);
-}
-
-.detail-info {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.quote { font-style: italic; font-size: 16px; }
-.owned-line { display: flex; align-items: center; gap: 8px; font-weight: 700; }
-
-.finish-chip,
-.meter .f-1 { background: linear-gradient(90deg, #8e97a2, #ffffff, #8e97a2); }
-.finish-chip.f-2,
-.meter .f-2 { background: linear-gradient(90deg, #b5850f, #fff0b0, #b5850f); }
-.finish-chip {
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #111;
-}
-
-.dup-actions { display: flex; flex-direction: column; gap: 12px; }
-.upgrade { display: flex; flex-direction: column; gap: 8px; }
-.upgrade-head { display: flex; justify-content: space-between; font-size: 14px; }
-.upgrade .btn { align-self: flex-start; }
-.recycle-row { display: flex; flex-wrap: wrap; gap: 8px; }
-.dup-actions .btn:disabled { opacity: 0.5; }
-.showcase-btn { align-self: flex-start; }
-.showcase-btn:disabled { opacity: 0.5; }
-.error { color: var(--danger); }
-.credit { font-size: 12px; margin-top: auto; }
-.credit a { text-decoration: underline; }
 
 @media (max-width: 640px) {
   .comp-types { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -620,7 +439,5 @@ onUnmounted(() => {
   .grid { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
   .showcase-slots { gap: 6px; }
   .empty-slot span { display: none; }
-  .detail { grid-template-columns: 1fr; justify-items: center; padding: 20px 16px; }
-  .detail-card { width: min(240px, 70vw); }
 }
 </style>

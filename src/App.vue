@@ -36,6 +36,7 @@
 
   <MobileTabBar />
   <TeamPicker />
+  <CardViewer />
 </template>
 
 <script setup>
@@ -43,6 +44,7 @@ import { onMounted, onUnmounted } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
 import MobileTabBar from '@/components/MobileTabBar.vue'
 import TeamPicker from '@/components/TeamPicker.vue'
+import CardViewer from '@/components/cards/CardViewer.vue'
 import { useF1Store } from '@/stores/f1Store'
 import { useTeamTheme } from '@/composables/useTeamTheme'
 import { onRevalidate } from '@/services/http'

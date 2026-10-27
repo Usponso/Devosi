@@ -2,10 +2,11 @@
   <div
     ref="root"
     class="f1card"
-    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, [`finish-${finish}`]: finish && !locked }]"
+    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked }]"
     :style="locked ? null : { '--tc': card.color }"
     @pointermove="onMove"
     @pointerleave="onLeave"
+    @click="zoom"
   >
     <div class="inner">
       <!-- Recto -->
@@ -73,6 +74,7 @@ import CircuitMap from '@/components/CircuitMap.vue'
 import { RARITY_LABEL, TYPE_LABEL } from '@/stores/collectionStore'
 import { getNationalityLabel } from '@/data/nationalities'
 import circuits from '@/data/circuits.json'
+import { useCardViewer } from '@/composables/useCardViewer'
 
 const props = defineProps({
   card: { type: Object, required: true },
@@ -85,7 +87,20 @@ const props = defineProps({
   interactive: { type: Boolean, default: true },
   /** Finition débloquée : 0 standard, 1 Chrome, 2 Or */
   finish: { type: Number, default: 0 },
+  /** Clic : ouvre la carte en plein écran (désactivé là où le clic sert déjà, ex. ouverture de pack) */
+  zoomable: { type: Boolean, default: true },
+  /** Cartes voisines dans la visionneuse (flèches) et finitions d'un autre joueur */
+  zoomList: { type: Array, default: null },
+  zoomFinishes: { type: Object, default: null },
 })
+
+const viewer = useCardViewer()
+const canZoom = computed(() => props.zoomable && !props.locked && !props.faceDown)
+
+function zoom() {
+  if (!canZoom.value) return
+  viewer.open(props.card, { list: props.zoomList ?? [], finishes: props.zoomFinishes, finish: props.finish })
+}
 
 const FINISH_LABEL = { 1: 'Chrome', 2: 'Or' }
 
@@ -171,6 +186,8 @@ function onLeave() {
   perspective: 900px;
   user-select: none;
 }
+
+.zoomable { cursor: zoom-in; }
 
 .r-rare { --c: #3b82f6; }
 .r-epic { --c: #a855f7; }

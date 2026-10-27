@@ -51,7 +51,7 @@
           <h2 class="title-md section-title">Vitrine</h2>
           <div v-if="showcaseCards.length" class="showcase">
             <div v-for="(card, i) in showcaseCards" :key="card.id" class="showcase-card" :style="{ animationDelay: `${i * 90}ms` }">
-              <F1Card :card="card" :finish="player.finishes?.[card.id] ?? 0" />
+              <F1Card :card="card" :finish="player.finishes?.[card.id] ?? 0" :zoom-list="showcaseCards" :zoom-finishes="player.finishes ?? {}" />
               <div class="caption">
                 <span class="muted">{{ RARITY_LABEL[card.rarity] }}</span>
               </div>

@@ -60,6 +60,7 @@
                 :card="card"
                 :count="col.owned.get(card.id)"
                 :finish="col.finishes.get(card.id) ?? 0"
+                :zoom-list="ownedCards"
               />
               <div v-else class="empty-slot">
                 <span class="slot-num mono">{{ card.n }}</span>
@@ -105,6 +106,8 @@ const cards = computed(() => (album.value?.cards ?? []).map((id) => col.byId.get
 const page = ref(0)
 const direction = ref('turn-next')
 const pageCount = computed(() => Math.max(1, Math.ceil(cards.value.length / PER_PAGE)))
+// Visionneuse : flèches entre les cartes possédées de l'album
+const ownedCards = computed(() => cards.value.filter((c) => col.owned.has(c.id)))
 const pageCards = computed(() => cards.value.slice(page.value * PER_PAGE, (page.value + 1) * PER_PAGE))
 const pageComplete = (p) => cards.value.slice(p * PER_PAGE, (p + 1) * PER_PAGE).every((c) => col.owned.has(c.id))
 
