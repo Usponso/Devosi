@@ -73,7 +73,7 @@ Puis, dans le projet Supabase :
 
 Comptes : chacun joue d'abord en invité (session anonyme). « Sauvegarder ma collection » relie la session à un email (code à 6 chiffres, collection conservée) ; « J'ai déjà un compte » permet de se connecter depuis un autre appareil. Seuls les comptes reliés à un email et dotés d'un pseudo apparaissent dans le classement (`/joueurs`) et ont une vitrine publique (`/joueurs/<pseudo>`).
 
-Profil public : chaque joueur choisit un **avatar** parmi ses cartes (cadre aux couleurs de la rareté, reflet Chrome ou Or), un **titre** débloqué en complétant un album et son **écurie favorite** (couleurs du profil). Les **amis** s'ajoutent depuis un profil (demande à accepter) ; l'onglet Amis de `/joueurs` affiche les demandes reçues et envoyées et le classement entre amis.
+Profil public : chaque joueur choisit un **avatar** parmi ses cartes (cadre aux couleurs de la rareté, reflet Chrome ou Or), un **titre** débloqué en complétant un album et son **écurie favorite** (couleurs du profil). Les **amis** s'ajoutent depuis un profil (demande à accepter) ; l'onglet Amis de `/joueurs` affiche les demandes reçues et envoyées et le classement entre amis. La bulle du compte, en haut à droite, donne accès à tout cela depuis n'importe quelle page (profil, personnalisation, amis, collection, compte) ; pour un invité, elle devient « Sauvegarder » ou « Se connecter ».
 
 ## Lancer le projet
 

@@ -85,6 +85,8 @@ import { linkEmail, sendLoginCode, signOut, verifyLinkCode, verifyLoginCode } fr
 
 const props = defineProps({
   open: { type: Boolean, default: false },
+  // login : visiteur sans session (rien à sauvegarder), on propose directement la connexion
+  startMode: { type: String, default: 'link' },
 })
 // done : action terminée avec succès, la fenêtre se ferme et la page affiche le message
 const emit = defineEmits(['close', 'done'])
@@ -104,6 +106,7 @@ watch(
   () => props.open,
   (open) => {
     if (!open) return
+    mode.value = props.startMode
     step.value = 'email'
     code.value = ''
     error.value = ''

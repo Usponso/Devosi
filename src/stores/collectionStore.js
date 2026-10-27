@@ -154,6 +154,8 @@ export const useCollectionStore = defineStore('collection', {
       const status = await peekPackStatus()
       if (status) this.setStatus(status)
       this.noSession = !status
+      // Session existante : profil pour le menu du compte (avatar, pseudo, demandes d'amis)
+      if (status && !this.profile) this.profile = await fetchMyProfile().catch(() => null)
       return Boolean(status)
     },
 

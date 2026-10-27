@@ -37,6 +37,8 @@
           <span class="team-dot"></span>
           <span class="team-chip-name">{{ prefs.favoriteTeam?.name ?? 'Mon écurie' }}</span>
         </button>
+
+        <AccountMenu />
       </div>
     </div>
   </header>
@@ -46,6 +48,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Icon from './Icon.vue'
+import AccountMenu from './AccountMenu.vue'
 import { NAV_ITEMS, isNavActive } from './navItems'
 import { useF1Store } from '@/stores/f1Store'
 import { usePrefsStore } from '@/stores/prefsStore'
