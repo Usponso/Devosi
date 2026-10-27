@@ -11,7 +11,7 @@ function load() {
   }
 }
 
-/** Préférences utilisateur persistées (écurie favorite) */
+/** Préférences utilisateur persistées (écurie favorite, sons) */
 export const usePrefsStore = defineStore('prefs', {
   state: () => {
     const saved = load()
@@ -20,6 +20,7 @@ export const usePrefsStore = defineStore('prefs', {
       // Le sélecteur s'ouvre à la première visite
       pickerOpen: !saved.favoriteTeamId && !saved.skipped,
       skipped: Boolean(saved.skipped),
+      soundOn: saved.soundOn ?? true,
     }
   },
 
@@ -40,11 +41,16 @@ export const usePrefsStore = defineStore('prefs', {
       this.persist()
     },
 
+    toggleSound() {
+      this.soundOn = !this.soundOn
+      this.persist()
+    },
+
     persist() {
       try {
         localStorage.setItem(
           STORAGE_KEY,
-          JSON.stringify({ favoriteTeamId: this.favoriteTeamId, skipped: this.skipped }),
+          JSON.stringify({ favoriteTeamId: this.favoriteTeamId, skipped: this.skipped, soundOn: this.soundOn }),
         )
       } catch {
         /* localStorage indisponible : préférence non conservée */

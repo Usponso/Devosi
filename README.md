@@ -35,7 +35,7 @@ $ node scripts/build-circuits.mjs chemin/vers/f1-circuits.geojson
 
 ## Collection de cartes
 
-Packs gratuits (1 toutes les 30 minutes, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** de la page Packs vend 1 pack pour 150 Pièces, 3 achats par jour au maximum.
+Packs gratuits (1 toutes les 30 minutes, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** de la page Packs vend 1 pack pour 150 Pièces, 3 achats par jour au maximum. L'ouverture est sonorisée (sons synthétisés dans le navigateur avec la Web Audio API, sans fichier audio) ; le bouton haut-parleur de la page Packs coupe le son, et ce choix est mémorisé.
 
 **Classeur** (`/collection`) : 21 albums thématiques façon Panini (champions, vainqueurs, Français, écuries, grille de la saison, Grands Prix par décennie, Monaco, Monza, Silverstone, Spa, courses mythiques, moments). Une carte peut figurer dans plusieurs albums ; un album complet rapporte une fois sa récompense en Pièces (250 à 800) et apparaît sur le profil public. Les albums sont définis dans `scripts/build-catalog.mjs` (`ALBUMS`).
 
@@ -72,6 +72,8 @@ Puis, dans le projet Supabase :
 - Renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` dans les variables d'environnement Netlify.
 
 Comptes : chacun joue d'abord en invité (session anonyme). « Sauvegarder ma collection » relie la session à un email (code à 6 chiffres, collection conservée) ; « J'ai déjà un compte » permet de se connecter depuis un autre appareil. Seuls les comptes reliés à un email et dotés d'un pseudo apparaissent dans le classement (`/joueurs`) et ont une vitrine publique (`/joueurs/<pseudo>`).
+
+Profil public : chaque joueur choisit un **avatar** parmi ses cartes (cadre aux couleurs de la rareté, reflet Chrome ou Or), un **titre** débloqué en complétant un album et son **écurie favorite** (couleurs du profil). Les **amis** s'ajoutent depuis un profil (demande à accepter) ; l'onglet Amis de `/joueurs` affiche les demandes reçues et envoyées et le classement entre amis.
 
 ## Lancer le projet
 

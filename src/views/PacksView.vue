@@ -9,6 +9,15 @@
           <router-link to="/collection" class="btn btn-ghost"><Icon name="album" :size="16" /> Ma collection</router-link>
           <router-link to="/atelier" class="btn btn-ghost"><Icon name="hammer" :size="16" /> Atelier</router-link>
           <router-link to="/joueurs" class="btn btn-ghost"><Icon name="users" :size="16" /> Joueurs</router-link>
+          <button
+            class="btn btn-ghost sound-toggle"
+            :aria-pressed="!prefs.soundOn"
+            :aria-label="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
+            :title="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
+            @click="prefs.toggleSound()"
+          >
+            <Icon :name="prefs.soundOn ? 'volume' : 'volume-off'" :size="16" />
+          </button>
         </div>
       </div>
     </header>
@@ -102,7 +111,17 @@
       <section v-else-if="stage === 'reveal'" class="opening">
         <div class="reveal-head">
           <span class="eyebrow">Carte {{ index + 1 }} / {{ drawn.length }}</span>
-          <button class="link-arrow" @click="skipToSummary">Tout révéler</button>
+          <div class="reveal-actions">
+            <button
+              class="sound-toggle quiet"
+              :aria-label="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
+              :title="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
+              @click="prefs.toggleSound()"
+            >
+              <Icon :name="prefs.soundOn ? 'volume' : 'volume-off'" :size="18" />
+            </button>
+            <button class="link-arrow" @click="skipToSummary">Tout révéler</button>
+          </div>
         </div>
 
         <div class="stage-area" @click="advance">
@@ -149,8 +168,16 @@ import F1Card from '@/components/cards/F1Card.vue'
 import CoinBalance from '@/components/cards/CoinBalance.vue'
 import { RARITIES, packChance, useCollectionStore } from '@/stores/collectionStore'
 import { economyMessage, formatCoins } from '@/utils/cards'
+import { packSounds } from '@/utils/packSounds'
+import { usePrefsStore } from '@/stores/prefsStore'
 
 const col = useCollectionStore()
+const prefs = usePrefsStore()
+
+/** Joue un son de l'ouverture, sauf si le joueur a coupé le son */
+function play(name, ...args) {
+  if (prefs.soundOn) packSounds[name](...args)
+}
 
 const stage = ref('idle') // idle → reveal → summary
 const drawn = ref([])
@@ -215,6 +242,7 @@ async function openPack() {
   if (busy.value || !available.value) return
   busy.value = true
   message.value = ''
+  play('shake')
   try {
     // Petite attente minimale : le pack « tremble » avant de s'ouvrir
     const [cards] = await Promise.all([col.open(), new Promise((r) => setTimeout(r, 650))])
@@ -222,6 +250,7 @@ async function openPack() {
     index.value = 0
     flipped.value = false
     stage.value = 'reveal'
+    play('rip')
   } catch (err) {
     message.value = err.code === 'NO_PACK' ? 'Plus de pack disponible pour le moment.' : "L'ouverture a échoué, réessaie."
     await col.refreshStatus().catch(() => {})
@@ -234,11 +263,13 @@ async function openPack() {
 function advance() {
   if (!flipped.value) {
     flipped.value = true
+    play('flip', current.value.rarity)
     return
   }
   if (index.value + 1 < drawn.value.length) {
     flipped.value = false
     index.value++
+    play('deal')
   } else {
     stage.value = 'summary'
   }
@@ -467,8 +498,25 @@ onUnmounted(() => {
 .reveal-head {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: min(100%, 520px);
 }
+
+.reveal-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sound-toggle.quiet {
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  color: var(--text-muted);
+  transition: color var(--t);
+}
+
+.sound-toggle.quiet:hover { color: var(--text); }
 
 .stage-area {
   position: relative;
