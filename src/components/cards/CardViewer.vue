@@ -27,6 +27,7 @@
               @pointerup="onUp"
               @pointercancel="onUp"
               @dblclick="turn"
+              @dragstart.prevent
             >
               <transition name="card-swap" mode="out-in">
                 <F1Card
@@ -293,8 +294,7 @@ onUnmounted(() => {
   background:
     radial-gradient(ellipse 60% 55% at 30% 45%, color-mix(in srgb, var(--c) 28%, transparent), transparent 70%),
     radial-gradient(ellipse 50% 50% at 75% 60%, color-mix(in srgb, var(--tc, var(--c)) 14%, transparent), transparent 70%),
-    rgb(6 7 9 / 0.95);
-  backdrop-filter: blur(6px);
+    rgb(6 7 9 / 0.96);
 }
 
 .v-close {
@@ -345,16 +345,30 @@ onUnmounted(() => {
 }
 
 .card-zone {
+  position: relative;
   width: min(400px, calc(78dvh * 5 / 7));
   cursor: grab;
   touch-action: none;
   animation: float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Ombre au sol : un dégradé fixe, bien moins coûteux qu'un filter: drop-shadow recalculé à chaque image */
+.card-zone::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -7%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.6), transparent);
+  pointer-events: none;
 }
 
 .card-zone.dragging { cursor: grabbing; animation-play-state: paused; }
-.card-zone :deep(.f1card) { filter: drop-shadow(0 30px 50px rgb(0 0 0 / 0.55)); }
 .card-zone.dragging :deep(.inner) { transition: none; }
-.card-zone :deep(.inner) { transition-duration: 0.5s; }
+.card-zone :deep(.inner) { transition-duration: 0.5s; will-change: transform; }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }

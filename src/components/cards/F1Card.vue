@@ -22,7 +22,7 @@
             </div>
 
             <div class="art">
-              <img v-if="hasPhoto" :src="card.photo.url" alt="" loading="lazy" @error="photoFailed = true" />
+              <img v-if="hasPhoto" :src="card.photo.url" alt="" loading="lazy" draggable="false" @error="photoFailed = true" />
               <CircuitMap v-else-if="hasCircuit" :circuit-id="card.circuitId" small class="art-circuit" />
               <template v-else>
                 <div v-if="card.type === 'moment' && card.quote" class="art-quote">« {{ card.quote }} »</div>
@@ -36,7 +36,7 @@
 
             <div class="name">{{ card.name }}</div>
             <div class="sub">
-              <img v-if="card.flag" :src="`https://flagcdn.com/${card.flag}.svg`" alt="" class="flag" />
+              <img v-if="card.flag" :src="`https://flagcdn.com/${card.flag}.svg`" alt="" class="flag" draggable="false" />
               <span>{{ subLabel }}</span>
             </div>
 
