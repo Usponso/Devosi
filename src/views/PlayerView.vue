@@ -281,11 +281,15 @@ function rarityShare(rarity) {
 
 .section-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px 12px;
+  margin-bottom: 16px;
 }
+
+/* La marge est portée par la ligne : titre et bouton restent alignés */
+.section-row .section-title { margin-bottom: 0; }
 
 .showcase {
   display: grid;

@@ -267,9 +267,9 @@ function close() {
 
 .dialog {
   position: relative;
-  width: min(620px, 100%);
+  width: min(880px, 100%);
   /* Hauteur fixe : la fenêtre ne saute pas en changeant d'onglet ou de filtre */
-  height: min(640px, calc(100dvh - 32px));
+  height: min(780px, calc(100dvh - 32px));
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -312,8 +312,13 @@ function close() {
 .tabs {
   display: flex;
   gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
   border-bottom: 1px solid var(--line);
 }
+
+.tabs::-webkit-scrollbar { display: none; }
+.tabs .tab { flex-shrink: 0; }
 
 .tab {
   display: inline-flex;
@@ -330,13 +335,20 @@ function close() {
 .tab.active { color: var(--text); border-bottom-color: var(--accent); }
 
 .panel {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
-  padding-right: 4px;
+  /* Place pour les croix des emplacements et le contour des cartes choisies */
+  padding: 8px 8px 8px 4px;
 }
+
+/* En-tête et onglets : ne rétrécissent jamais, seul le contenu défile */
+.preview,
+.tabs { flex-shrink: 0; }
 
 .filters {
   display: flex;
@@ -445,8 +457,8 @@ function close() {
 
 .sc-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 14px;
 }
 
 .sc-pick {
@@ -532,6 +544,10 @@ function close() {
 
 @media (max-width: 520px) {
   .dialog { padding: 20px 16px; }
+  .sc-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; }
+  .sc-slots { gap: 6px; }
+  .tabs { gap: 2px; }
+  .tabs .tab { padding: 8px; font-size: 13px; }
   .avatar-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
 }
 </style>
