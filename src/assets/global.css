@@ -415,3 +415,11 @@ img {
 .modal-open .app-main *::after {
   animation-play-state: paused !important;
 }
+
+/* Visionneuse plein écran : la page derrière n'est plus dessinée (cartes animées, reflets…) */
+.viewer-open .app-main,
+.viewer-open .footer,
+.viewer-open .header,
+.viewer-open .tabbar {
+  visibility: hidden;
+}

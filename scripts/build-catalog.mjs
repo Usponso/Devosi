@@ -1,7 +1,7 @@
 /**
  * Génère le catalogue de cartes de la collection :
  * - src/data/catalog.json : toutes les cartes (pilotes, écuries, Grands Prix, moments)
- * - supabase/seed.sql      : la table `cards` (id, type, rareté) utilisée pour tirer les packs
+ * - supabase/seed.sql      : la table `cards` (id, type, rareté, écurie, année) pour les packs et les quêtes
  *
  * Sources : API Jolpica (historique F1 depuis 1950), moments écrits à la main
  * (scripts/catalog/moments.json) et photos sous licence libre de Wikimedia Commons.
@@ -14,6 +14,7 @@ import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { getTeamColor } from '../src/data/teams.js'
 import { NATIONALITY_CODES, COUNTRY_CODES } from '../src/data/nationalities.js'
+import { writeSeed } from './catalog/seed.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const CACHE_DIR = `${ROOT}scripts/catalog/.cache`
@@ -694,22 +695,7 @@ console.log('Albums :', albums.map((a) => `${a.id} (${a.cards.length})`).join(',
 const catalog = { version: 1, generatedAt: new Date().toISOString().slice(0, 10), cards, albums }
 writeFileSync(`${ROOT}src/data/catalog.json`, JSON.stringify(catalog))
 
-mkdirSync(`${ROOT}supabase`, { recursive: true })
-const esc = (s) => s.replace(/'/g, "''")
-const values = cards.map((c) => `('${esc(c.id)}','${c.type}','${c.rarity}')`).join(',\n')
-writeFileSync(
-  `${ROOT}supabase/seed.sql`,
-  `-- Généré par scripts/build-catalog.mjs — ne pas modifier à la main\n` +
-    `insert into public.cards (id, type, rarity) values\n${values}\n` +
-    `on conflict (id) do update set type = excluded.type, rarity = excluded.rarity;\n\n` +
-    `insert into public.albums (id, reward) values\n${albums.map((a) => `('${a.id}',${a.reward})`).join(',\n')}\n` +
-    `on conflict (id) do update set reward = excluded.reward;\n` +
-    `delete from public.albums where id not in (${albums.map((a) => `'${a.id}'`).join(',')});\n` +
-    `delete from public.album_cards;\n` +
-    `insert into public.album_cards (album_id, card_id) values\n` +
-    albums.flatMap((a) => a.cards.map((id) => `('${a.id}','${esc(id)}')`)).join(',\n') +
-    `;\n`,
-)
+writeSeed(ROOT, cards, albums)
 
 const stat = (key) => cards.reduce((acc, c) => ((acc[c[key]] = (acc[c[key]] ?? 0) + 1), acc), {})
 console.log(`${cards.length} cartes`, stat('type'), stat('rarity'))

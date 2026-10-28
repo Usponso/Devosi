@@ -17,7 +17,7 @@
           <template v-if="item.featured">
             <Icon :name="item.icon" :size="15" />
             <span class="featured-label">{{ item.label }}</span>
-            <span v-if="packBadge" class="nav-badge mono" :aria-label="`${packBadge} packs à ouvrir`">{{ packBadge }}</span>
+            <span v-if="packBadge" class="nav-badge mono" :aria-label="`${packBadge} packs ou récompenses en attente`">{{ packBadge }}</span>
           </template>
           <template v-else>{{ item.label }}</template>
         </router-link>

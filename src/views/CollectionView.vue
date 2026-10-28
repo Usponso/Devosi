@@ -1,29 +1,9 @@
 <template>
   <div class="page collection">
     <header class="container page-head">
-      <div class="eyebrow">Collection</div>
+      <div class="eyebrow">Cartes</div>
       <div class="head-row">
-        <h1 class="title-lg">Mes cartes</h1>
-        <div class="head-actions">
-          <CoinBalance />
-          <button class="btn btn-ghost" @click="accountOpen = true">
-            <PlayerAvatar
-              v-if="col.isPlayer"
-              :card-id="col.profile.avatar"
-              :finish="col.finishes.get(col.profile.avatar) ?? 0"
-              :username="col.profile.username"
-              :team="col.profile.team"
-              :size="22"
-            />
-            <Icon v-else :name="col.isGuest ? 'save' : 'user'" :size="16" />
-            {{ col.isGuest ? 'Sauvegarder ma collection' : col.profile?.username ? `@${col.profile.username}` : 'Mon compte' }}
-          </button>
-          <router-link to="/atelier" class="btn btn-ghost"><Icon name="hammer" :size="16" /> Atelier</router-link>
-          <router-link to="/packs" class="btn">
-            <Icon name="package" :size="16" />
-            Ouvrir des packs<span v-if="col.status?.available" class="mono"> ({{ col.status.available }})</span>
-          </router-link>
-        </div>
+        <h1 class="title-lg">Ma collection</h1>
       </div>
 
       <!-- Complétion -->
@@ -57,17 +37,21 @@
                 <template v-else>Tes 5 cartes préférées, visibles par tous les joueurs.</template>
               </p>
             </div>
-            <router-link v-if="col.profile?.username" :to="`/joueurs/${col.profile.username}`" class="link-arrow">Voir ma vitrine publique →</router-link>
-            <button v-else class="link-arrow" @click="accountOpen = true">{{ col.isGuest ? 'Sauvegarder ma collection →' : 'Choisir un pseudo →' }}</button>
+            <div class="showcase-actions">
+              <button class="btn btn-ghost" @click="editorOpen = true"><Icon name="edit" :size="16" /> Modifier ma vitrine</button>
+              <router-link v-if="col.profile?.username" :to="`/joueurs/${col.profile.username}`" class="link-arrow">Voir ma vitrine publique →</router-link>
+              <button v-else class="link-arrow" @click="accountOpen = true">{{ col.isGuest ? 'Sauvegarder ma collection →' : 'Choisir un pseudo →' }}</button>
+            </div>
           </div>
           <div class="showcase-slots">
             <template v-for="i in 5" :key="i">
               <div v-if="showcaseCards[i - 1]" class="slot filled">
                 <F1Card :card="showcaseCards[i - 1]" :zoom-list="showcaseCards" />
               </div>
-              <div v-else class="slot empty-slot">
-                <span class="muted">Ouvre une de tes cartes puis « Mettre en vitrine »</span>
-              </div>
+              <button v-else class="slot empty-slot" @click="editorOpen = true">
+                <Icon name="plus" :size="20" />
+                <span class="muted">Ajouter une carte</span>
+              </button>
             </template>
           </div>
         </section>
@@ -143,6 +127,7 @@
 
 
     <AccountDialog :open="accountOpen" @close="accountOpen = false" @done="notify" />
+    <ProfileEditor :open="editorOpen" initial-tab="showcase" @close="editorOpen = false" />
 
     <transition name="toast">
       <div v-if="notice" class="toast" role="status"><Icon name="check" :size="16" /> {{ notice }}</div>
@@ -154,9 +139,8 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
-import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
+import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import AccountDialog from '@/components/cards/AccountDialog.vue'
-import CoinBalance from '@/components/cards/CoinBalance.vue'
 import AlbumShelf from '@/components/cards/AlbumShelf.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CARD_TYPES, RARITIES, useCollectionStore } from '@/stores/collectionStore'
@@ -168,6 +152,7 @@ const rarities = ref(new Set())
 const ownedOnly = ref(false)
 const query = ref('')
 const accountOpen = ref(false)
+const editorOpen = ref(false)
 
 // Vue : classeur d'albums (par défaut) ou toutes les cartes
 const route = useRoute()
@@ -315,12 +300,26 @@ onUnmounted(() => {
 .slot { aspect-ratio: 5 / 7; border-radius: 10px; }
 
 .empty-slot {
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 12px;
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
+  color: var(--text-muted);
   border: 1px dashed var(--line-strong);
+  transition: border-color var(--t), color var(--t);
+}
+
+.empty-slot:hover { border-color: var(--accent); color: var(--text); }
+
+.showcase-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
 }
 
 /* Filtres */

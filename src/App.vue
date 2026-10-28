@@ -19,6 +19,7 @@
   </div>
 
   <main class="app-main">
+    <CardsNav v-if="inCards" />
     <router-view v-slot="{ Component, route }">
       <transition name="page" mode="out-in">
         <component :is="Component" :key="route.path" />
@@ -40,17 +41,24 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import MobileTabBar from '@/components/MobileTabBar.vue'
 import TeamPicker from '@/components/TeamPicker.vue'
 import CardViewer from '@/components/cards/CardViewer.vue'
+import CardsNav from '@/components/cards/CardsNav.vue'
+import { CARDS_PATHS } from '@/components/navItems'
 import { useF1Store } from '@/stores/f1Store'
 import { useTeamTheme } from '@/composables/useTeamTheme'
 import { onRevalidate } from '@/services/http'
 
 const store = useF1Store()
 useTeamTheme()
+
+// Section Cartes : barre d'onglets commune sous l'en-tête
+const route = useRoute()
+const inCards = computed(() => CARDS_PATHS.some((p) => route.path.startsWith(p)))
 
 // Si une donnée servie depuis un cache périmé a changé, on recharge silencieusement
 let refreshTimer = null

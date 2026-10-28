@@ -5,10 +5,6 @@
       <div class="head-row">
         <h1 class="title-lg">Packs</h1>
         <div class="head-links">
-          <CoinBalance />
-          <router-link to="/collection" class="btn btn-ghost"><Icon name="album" :size="16" /> Ma collection</router-link>
-          <router-link to="/atelier" class="btn btn-ghost"><Icon name="hammer" :size="16" /> Atelier</router-link>
-          <router-link to="/joueurs" class="btn btn-ghost"><Icon name="users" :size="16" /> Joueurs</router-link>
           <button
             class="btn btn-ghost sound-toggle"
             :aria-pressed="!prefs.soundOn"
@@ -35,12 +31,12 @@
       <section v-else-if="stage === 'idle'" class="reserve card">
         <button
           class="stack"
-          :class="{ empty: !available }"
-          :disabled="!available || busy"
+          :class="{ empty: !total, special: special > 0 }"
+          :disabled="!total || busy"
           aria-label="Ouvrir un pack"
           @click="openPack"
         >
-          <span v-for="i in Math.min(3, Math.max(available, 1))" :key="i" class="pack" :style="{ '--i': i - 1 }">
+          <span v-for="i in Math.min(3, Math.max(total, 1))" :key="i" class="pack" :style="{ '--i': i - 1 }">
             <span class="pack-brand">DEVOSI</span>
             <span class="pack-title">F1 PACK</span>
             <span class="pack-sub">5 cartes</span>
@@ -48,7 +44,7 @@
         </button>
 
         <div class="reserve-info">
-          <div class="eyebrow">Packs disponibles</div>
+          <div class="eyebrow">Réserve · 1 pack toutes les 30 min</div>
           <div class="count-row">
             <span class="count mono">{{ available }}</span>
             <span class="muted">/ {{ max }}</span>
@@ -58,11 +54,23 @@
           </div>
           <p class="dim timer">
             <template v-if="available >= max">Réserve pleine : ouvre un pack pour relancer le compteur.</template>
-            <template v-else>Prochain pack dans <span class="mono">{{ countdown }}</span> · 1 pack toutes les 30 min</template>
+            <template v-else>Prochain pack dans <span class="mono">{{ countdown }}</span></template>
           </p>
+
+          <!-- Packs gagnés : réserve bonus sans plafond, packs spéciaux de la série -->
+          <div v-if="bonus || special" class="extra-reserves">
+            <span v-if="special" class="reserve-chip special">
+              <Icon name="star" :size="14" /> {{ special }} pack{{ special > 1 ? 's' : '' }} spécia{{ special > 1 ? 'ux' : 'l' }} · Épique garantie
+            </span>
+            <span v-if="bonus" class="reserve-chip bonus">
+              <Icon name="gift" :size="14" /> Réserve bonus : <b class="mono">{{ bonus }}</b> pack{{ bonus > 1 ? 's' : '' }}
+            </span>
+          </div>
+
           <div class="actions">
-            <button class="btn" :disabled="!available || busy" @click="openPack">
-              <Icon name="package" :size="16" /> {{ busy ? 'Ouverture…' : 'Ouvrir un pack' }}
+            <button class="btn" :disabled="!total || busy" @click="openPack">
+              <Icon name="package" :size="16" />
+              {{ busy ? 'Ouverture…' : special ? 'Ouvrir le pack spécial' : total > 1 ? `Ouvrir un pack (${total})` : 'Ouvrir un pack' }}
             </button>
             <span v-if="col.status" class="muted pity">
               Légendaire garantie dans <b>{{ col.status.pity_left }}</b> pack{{ col.status.pity_left > 1 ? 's' : '' }}
@@ -71,21 +79,25 @@
           <p v-if="message" class="message">{{ message }}</p>
         </div>
 
-        <!-- Boutique : un pack contre des Pièces -->
-        <div class="shop">
-          <Icon name="coin" :size="26" class="shop-coin" />
-          <div class="shop-text">
-            <div class="shop-title">Boutique · 1 pack pour <span class="mono">{{ formatCoins(shop.price) }}</span> Pièces</div>
-            <div class="muted small">
-              Tu as <b class="mono">{{ formatCoins(col.coins) }}</b> Pièces ·
-              {{ shop.left }}/{{ shop.daily }} achat{{ shop.daily > 1 ? 's' : '' }} restant{{ shop.left > 1 ? 's' : '' }} aujourd'hui ·
-              <router-link to="/atelier" class="link-arrow">gagner des Pièces →</router-link>
-            </div>
-            <p v-if="shopMessage" class="small" :class="shopError ? 'error' : 'accent'">{{ shopMessage }}</p>
-          </div>
-          <button class="btn" :class="{ 'btn-ghost': !canBuy }" :disabled="busy || !canBuy" :title="canBuy ? null : buyBlocker" @click="buy">
-            <Icon name="cart" :size="16" /> Acheter un pack
-          </button>
+        <!-- Raccourcis : quêtes du jour et boutique -->
+        <div class="shortcuts">
+          <router-link to="/quetes" class="shortcut" :class="{ ready: col.questsReady }">
+            <Icon name="trophy" :size="20" />
+            <span class="sc-text">
+              <span class="sc-title">Quêtes du jour</span>
+              <span class="muted small">{{ questsSummary }}</span>
+            </span>
+            <span v-if="col.questsReady" class="sc-badge mono">{{ col.questsReady }}</span>
+            <Icon name="chevron-right" :size="16" class="sc-arrow" />
+          </router-link>
+          <router-link to="/boutique" class="shortcut">
+            <Icon name="cart" :size="20" />
+            <span class="sc-text">
+              <span class="sc-title">Boutique</span>
+              <span class="muted small">1 pack pour {{ formatCoins(shop.price) }} Pièces · {{ shop.left }}/{{ shop.daily }} aujourd'hui</span>
+            </span>
+            <Icon name="chevron-right" :size="16" class="sc-arrow" />
+          </router-link>
         </div>
 
         <div class="odds">
@@ -110,7 +122,11 @@
       <!-- Révélation carte par carte -->
       <section v-else-if="stage === 'reveal'" class="opening">
         <div class="reveal-head">
-          <span class="eyebrow">Carte {{ index + 1 }} / {{ drawn.length }}</span>
+          <span class="eyebrow">
+            Carte {{ index + 1 }} / {{ drawn.length }}
+            <span v-if="drawn.source === 'special'" class="source-tag special">Pack spécial</span>
+            <span v-else-if="drawn.source === 'bonus'" class="source-tag">Pack bonus</span>
+          </span>
           <div class="reveal-actions">
             <button
               class="sound-toggle quiet"
@@ -149,7 +165,7 @@
         <div class="summary-head">
           <h2 class="title-md">{{ newCount ? `${newCount} nouvelle${newCount > 1 ? 's' : ''} carte${newCount > 1 ? 's' : ''} !` : 'Pack ouvert' }}</h2>
           <div class="actions">
-            <button v-if="available" class="btn" @click="openPack">Ouvrir un autre pack ({{ available }})</button>
+            <button v-if="total" class="btn" @click="openPack">Ouvrir un autre pack ({{ total }})</button>
             <button class="btn btn-ghost" @click="stage = 'idle'">Retour aux packs</button>
           </div>
         </div>
@@ -162,12 +178,11 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
-import CoinBalance from '@/components/cards/CoinBalance.vue'
 import { RARITIES, packChance, useCollectionStore } from '@/stores/collectionStore'
-import { economyMessage, formatCoins } from '@/utils/cards'
+import { formatCoins } from '@/utils/cards'
 import { packSounds } from '@/utils/packSounds'
 import { usePrefsStore } from '@/stores/prefsStore'
 
@@ -186,35 +201,24 @@ const flipped = ref(false)
 const busy = ref(false)
 const message = ref('')
 
+// Réserve qui se recharge (10 max), réserve bonus et packs spéciaux
 const available = computed(() => col.status?.available ?? 0)
+const bonus = computed(() => col.status?.bonus ?? 0)
+const special = computed(() => col.status?.special ?? 0)
+const total = computed(() => col.packsToOpen)
 const max = computed(() => col.status?.max ?? 10)
 const current = computed(() => drawn.value[index.value])
 const newCount = computed(() => drawn.value.filter((c) => c.isNew).length)
 
-// Boutique
+// Raccourcis : boutique et avancement des quêtes du jour
 const shop = computed(() => col.status?.shop ?? { price: 150, daily: 3, left: 0 })
-const canBuy = computed(() => shop.value.left > 0 && available.value < max.value && col.coins >= shop.value.price)
-const buyBlocker = computed(() => {
-  if (shop.value.left <= 0) return "Limite d'achats atteinte pour aujourd'hui"
-  if (available.value >= max.value) return 'Réserve de packs pleine'
-  return `Encore ${formatCoins(shop.value.price - col.coins)} Pièces à gagner`
+const questsSummary = computed(() => {
+  const quests = col.quests?.quests
+  if (!quests) return '4 quêtes par jour : Pièces et packs bonus'
+  const done = quests.filter((q) => q.claimed).length
+  if (col.questsReady) return `${col.questsReady} récompense${col.questsReady > 1 ? 's' : ''} à récupérer`
+  return done === 4 ? 'Toutes terminées, reviens demain' : `${done} / 4 terminées`
 })
-const shopMessage = ref('')
-const shopError = ref(false)
-
-async function buy() {
-  busy.value = true
-  shopError.value = false
-  try {
-    await col.buyPack()
-    shopMessage.value = 'Pack ajouté à ta réserve !'
-  } catch (err) {
-    shopError.value = true
-    shopMessage.value = economyMessage(err)
-  } finally {
-    busy.value = false
-  }
-}
 
 // Compte à rebours vers le prochain pack (heure du serveur)
 const now = ref(Date.now())
@@ -239,7 +243,7 @@ async function tick() {
 }
 
 async function openPack() {
-  if (busy.value || !available.value) return
+  if (busy.value || !total.value) return
   busy.value = true
   message.value = ''
   try {
@@ -299,6 +303,13 @@ function onKey(e) {
     advance()
   }
 }
+
+// Quêtes : leur avancement s'affiche dans le raccourci
+watch(
+  () => col.ready,
+  (ready) => ready && col.loadQuests().catch(() => {}),
+  { immediate: true },
+)
 
 onMounted(() => {
   col.init()
@@ -420,29 +431,80 @@ onUnmounted(() => {
 .pity b { color: #e8c15a; }
 .message { margin-top: 10px; color: var(--danger); font-size: 14px; }
 
-.shop {
+.shortcuts {
   grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 18px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgb(232 193 90 / 0.25);
-  background: linear-gradient(90deg, rgb(232 193 90 / 0.1), transparent 70%), var(--surface-2);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 10px;
 }
 
-.shop-coin { color: #e8c15a; }
-.shop-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.shop-title { font-weight: 700; }
-.shop .small { font-size: 13px; }
-.shop .btn:disabled { opacity: 0.55; cursor: default; }
+.shortcut {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  transition: border-color var(--t), transform var(--t);
+}
 
-@media (max-width: 640px) {
-  .shop { flex-wrap: wrap; }
-  .shop .btn { width: 100%; }
+.shortcut:hover { border-color: var(--accent-line); transform: translateY(-1px); }
+.shortcut > .icon:first-child { color: var(--accent); flex-shrink: 0; }
+.shortcut.ready { border-color: rgb(232 193 90 / 0.45); background: rgb(232 193 90 / 0.07); }
+.sc-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sc-title { font-weight: 700; }
+.sc-text .small { font-size: 13px; }
+.sc-arrow { color: var(--text-muted); flex-shrink: 0; }
+
+.sc-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--accent);
 }
 
 .odds { grid-column: 1 / -1; }
+
+.extra-reserves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.reserve-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+}
+
+.reserve-chip.bonus { color: #ffe08a; border-color: rgb(232 193 90 / 0.4); background: rgb(232 193 90 / 0.08); }
+.reserve-chip.special { color: #d9c2ff; border-color: rgb(168 85 247 / 0.5); background: rgb(168 85 247 / 0.12); }
+
+.source-tag {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  color: #ffe08a;
+  background: rgb(232 193 90 / 0.12);
+}
+
+.source-tag.special { color: #d9c2ff; background: rgb(168 85 247 / 0.16); }
+.stack.special .pack { box-shadow: 0 0 22px rgb(168 85 247 / 0.45); }
 
 .odds-intro { font-size: 13px; margin: 4px 0 10px; }
 

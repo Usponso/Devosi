@@ -4,7 +4,6 @@
       <div class="eyebrow">Collection</div>
       <div class="head-row">
         <h1 class="title-lg">Joueurs</h1>
-        <router-link to="/collection" class="btn btn-ghost"><Icon name="album" :size="16" /> Ma collection</router-link>
       </div>
       <p class="dim">
         Classement par score de collection : chaque carte distincte rapporte des points selon sa rareté

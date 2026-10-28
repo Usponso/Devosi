@@ -48,7 +48,12 @@
       <div class="container body">
         <!-- Vitrine -->
         <section>
-          <h2 class="title-md section-title">Vitrine</h2>
+          <div class="section-row">
+            <h2 class="title-md section-title">Vitrine</h2>
+            <button v-if="player.friendship === 'self'" class="btn btn-ghost" @click="editing = true">
+              <Icon name="edit" :size="16" /> Modifier ma vitrine
+            </button>
+          </div>
           <div v-if="showcaseCards.length" class="showcase">
             <div v-for="(card, i) in showcaseCards" :key="card.id" class="showcase-card" :style="{ animationDelay: `${i * 90}ms` }">
               <F1Card :card="card" :finish="player.finishes?.[card.id] ?? 0" :zoom-list="showcaseCards" :zoom-finishes="player.finishes ?? {}" />
@@ -273,6 +278,14 @@ function rarityShare(rarity) {
 }
 
 .section-title { margin-bottom: 16px; }
+
+.section-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 
 .showcase {
   display: grid;

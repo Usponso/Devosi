@@ -4,19 +4,13 @@
       <div class="eyebrow">Cartes · doublons</div>
       <div class="head-row">
         <h1 class="title-lg">Atelier</h1>
-        <div class="head-links">
-          <router-link to="/collection" class="btn btn-ghost"><Icon name="album" :size="16" /> Ma collection</router-link>
-          <router-link to="/packs" class="btn btn-ghost">
-            <Icon name="package" :size="16" /> Packs<span v-if="col.status?.available" class="mono"> ({{ col.status.available }})</span>
-          </router-link>
-        </div>
       </div>
 
       <div class="wallet card">
         <Icon name="coin" :size="28" class="wallet-icon" />
         <div>
           <div class="wallet-amount mono">{{ formatCoins(col.coins) }}</div>
-          <div class="muted small">Pièces · à dépenser en fabrication ou en <router-link to="/packs" class="link-arrow">packs</router-link></div>
+          <div class="muted small">Pièces · à dépenser en fabrication ou à la <router-link to="/boutique" class="link-arrow">boutique</router-link></div>
         </div>
         <div class="wallet-dups">
           <span class="mono">{{ formatCoins(totalDuplicates) }}</span>

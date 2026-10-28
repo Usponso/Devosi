@@ -1,3 +1,6 @@
+/** Pages de la section Cartes (barre d'onglets commune, lien « Cartes » actif) */
+export const CARDS_PATHS = ['/packs', '/quetes', '/boutique', '/collection', '/atelier', '/joueurs']
+
 export const NAV_ITEMS = [
   { to: '/', label: 'Accueil', icon: 'home', exact: true },
   { to: '/standings', label: 'Classements', icon: 'trophy' },
@@ -5,7 +8,7 @@ export const NAV_ITEMS = [
   { to: '/drivers', label: 'Pilotes', icon: 'helmet' },
   { to: '/teams', label: 'Écuries', icon: 'shield' },
   // Mis en avant dans les menus (reflet holographique, badge des packs à ouvrir)
-  { to: '/packs', label: 'Cartes', icon: 'cards', featured: true, match: ['/packs', '/collection', '/joueurs', '/atelier'] },
+  { to: '/packs', label: 'Cartes', icon: 'cards', featured: true, match: CARDS_PATHS },
 ]
 
 /** Onglet actif pour un chemin donné */

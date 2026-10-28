@@ -3,7 +3,10 @@ import { usePrefsStore } from '@/stores/prefsStore'
 import {
   buyPack,
   claimAlbum,
+  claimQuest,
   fetchMyAlbums,
+  fetchQuests,
+  rerollQuest,
   craftCard,
   currentUser,
   recycleCard,
@@ -78,6 +81,7 @@ export const useCollectionStore = defineStore('collection', {
     status: null, // réserve de packs (serveur)
     profile: null, // { username, showcase, avatar, title, team, permanent, requests }
     friends: null, // { friends, incoming, outgoing } (chargé à la demande)
+    quests: null, // quêtes du jour (chargées par la page Packs)
     email: null, // email du compte (null pour une session invité)
     clockOffset: 0, // écart horloge serveur - horloge locale (ms)
     loading: false,
@@ -110,8 +114,16 @@ export const useCollectionStore = defineStore('collection', {
         return s.complete && !s.claimed
       }).length
     },
-    /** Packs à ouvrir (menu) : la réserve, ou les 3 packs offerts à un nouveau visiteur */
-    packBadge: (state) => (state.status ? state.status.available : state.noSession ? 3 : 0),
+    /** Tous les packs à ouvrir : réserve rechargée (10 max), réserve bonus et packs spéciaux */
+    packsToOpen: (state) =>
+      state.status ? state.status.available + (state.status.bonus ?? 0) + (state.status.special ?? 0) : 0,
+    /** Quêtes terminées dont la récompense attend */
+    questsReady: (state) => state.status?.quests_ready ?? 0,
+    /** Pastille du menu : packs à ouvrir et récompenses de quêtes (3 packs offerts à un nouveau visiteur) */
+    packBadge(state) {
+      if (!state.status) return state.noSession ? 3 : 0
+      return this.packsToOpen + this.questsReady
+    },
     /** Doublons par rareté : { common: { copies, value }, … } */
     duplicates(state) {
       const out = Object.fromEntries(RARITIES.map((r) => [r.id, { copies: 0, value: 0 }]))
@@ -200,6 +212,7 @@ export const useCollectionStore = defineStore('collection', {
       this.status = null
       this.profile = null
       this.friends = null
+      this.quests = null
       this.email = null
       this.loading = false
       await this.init()
@@ -227,6 +240,32 @@ export const useCollectionStore = defineStore('collection', {
 
     async setTeam(teamId) {
       this.profile = await saveTeam(teamId)
+    },
+
+    async loadQuests() {
+      const { status, ...quests } = await fetchQuests()
+      this.quests = quests
+      this.setStatus(status)
+      return quests
+    },
+
+    /** Après une action du jeu : les quêtes affichées ont pu avancer */
+    refreshQuests() {
+      if (this.quests) this.loadQuests().catch(() => {})
+    },
+
+    /** Récupère la récompense d'une quête ; renvoie { reward, bonus } */
+    async claimQuest(slot) {
+      const { status, reward, bonus, ...quests } = await claimQuest(slot)
+      this.quests = quests
+      this.setStatus(status)
+      return { reward, bonus }
+    },
+
+    async rerollQuest(slot) {
+      const { status, ...quests } = await rerollQuest(slot)
+      this.quests = quests
+      this.setStatus(status)
     },
 
     async loadFriends() {
@@ -264,6 +303,7 @@ export const useCollectionStore = defineStore('collection', {
       const res = await recycleCard(cardId, qty)
       this.applyCounts(res.cards)
       this.setStatus(res.status)
+      this.refreshQuests()
       return res.gained
     },
 
@@ -271,6 +311,7 @@ export const useCollectionStore = defineStore('collection', {
       const res = await recycleDuplicates(keep, rarities)
       this.applyCounts(res.cards)
       this.setStatus(res.status)
+      this.refreshQuests()
       return res.gained
     },
 
@@ -281,6 +322,7 @@ export const useCollectionStore = defineStore('collection', {
     async craft(cardId) {
       const res = await craftCard(cardId)
       this.setStatus(res.status)
+      this.refreshQuests()
       return this.addCard(res.card)
     },
 
@@ -289,6 +331,7 @@ export const useCollectionStore = defineStore('collection', {
       const res = await tradeUp(rarity)
       this.applyCounts(res.cards)
       this.setStatus(res.status)
+      this.refreshQuests()
       return this.addCard(res.card)
     },
 
@@ -298,6 +341,9 @@ export const useCollectionStore = defineStore('collection', {
       const finishes = new Map(this.finishes)
       finishes.set(cardId, res.finish)
       this.finishes = finishes
+      // La finition fait avancer les quêtes : l'état (récompenses en attente) est relu
+      this.refreshStatus().catch(() => {})
+      this.refreshQuests()
       return res.finish
     },
 
@@ -309,11 +355,15 @@ export const useCollectionStore = defineStore('collection', {
       return res.reward
     },
 
-    /** Ouvre un pack ; renvoie les cartes du catalogue, de la moins rare à la plus rare */
+    /**
+     * Ouvre un pack ; renvoie les cartes du catalogue, de la moins rare à la plus rare.
+     * `source` du pack ouvert sur le tableau renvoyé (special, regular, bonus).
+     */
     async open() {
       await this.loadCatalog()
-      const { cards, status } = await openPack()
+      const { cards, status, source } = await openPack()
       this.setStatus(status)
+      this.refreshQuests()
       const owned = new Map(this.owned)
       const drawn = cards.map((c) => {
         owned.set(c.id, (owned.get(c.id) ?? 0) + 1)
@@ -321,7 +371,7 @@ export const useCollectionStore = defineStore('collection', {
       })
       this.owned = owned
       // Suspense : la carte la plus rare est révélée en dernier
-      return drawn.sort((a, b) => RARITY_RANK[a.rarity] - RARITY_RANK[b.rarity])
+      return Object.assign(drawn.sort((a, b) => RARITY_RANK[a.rarity] - RARITY_RANK[b.rarity]), { source })
     },
   },
 })

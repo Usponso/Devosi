@@ -15,7 +15,7 @@
           />
           <div class="preview-text">
             <div class="eyebrow">Mon profil</div>
-            <h2 id="profile-title" class="title-md">@{{ profile.username }}</h2>
+            <h2 id="profile-title" class="title-md">{{ profile.username ? `@${profile.username}` : 'Ma collection' }}</h2>
             <div v-if="currentTitle" class="title-badge">{{ currentTitle }}</div>
           </div>
         </div>
@@ -26,8 +26,47 @@
           </button>
         </div>
 
+        <!-- Vitrine : 5 cartes affichées sur le profil public -->
+        <section v-if="tab === 'showcase'" class="panel">
+          <p class="muted small">Tes 5 cartes préférées, en tête de ton profil public. Touche une carte pour l'ajouter ou la retirer.</p>
+          <div class="sc-slots">
+            <div v-for="i in 5" :key="i" class="sc-slot" :class="{ filled: showcaseCards[i - 1] }">
+              <template v-if="showcaseCards[i - 1]">
+                <F1Card :card="showcaseCards[i - 1]" :finish="col.finishes.get(showcaseCards[i - 1].id) ?? 0" :interactive="false" :zoomable="false" />
+                <button class="sc-remove" :disabled="busy" :aria-label="`Retirer ${showcaseCards[i - 1].name} de la vitrine`" @click="toggleShowcase(showcaseCards[i - 1].id)">
+                  <Icon name="x" :size="14" />
+                </button>
+              </template>
+              <span v-else class="mono">{{ i }}</span>
+            </div>
+          </div>
+          <div class="filters">
+            <div class="chips">
+              <button v-for="t in CARD_TYPES" :key="t.id" class="chip" :class="{ active: type === t.id }" @click="type = t.id">{{ t.label }}</button>
+            </div>
+            <input v-model.trim="search" class="input" type="search" placeholder="Rechercher" aria-label="Rechercher une carte" />
+          </div>
+          <div class="sc-grid">
+            <button
+              v-for="card in visibleCards"
+              :key="card.id"
+              class="sc-pick"
+              :class="{ selected: col.showcase.includes(card.id) }"
+              :disabled="busy"
+              :aria-pressed="col.showcase.includes(card.id)"
+              :aria-label="card.name"
+              @click="toggleShowcase(card.id)"
+            >
+              <F1Card :card="card" :finish="col.finishes.get(card.id) ?? 0" :interactive="false" :zoomable="false" />
+              <span v-if="col.showcase.includes(card.id)" class="sc-order mono">{{ col.showcase.indexOf(card.id) + 1 }}</span>
+            </button>
+          </div>
+          <p v-if="!ownedOfType.length" class="muted small">Aucune carte de ce type pour l'instant.</p>
+          <button v-if="ownedOfType.length > limit" class="btn btn-ghost more" @click="limit += 48">Afficher plus</button>
+        </section>
+
         <!-- Avatar -->
-        <section v-if="tab === 'avatar'" class="panel">
+        <section v-else-if="tab === 'avatar'" class="panel">
           <p class="muted small">La photo d'une de tes cartes, dans un cadre aux couleurs de sa rareté. Les finitions Chrome et Or brillent aussi.</p>
           <div class="filters">
             <div class="chips">
@@ -110,6 +149,7 @@
 import { computed, onUnmounted, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
+import F1Card from '@/components/cards/F1Card.vue'
 import { PICKABLE_TEAMS } from '@/data/teams'
 import { CARD_TYPES, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 import { usePrefsStore } from '@/stores/prefsStore'
@@ -117,10 +157,13 @@ import { albumTitle, economyMessage } from '@/utils/cards'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
+  /** Onglet affiché à l'ouverture : showcase, avatar, title ou team */
+  initialTab: { type: String, default: 'showcase' },
 })
 const emit = defineEmits(['close'])
 
 const TABS = [
+  { id: 'showcase', label: 'Vitrine', icon: 'star' },
   { id: 'avatar', label: 'Avatar', icon: 'user' },
   { id: 'title', label: 'Titre', icon: 'trophy' },
   { id: 'team', label: 'Écurie', icon: 'flag' },
@@ -129,7 +172,7 @@ const TABS = [
 const col = useCollectionStore()
 const prefs = usePrefsStore()
 
-const tab = ref('avatar')
+const tab = ref(props.initialTab)
 const type = ref('driver')
 const search = ref('')
 const limit = ref(48)
@@ -147,6 +190,19 @@ const ownedOfType = computed(() => {
     .sort((a, b) => RARITY_RANK[b.rarity] - RARITY_RANK[a.rarity] || a.name.localeCompare(b.name))
 })
 const visibleCards = computed(() => ownedOfType.value.slice(0, limit.value))
+const showcaseCards = computed(() => col.showcase.map((id) => col.byId.get(id)).filter(Boolean))
+
+async function toggleShowcase(cardId) {
+  busy.value = true
+  error.value = ''
+  try {
+    await col.toggleShowcase(cardId)
+  } catch (err) {
+    error.value = err.code === 'SHOWCASE_FULL' ? 'Ta vitrine est pleine : retire d’abord une carte.' : economyMessage(err)
+  } finally {
+    busy.value = false
+  }
+}
 
 const titles = computed(() =>
   col.albums.map((album) => {
@@ -168,7 +224,10 @@ watch(
   () => props.open,
   (open) => {
     document.documentElement.classList.toggle('modal-open', open)
-    if (open) error.value = ''
+    if (open) {
+      error.value = ''
+      tab.value = props.initialTab
+    }
   },
 )
 onUnmounted(() => document.documentElement.classList.remove('modal-open'))
@@ -346,6 +405,76 @@ function close() {
 }
 
 .more { align-self: center; }
+
+.sc-slots {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sc-slot {
+  position: relative;
+  aspect-ratio: 5 / 7;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  border: 1px dashed var(--line-strong);
+}
+
+/* La carte prend la largeur de l'emplacement (centrée, elle n'aurait aucune largeur) */
+.sc-slot.filled { display: block; place-items: normal; border: none; }
+
+.sc-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--text);
+  background: var(--surface-3);
+  border: 1px solid var(--line-strong);
+}
+
+.sc-remove:hover { background: var(--danger); color: #fff; }
+
+.sc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+}
+
+.sc-pick {
+  position: relative;
+  border-radius: 8px;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color var(--t), transform var(--t);
+}
+
+.sc-pick:hover { transform: translateY(-2px); }
+.sc-pick.selected { outline-color: var(--accent); }
+
+.sc-order {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 2;
+  min-width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--accent);
+}
 
 .title-list,
 .team-grid {

@@ -33,7 +33,7 @@ let timer = null
 let refreshing = false
 
 // Nouveau visiteur (pas encore de session) : les 3 packs offerts au départ
-const available = computed(() => (hasSession.value ? col.status?.available ?? 0 : 3))
+const available = computed(() => (hasSession.value ? col.packsToOpen : 3))
 const max = computed(() => col.status?.max ?? 10)
 const stackSize = computed(() => Math.min(3, Math.max(available.value, 1)))
 
@@ -51,7 +51,8 @@ const title = computed(() => {
 
 const subtitle = computed(() => {
   if (!hasSession.value) return 'Pilotes, écuries, Grands Prix et moments de légende depuis 1950'
-  if (available.value >= max.value) return 'Réserve pleine : ouvre-les pour continuer à en recevoir'
+  if (col.questsReady) return `${col.questsReady} quête${col.questsReady > 1 ? 's' : ''} terminée${col.questsReady > 1 ? 's' : ''} : récupère ta récompense`
+  if ((col.status?.available ?? 0) >= max.value) return 'Réserve pleine : ouvre-les pour continuer à en recevoir'
   return countdown.value ? `Prochain pack dans ${countdown.value}` : '1 pack offert toutes les 30 min'
 })
 

@@ -37,8 +37,11 @@
             <div class="menu-id">
               <div class="menu-name">@{{ col.profile.username }}</div>
               <div v-if="title" class="menu-title">{{ title }}</div>
-              <div v-if="col.status?.available" class="menu-packs muted">
-                <Icon name="package" :size="13" /> {{ col.status.available }} pack{{ col.status.available > 1 ? 's' : '' }} à ouvrir
+              <div v-if="col.packsToOpen" class="menu-packs muted">
+                <Icon name="package" :size="13" /> {{ col.packsToOpen }} pack{{ col.packsToOpen > 1 ? 's' : '' }} à ouvrir
+              </div>
+              <div v-if="col.questsReady" class="menu-packs muted">
+                <Icon name="trophy" :size="13" /> {{ col.questsReady }} quête{{ col.questsReady > 1 ? 's' : '' }} à récupérer
               </div>
             </div>
           </div>

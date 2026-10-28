@@ -9,7 +9,7 @@
     >
       <span v-if="item.featured" class="featured-icon">
         <Icon :name="item.icon" :size="20" />
-        <span v-if="packBadge" class="tab-badge mono" :aria-label="`${packBadge} packs à ouvrir`">{{ packBadge }}</span>
+        <span v-if="packBadge" class="tab-badge mono" :aria-label="`${packBadge} packs ou récompenses en attente`">{{ packBadge }}</span>
       </span>
       <Icon v-else :name="item.icon" :size="22" />
       <span :class="{ 'featured-label': item.featured }">{{ item.label }}</span>

@@ -60,7 +60,10 @@ export async function peekPackStatus() {
   return fetchPackStatus()
 }
 
-/** { cards: [{ id, rarity, is_new }], status } — erreur `NO_PACK` si la réserve est vide */
+/**
+ * { cards: [{ id, rarity, is_new }], source, status } — erreur `NO_PACK` si aucun pack.
+ * `source` : special (Épique garantie), regular (réserve rechargée) ou bonus.
+ */
 export async function openPack() {
   await ensureSession()
   const { data, error } = await supabase.rpc('open_pack')
@@ -207,6 +210,19 @@ export const craftCard = (cardId) => rpc('craft_card', { p_card: cardId })
 export const tradeUp = (rarity) => rpc('trade_up', { p_rarity: rarity })
 /** { id, count, finish } */
 export const upgradeCard = (cardId) => rpc('upgrade_card', { p_card: cardId })
+
+// ---------------------------------------------------------------------------
+// Quêtes du jour : { day, resets_at, reroll_available, streak, bonus_claimed, quests, status }
+// ---------------------------------------------------------------------------
+
+export async function fetchQuests() {
+  await ensureSession()
+  return rpc('my_quests')
+}
+
+/** Même réponse, avec `reward` ({ coins, packs }) et `bonus` (4 quêtes terminées, ou null) */
+export const claimQuest = (slot) => rpc('claim_quest', { p_slot: slot })
+export const rerollQuest = (slot) => rpc('reroll_quest', { p_slot: slot })
 
 /** Albums dont la récompense a été récupérée : Set(album_id) */
 export async function fetchMyAlbums() {
