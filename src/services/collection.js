@@ -229,6 +229,9 @@ export async function fetchQuests() {
 export const claimQuest = (slot) => rpc('claim_quest', { p_slot: slot })
 export const rerollQuest = (slot) => rpc('reroll_quest', { p_slot: slot })
 
+/** Code promo : { coins, packs, status } ou { error } (CODE_INVALID, CODE_EXPIRED…) */
+export const redeemCode = (code) => rpc('redeem_code', { p_code: code })
+
 /** Albums dont la récompense a été récupérée : Set(album_id) */
 export async function fetchMyAlbums() {
   await ensureSession()

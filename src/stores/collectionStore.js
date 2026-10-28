@@ -6,6 +6,7 @@ import {
   claimQuest,
   fetchMyAlbums,
   fetchQuests,
+  redeemCode,
   rerollQuest,
   craftCard,
   currentUser,
@@ -271,6 +272,14 @@ export const useCollectionStore = defineStore('collection', {
       this.quests = quests
       this.setStatus(status)
       return { reward, bonus }
+    },
+
+    /** Utilise un code promo ; renvoie { coins, packs } ou lève une erreur avec son code */
+    async redeemCode(code) {
+      const res = await redeemCode(code)
+      if (res.error) throw Object.assign(new Error(res.error), { code: res.error })
+      this.setStatus(res.status)
+      return { coins: res.coins, packs: res.packs }
     },
 
     async rerollQuest(slot) {

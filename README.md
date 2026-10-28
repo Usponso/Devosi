@@ -37,6 +37,21 @@ $ node scripts/build-circuits.mjs chemin/vers/f1-circuits.geojson
 
 Packs gratuits (1 toutes les 30 minutes, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** (onglet Boutique, `/boutique`) vend 1 pack pour 150 Pièces, 3 achats par jour au maximum.
 
+**Codes promo** (onglet Boutique) : un code rapporte des Pièces et/ou des packs bonus, une seule fois par joueur, avec une date de début, une date de fin et un nombre d'utilisations maximum facultatifs. Les codes se créent depuis l'éditeur SQL du dashboard Supabase (la fonction n'est pas accessible depuis l'app) :
+
+```sql
+-- 3 packs, valable 7 jours, utilisable par tout le monde
+select public.create_promo_code('BIENVENUE', p_packs => 3, p_valid_for => interval '7 days');
+-- 500 Pièces et 1 pack, code aléatoire, 1 seule utilisation au total
+select public.create_promo_code(null, p_coins => 500, p_packs => 1, p_max_uses => 1, p_note => 'concours');
+-- Actif à partir d'une date précise, pendant 48 h, pour les 100 premiers
+select public.create_promo_code('GP-MONACO', p_coins => 200, p_starts_at => '2027-05-23 14:00+02', p_valid_for => interval '48 hours', p_max_uses => 100);
+-- Suivre les codes et leurs utilisations
+select code, coins, packs, uses, max_uses, expires_at, note from public.promo_codes order by created_at desc;
+-- Désactiver un code tout de suite
+update public.promo_codes set expires_at = now() where code = 'BIENVENUE';
+```
+
 **Quêtes du jour** (onglet Quêtes, `/quetes`) : 4 quêtes renouvelées à minuit UTC (2 faciles à 50 Pièces, 1 moyenne à 100 Pièces, 1 difficile qui rapporte un pack), avec 1 relance par jour. Les 4 terminées donnent un pack de plus et un jour de série ; au 7e jour de série, un pack spécial avec au moins une Épique garantie. Les packs gagnés vont dans une **réserve bonus** sans plafond, à part de la réserve qui se recharge (10 max) ; à l'ouverture, les packs spéciaux passent en premier, puis la réserve rechargée, puis la réserve bonus. La progression est suivie côté serveur par les fonctions du jeu (`supabase/migrations/20261103000000_quests.sql`). Chaque carte s'ouvre en plein écran au clic : on peut la faire pivoter (glisser, double-clic pour la retourner), passer aux cartes voisines et lire sa fiche (statistiques, albums, finitions, recyclage, vitrine). L'ouverture est sonorisée : déchirure de papier à l'ouverture, page qui tourne et marimba (plus de notes pour les cartes rares) à chaque carte. Les sons sont synthétisés dans le navigateur avec la Web Audio API, sans fichier audio ; le bouton haut-parleur de la page Packs coupe le son, et ce choix est mémorisé.
 
 **Classeur** (`/collection`) : 21 albums thématiques façon Panini (champions, vainqueurs, Français, écuries, grille de la saison, Grands Prix par décennie, Monaco, Monza, Silverstone, Spa, courses mythiques, moments). Une carte peut figurer dans plusieurs albums ; un album complet rapporte une fois sa récompense en Pièces (250 à 800) et apparaît sur le profil public. Les albums sont définis dans `scripts/build-catalog.mjs` (`ALBUMS`).

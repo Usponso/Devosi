@@ -25,6 +25,12 @@ const ECONOMY_ERRORS = {
   FRIEND_SELF: 'Tu ne peux pas t’ajouter toi-même.',
   FRIEND_LIMIT: 'Limite de demandes ou d’amis atteinte.',
   REQUEST_UNKNOWN: 'Cette demande n’existe plus.',
+  CODE_INVALID: 'Ce code n’existe pas.',
+  CODE_ALREADY_USED: 'Tu as déjà utilisé ce code.',
+  CODE_EXPIRED: 'Ce code a expiré.',
+  CODE_NOT_STARTED: 'Ce code n’est pas encore actif.',
+  CODE_USED_UP: 'Ce code a déjà été utilisé le nombre maximum de fois.',
+  CODE_RATE_LIMIT: 'Trop de codes invalides, réessaie dans une heure.',
 }
 
 /** Message lisible pour une erreur des fonctions de l'atelier (code = hint SQL) */

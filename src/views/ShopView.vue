@@ -46,6 +46,31 @@
           </article>
         </section>
 
+        <!-- Code promo -->
+        <section class="promo card">
+          <div class="promo-head">
+            <Icon name="gift" :size="22" class="coin" />
+            <div>
+              <h2 class="title-md">Code promo</h2>
+              <p class="muted small">Tu as un code ? Saisis-le pour recevoir des Pièces ou des packs bonus.</p>
+            </div>
+          </div>
+          <form class="promo-form" @submit.prevent="redeem">
+            <input
+              v-model.trim="code"
+              class="promo-input mono"
+              maxlength="32"
+              placeholder="TONCODE"
+              autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
+              aria-label="Code promo"
+            />
+            <button class="btn" :disabled="redeeming || !code">Valider</button>
+          </form>
+          <p v-if="codeMessage" class="small" :class="codeError ? 'error' : 'success'">{{ codeMessage }}</p>
+        </section>
+
         <!-- Gagner des Pièces -->
         <section>
           <h2 class="title-md section-title">Gagner des Pièces</h2>
@@ -99,6 +124,31 @@ const buyBlocker = computed(() => {
   if (available.value >= max.value) return 'Ta réserve de packs est pleine : ouvre-en avant d’en acheter.'
   return `Encore ${formatCoins(shop.value.price - col.coins)} Pièces à gagner.`
 })
+
+// Code promo
+const code = ref('')
+const redeeming = ref(false)
+const codeMessage = ref('')
+const codeError = ref(false)
+
+async function redeem() {
+  redeeming.value = true
+  codeError.value = false
+  codeMessage.value = ''
+  try {
+    const { coins, packs } = await col.redeemCode(code.value)
+    const parts = []
+    if (packs) parts.push(`${packs} pack${packs > 1 ? 's' : ''} bonus`)
+    if (coins) parts.push(`${formatCoins(coins)} Pièces`)
+    codeMessage.value = `Code validé : +${parts.join(' et +')} !`
+    code.value = ''
+  } catch (err) {
+    codeError.value = true
+    codeMessage.value = economyMessage(err)
+  } finally {
+    redeeming.value = false
+  }
+}
 
 async function buy() {
   busy.value = true
@@ -204,6 +254,43 @@ onMounted(() => !col.ready && col.init())
 }
 
 .btn:disabled { opacity: 0.55; cursor: default; }
+
+.success { color: var(--success); }
+
+.promo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+}
+
+.promo-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.promo-form {
+  display: flex;
+  gap: 8px;
+}
+
+.promo-input {
+  flex: 1;
+  min-width: 0;
+  max-width: 360px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.promo-input::placeholder { letter-spacing: 0.12em; color: var(--text-muted); }
+.promo-input:focus { outline: none; border-color: var(--accent-line); }
 
 .earn {
   display: grid;
