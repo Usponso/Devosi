@@ -78,6 +78,7 @@ export const useCollectionStore = defineStore('collection', {
     ready: false, // collection du joueur chargée (init terminé)
     owned: new Map(), // card_id → nombre d'exemplaires
     finishes: new Map(), // card_id → finition débloquée (1 Chrome, 2 Or)
+    obtained: new Map(), // card_id → date de la première obtention (ms)
     status: null, // réserve de packs (serveur)
     profile: null, // { username, showcase, avatar, title, team, permanent, requests }
     friends: null, // { friends, incoming, outgoing } (chargé à la demande)
@@ -188,6 +189,7 @@ export const useCollectionStore = defineStore('collection', {
         this.setStatus(status)
         this.owned = mine.owned
         this.finishes = mine.finishes
+        this.obtained = mine.obtained
         this.profile = profile
         this.email = user?.is_anonymous ? null : user?.email ?? null
         this.ready = true
@@ -207,6 +209,7 @@ export const useCollectionStore = defineStore('collection', {
       resetSession()
       this.owned = new Map()
       this.finishes = new Map()
+      this.obtained = new Map()
       this.claimedAlbums = new Set()
       this.ready = false
       this.status = null
@@ -228,6 +231,14 @@ export const useCollectionStore = defineStore('collection', {
       const next = current.includes(cardId) ? current.filter((id) => id !== cardId) : [...current, cardId]
       if (next.length > 5) throw Object.assign(new Error('5 cartes maximum'), { code: 'SHOWCASE_FULL' })
       this.profile = await saveShowcase(next)
+    },
+
+    /** Nouvelles cartes : obtenues maintenant (tri « plus récentes ») */
+    markObtained(ids) {
+      if (!ids.length) return
+      const obtained = new Map(this.obtained)
+      ids.forEach((id) => obtained.has(id) || obtained.set(id, Date.now()))
+      this.obtained = obtained
     },
 
     async setAvatar(cardId) {
@@ -296,6 +307,7 @@ export const useCollectionStore = defineStore('collection', {
       const owned = new Map(this.owned)
       owned.set(card.id, (owned.get(card.id) ?? 0) + 1)
       this.owned = owned
+      if (card.is_new) this.markObtained([card.id])
       return { ...this.byId.get(card.id), isNew: card.is_new }
     },
 
@@ -370,6 +382,7 @@ export const useCollectionStore = defineStore('collection', {
         return { ...this.byId.get(c.id), isNew: c.is_new }
       })
       this.owned = owned
+      this.markObtained(cards.filter((c) => c.is_new).map((c) => c.id))
       // Suspense : la carte la plus rare est révélée en dernier
       return Object.assign(drawn.sort((a, b) => RARITY_RANK[a.rarity] - RARITY_RANK[b.rarity]), { source })
     },

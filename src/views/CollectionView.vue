@@ -96,10 +96,19 @@
           </div>
         </div>
 
-        <p class="muted results">
-          {{ filtered.length }} carte{{ filtered.length > 1 ? 's' : '' }}
-          <template v-if="searching"> · recherche et raretés limitées aux cartes possédées</template>
-        </p>
+        <div class="results-row">
+          <p class="muted results">
+            {{ filtered.length }} carte{{ filtered.length > 1 ? 's' : '' }}
+            <template v-if="searching"> · recherche et raretés limitées aux cartes possédées</template>
+          </p>
+          <label class="sort">
+            <span class="muted">Trier par</span>
+            <select v-model="sort" aria-label="Trier les cartes">
+              <option v-for="o in SORTS" :key="o.id" :value="o.id">{{ o.label }}</option>
+            </select>
+            <Icon name="chevron-down" :size="14" class="sort-chevron" />
+          </label>
+        </div>
 
         <div class="grid">
           <div
@@ -143,7 +152,7 @@ import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import AccountDialog from '@/components/cards/AccountDialog.vue'
 import AlbumShelf from '@/components/cards/AlbumShelf.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CARD_TYPES, RARITIES, useCollectionStore } from '@/stores/collectionStore'
+import { CARD_TYPES, RARITIES, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 
 const col = useCollectionStore()
 
@@ -200,10 +209,48 @@ const filtered = computed(() => {
   )
 })
 
-const visible = computed(() => filtered.value.slice(0, limit.value))
+// Tri (mémorisé sur l'appareil) : numéro, plus récentes, rareté
+const SORTS = [
+  { id: 'number', label: 'Numéro' },
+  { id: 'recent', label: 'Plus récentes' },
+  { id: 'rarity', label: 'Rareté' },
+]
+const SORT_KEY = 'devosi:collection-sort'
+const sort = ref(readSort())
+function readSort() {
+  try {
+    const saved = localStorage.getItem(SORT_KEY)
+    return SORTS.some((o) => o.id === saved) ? saved : 'number'
+  } catch {
+    return 'number'
+  }
+}
+watch(sort, (value) => {
+  try {
+    localStorage.setItem(SORT_KEY, value)
+  } catch {
+    /* localStorage indisponible : tri non mémorisé */
+  }
+})
+
+/** Le catalogue est déjà dans l'ordre des numéros ; les cartes non possédées finissent la liste */
+const sorted = computed(() => {
+  const list = filtered.value
+  if (sort.value === 'recent') {
+    const at = (c) => col.obtained.get(c.id) ?? -1
+    return [...list].sort((a, b) => at(b) - at(a) || a.n - b.n)
+  }
+  if (sort.value === 'rarity') {
+    const rank = (c) => (col.owned.has(c.id) ? RARITY_RANK[c.rarity] : -1)
+    return [...list].sort((a, b) => rank(b) - rank(a) || a.n - b.n)
+  }
+  return list
+})
+
+const visible = computed(() => sorted.value.slice(0, limit.value))
 // Visionneuse : flèches entre les cartes possédées affichées
 const ownedVisible = computed(() => visible.value.filter((c) => col.owned.has(c.id)))
-watch([type, rarities, ownedOnly, query], () => (limit.value = PAGE))
+watch([type, rarities, ownedOnly, query, sort], () => (limit.value = PAGE))
 
 const totalByType = computed(() => countBy(col.cards))
 const ownedByType = computed(() => countBy(col.cards.filter((c) => col.owned.has(c.id))))
@@ -380,7 +427,42 @@ onUnmounted(() => {
 
 .search:focus { outline: none; border-color: var(--accent-line); }
 
-.results { font-size: 13px; margin-bottom: 12px; }
+.results-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.results { font-size: 13px; }
+
+.sort {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.sort select {
+  appearance: none;
+  padding: 7px 32px 7px 14px;
+  border-radius: 99px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: border-color var(--t);
+}
+
+.sort select:hover,
+.sort select:focus { outline: none; border-color: var(--line-strong); }
+.sort select option { background: var(--surface); }
+.sort-chevron { position: absolute; right: 12px; pointer-events: none; color: var(--text-muted); }
 
 .grid {
   display: grid;

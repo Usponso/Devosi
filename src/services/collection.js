@@ -174,25 +174,30 @@ export function fetchPlayer(username) {
   return rpc('get_player', { p_username: username })
 }
 
-/** Cartes possédées : { owned: Map(card_id → count), finishes: Map(card_id → 1 Chrome | 2 Or) } */
+/**
+ * Cartes possédées : { owned: Map(card_id → count), finishes: Map(card_id → 1 Chrome | 2 Or),
+ * obtained: Map(card_id → date de la première obtention, en ms) }
+ */
 export async function fetchMyCards() {
   await ensureSession()
   const owned = new Map()
   const finishes = new Map()
+  const obtained = new Map()
   // Pagination (PostgREST renvoie 1000 lignes max par requête)
   for (let from = 0; ; from += 1000) {
     const { data, error } = await supabase
       .from('user_cards')
-      .select('card_id, count, finish')
+      .select('card_id, count, finish, first_obtained_at')
       .range(from, from + 999)
     if (error) throw error
     data.forEach((row) => {
       owned.set(row.card_id, row.count)
       if (row.finish) finishes.set(row.card_id, row.finish)
+      obtained.set(row.card_id, new Date(row.first_obtained_at).getTime())
     })
     if (data.length < 1000) break
   }
-  return { owned, finishes }
+  return { owned, finishes, obtained }
 }
 
 // ---------------------------------------------------------------------------
