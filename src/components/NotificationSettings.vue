@@ -128,12 +128,17 @@ async function run(action, success) {
     message.value = success
   } catch (err) {
     messageError.value = true
+    console.error('[notifications]', err)
     message.value =
       err.code === 'PUSH_DENIED'
         ? 'Autorisation refusée : tu peux la changer dans les réglages du site.'
-        : err.hint === 'PUSH_NO_DEVICE'
-          ? "Active d'abord les notifications sur cet appareil."
-          : "Ça n'a pas marché, réessaie."
+        : err.code === 'PUSH_BRAVE'
+          ? 'Brave bloque les notifications push par défaut : active « Utiliser les services Google pour les messages push » dans brave://settings/privacy, redémarre Brave, puis réessaie.'
+          : err.code === 'PUSH_SERVICE'
+            ? "Le service de notifications du navigateur a refusé l'abonnement. Réessaie, ou essaie avec un autre navigateur."
+            : err.hint === 'PUSH_NO_DEVICE'
+              ? "Active d'abord les notifications sur cet appareil."
+              : `Ça n'a pas marché (${err.message ?? 'erreur inconnue'}), réessaie.`
   } finally {
     busy.value = false
     perm.value = permission()

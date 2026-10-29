@@ -22,6 +22,9 @@ export const isStandalone = () =>
 /** iPhone dans Safari : il faut d'abord installer l'appli */
 export const needsInstall = () => isIos() && !isStandalone()
 
+/** Brave : le service push (Google) y est désactivé par défaut */
+export const isBrave = async () => Boolean(await navigator.brave?.isBrave?.().catch(() => false))
+
 /** Autorisation actuelle : default, granted, denied (ou unsupported) */
 export const permission = () => ('Notification' in window ? Notification.permission : 'unsupported')
 
@@ -58,9 +61,16 @@ export async function enablePush() {
 
   const reg = await registerServiceWorker()
   await navigator.serviceWorker.ready
-  const sub =
-    (await reg.pushManager.getSubscription()) ??
-    (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(VAPID_PUBLIC_KEY) }))
+  let sub
+  try {
+    sub =
+      (await reg.pushManager.getSubscription()) ??
+      (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(VAPID_PUBLIC_KEY) }))
+  } catch (err) {
+    // Le service push du navigateur refuse (Brave le désactive par défaut)
+    console.error('[push] abonnement', err)
+    throw Object.assign(new Error(err.message), { code: (await isBrave()) ? 'PUSH_BRAVE' : 'PUSH_SERVICE' })
+  }
   const json = sub.toJSON()
 
   await ensureSession()
