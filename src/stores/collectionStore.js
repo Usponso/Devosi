@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
 import { usePrefsStore } from '@/stores/prefsStore'
 import {
+  cancelTrade,
+  fetchTrades,
+  proposeTrade,
+  respondTrade,
   claimAchievement,
   claimProfileReward,
   fetchAchievements,
@@ -96,6 +100,7 @@ export const useCollectionStore = defineStore('collection', {
     quests: null, // quêtes du jour (chargées par la page Packs)
     predictions: null, // pronostics : { season, next, history, total, rank, players }
     achievements: null, // succès : { achievements, badges }
+    trades: null, // échanges : { trades, pending_sent, max_pending, today, daily }
     email: null, // email du compte (null pour une session invité)
     clockOffset: 0, // écart horloge serveur - horloge locale (ms)
     loading: false,
@@ -151,6 +156,8 @@ export const useCollectionStore = defineStore('collection', {
         state.status.available + (state.status.bonus ?? 0) + (state.status.special ?? 0) + this.gpPacksToOpen + Number(this.welcomeAvailable)
       )
     },
+    /** Propositions d'échange reçues en attente */
+    tradesReady: (state) => state.status?.trades_ready ?? 0,
     /** Succès débloqués dont la récompense attend */
     achievementsReady: (state) => state.status?.achievements_ready ?? 0,
     /** Pronostics notés dont les gains attendent */
@@ -160,7 +167,7 @@ export const useCollectionStore = defineStore('collection', {
     /** Pastille du menu : packs à ouvrir et récompenses de quêtes (pack de bienvenue et 3 packs offerts à un nouveau visiteur) */
     packBadge(state) {
       if (!state.status) return state.noSession ? 4 : 0
-      return this.packsToOpen + this.questsReady + this.achievementsReady
+      return this.packsToOpen + this.questsReady + this.achievementsReady + this.tradesReady
     },
     /** Doublons par rareté : { common: { copies, value }, … } */
     duplicates(state) {
@@ -272,6 +279,7 @@ export const useCollectionStore = defineStore('collection', {
       this.quests = null
       this.predictions = null
       this.achievements = null
+      this.trades = null
       this.email = null
       this.loading = false
       await this.init()
@@ -353,6 +361,40 @@ export const useCollectionStore = defineStore('collection', {
       const { status, ...quests } = await rerollQuest(slot)
       this.quests = quests
       this.setStatus(status)
+    },
+
+    async loadTrades() {
+      this.trades = await fetchTrades()
+      return this.trades
+    },
+
+    async proposeTrade(username, give, take) {
+      this.trades = await proposeTrade(username, give, take)
+    },
+
+    async cancelTrade(id) {
+      this.trades = await cancelTrade(id)
+      this.refreshStatus().catch(() => {})
+    },
+
+    /**
+     * Accepte ou refuse une proposition. Échange conclu : la collection, la vitrine et
+     * l'avatar sont relus (cartes reçues et données). Renvoie les cartes reçues.
+     */
+    async respondTrade(id, accept) {
+      const { error, received, ...trades } = await respondTrade(id, accept)
+      this.trades = trades
+      this.refreshStatus().catch(() => {})
+      if (error) throw Object.assign(new Error(error), { code: error })
+      if (!accept) return []
+      const before = new Set(this.owned.keys())
+      const [mine, profile] = await Promise.all([fetchMyCards(), fetchMyProfile()])
+      this.owned = mine.owned
+      this.finishes = mine.finishes
+      this.obtained = mine.obtained
+      this.profile = profile
+      this.refreshQuests()
+      return (received ?? []).map((cardId) => ({ ...this.byId.get(cardId), isNew: !before.has(cardId) }))
     },
 
     async loadAchievements() {

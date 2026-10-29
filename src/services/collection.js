@@ -290,6 +290,24 @@ export const claimProfileReward = () => rpc('claim_profile_reward')
 /** Badges du profil public (3 succès débloqués au maximum) */
 export const saveBadges = (ids) => rpc('set_badges', { p_ids: ids })
 
+// ---------------------------------------------------------------------------
+// Échanges entre amis : { trades: [{ id, direction, other, give, take, status, … }],
+// pending_sent, max_pending, today, daily }
+// ---------------------------------------------------------------------------
+
+export async function fetchTrades() {
+  await ensureSession()
+  return rpc('my_trades')
+}
+
+/** Cartes d'un ami (hors éditions) : [{ id, count }] */
+export const fetchFriendCards = (username) => rpc('friend_cards', { p_username: username })
+export const proposeTrade = (username, give, take) =>
+  rpc('propose_trade', { p_username: username, p_give: give, p_take: take })
+/** Même réponse que fetchTrades ; `error` (TRADE_INVALID) si une carte n'est plus disponible */
+export const respondTrade = (id, accept) => rpc('respond_trade', { p_id: id, p_accept: accept })
+export const cancelTrade = (id) => rpc('cancel_trade', { p_id: id })
+
 /** Albums dont la récompense a été récupérée : Set(album_id) */
 export async function fetchMyAlbums() {
   await ensureSession()

@@ -14,6 +14,7 @@ const routes = [
   { path: '/packs', component: () => import('@/views/PacksView.vue') },
   { path: '/pronostics', component: () => import('@/views/PredictionsView.vue') },
   { path: '/succes', component: () => import('@/views/AchievementsView.vue') },
+  { path: '/echanges', component: () => import('@/views/TradesView.vue') },
   { path: '/quetes', component: () => import('@/views/QuestsView.vue') },
   { path: '/boutique', component: () => import('@/views/ShopView.vue') },
   { path: '/collection', component: () => import('@/views/CollectionView.vue') },

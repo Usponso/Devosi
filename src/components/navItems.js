@@ -1,5 +1,5 @@
 /** Pages de la section Cartes (barre d'onglets commune, lien « Cartes » actif) */
-export const CARDS_PATHS = ['/profil', '/packs', '/quetes', '/succes', '/boutique', '/collection', '/atelier', '/joueurs']
+export const CARDS_PATHS = ['/profil', '/packs', '/quetes', '/succes', '/echanges', '/boutique', '/collection', '/atelier', '/joueurs']
 
 export const NAV_ITEMS = [
   { to: '/', label: 'Accueil', icon: 'home', exact: true },

@@ -92,7 +92,9 @@ Puis, dans le projet Supabase :
 
 Comptes : chacun joue d'abord en invité (session anonyme). « Sauvegarder ma collection » relie la session à un email (code à 6 chiffres, collection conservée) ; « J'ai déjà un compte » permet de se connecter depuis un autre appareil. Seuls les comptes reliés à un email et dotés d'un pseudo apparaissent dans le classement (`/joueurs`) et ont une vitrine publique (`/joueurs/<pseudo>`).
 
-Toutes les pages de la collection partagent une barre d'onglets : Mon profil, Packs, Quêtes, Succès, Boutique, Collection, Atelier, Joueurs.
+Toutes les pages de la collection partagent une barre d'onglets : Mon profil, Packs, Quêtes, Succès, Boutique, Collection, Atelier, Échanges, Joueurs.
+
+**Échanges** (`/echanges`) : entre amis uniquement (comptes reliés à un email, avec un pseudo). Une proposition échange 1 à 5 cartes contre 1 à 5 cartes, sans Pièces ; les éditions vainqueur ne s'échangent pas, le dernier exemplaire si (avec un avertissement). L'ami accepte ou refuse dans les 48 h, l'auteur peut annuler avant. À l'acceptation, le serveur vérifie que chacun possède toujours ses cartes puis échange tout d'un coup ; la finition reste à son propriétaire, et une carte qui n'est plus possédée quitte la vitrine et l'avatar. Limites : 10 propositions en attente, 5 échanges par jour. On lance un échange depuis le profil d'un ami (« Proposer un échange ») ou depuis l'onglet (`supabase/migrations/20261113000000_trades.sql`).
 
 **Replay** (fiche d'un GP, saisons depuis 2023) : 30 minutes après chaque séance, OpenF1 publie ses données et la séance se rejoue. En course et en sprint : classement tour par tour avec les écarts, voitures placées sur le tracé d'après leur écart au leader, safety car, VSC et drapeaux rouges, et un fil d'événements (départ, dépassements dans le top 10, arrêts aux stands, abandons). En qualifs et en essais : le classement des meilleurs tours au fil de la séance. Lecture ×1, ×4 ou ×16 et barre de progression. Pendant une séance, un chrono indique quand le replay sera prêt (le direct d'OpenF1 est payant). Le calcul est dans `src/utils/replay.js`.
 

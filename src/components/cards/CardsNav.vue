@@ -36,6 +36,7 @@ const TABS = [
   { to: '/boutique', label: 'Boutique', icon: 'cart' },
   { to: '/collection', label: 'Collection', icon: 'album' },
   { to: '/atelier', label: 'Atelier', icon: 'hammer' },
+  { to: '/echanges', label: 'Échanges', icon: 'swap', badge: 'trades' },
   { to: '/joueurs', label: 'Joueurs', icon: 'users', badge: 'friends' },
 ]
 
@@ -63,6 +64,7 @@ function badge(tab) {
   if (tab.badge === 'packs') return col.packsToOpen
   if (tab.badge === 'quests') return col.questsReady
   if (tab.badge === 'achievements') return col.achievementsReady
+  if (tab.badge === 'trades') return col.tradesReady
   if (tab.badge === 'friends') return col.friendRequests
   return 0
 }

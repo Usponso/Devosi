@@ -70,6 +70,9 @@
 
                 <div v-if="!self" class="hero-actions">
                   <FriendButton v-model:status="player.friendship" :username="player.username" />
+                  <router-link v-if="player.friendship === 'friends'" :to="`/echanges?avec=${player.username}`" class="btn btn-ghost">
+                    <Icon name="swap" :size="16" /> Proposer un échange
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -305,7 +308,7 @@ function rarityShare(rarity) {
   background: var(--tc);
 }
 
-.hero-actions { margin-top: 14px; }
+.hero-actions { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
 
 .hero-inner { position: relative; }
 
