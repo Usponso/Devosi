@@ -185,3 +185,26 @@ export async function fetchSessionResult(session) {
     return []
   }
 }
+
+// ---------------------------------------------------------------------------
+// Replay d'une séance : tours de tous les pilotes, direction de course, arrêts
+// ---------------------------------------------------------------------------
+
+// Les tours d'une course pèsent ~500 Ko : gardés en mémoire seulement (pas dans le
+// cache localStorage, qui serait vite plein)
+const replayCache = new Map()
+
+/** { laps, control, pits, drivers } d'une séance terminée */
+export function fetchReplayData(sessionKey) {
+  if (!replayCache.has(sessionKey)) {
+    const load = Promise.all([
+      fetchOpenF1('laps', { session_key: sessionKey }, 0),
+      fetchOpenF1('race_control', { session_key: sessionKey }, 0),
+      fetchOpenF1('pit', { session_key: sessionKey }, 0).catch(() => []),
+      fetchSessionDrivers(sessionKey),
+    ]).then(([laps, control, pits, drivers]) => ({ laps, control, pits, drivers }))
+    replayCache.set(sessionKey, load)
+    load.catch(() => replayCache.delete(sessionKey))
+  }
+  return replayCache.get(sessionKey)
+}

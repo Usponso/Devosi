@@ -72,6 +72,12 @@
           </div>
           <SessionResults v-if="activeSession" :rows="activeSession.rows" :status="activeSession.status" />
         </section>
+
+        <!-- Replay des séances déjà courues (ou chrono de la séance en cours) -->
+        <section v-if="hasOpenF1 && startedSessions.length" class="card">
+          <div class="card-head"><h2 class="title-md">Replay</h2></div>
+          <SessionReplay :race="race" />
+        </section>
       </template>
 
       <!-- Course disputée : onglets -->
@@ -162,6 +168,11 @@
           <SessionResults :rows="practiceTab.rows" :status="practiceTab.status" />
         </section>
 
+        <!-- Replay tour par tour -->
+        <section v-else-if="tab === 'replay'" class="card">
+          <SessionReplay :race="race" />
+        </section>
+
         <!-- Positions tour par tour -->
         <section v-else-if="tab === 'positions'" class="card">
           <div class="card-head">
@@ -211,6 +222,7 @@ import WeekendSchedule from '@/components/WeekendSchedule.vue'
 import TyreStints from '@/components/charts/TyreStints.vue'
 import LineChart from '@/components/charts/LineChart.vue'
 import SessionResults from '@/components/SessionResults.vue'
+import SessionReplay from '@/components/SessionReplay.vue'
 import GpIntro from '@/components/GpIntro.vue'
 import circuitsMeta from '@/data/circuits.json'
 import { useWeekendResults } from '@/composables/useWeekendResults'
@@ -266,6 +278,7 @@ const tabs = computed(() => {
   if (hasOpenF1.value) {
     list.push({ id: 'strategy', label: 'Stratégie' })
     list.push({ id: 'positions', label: 'Positions' })
+    list.push({ id: 'replay', label: 'Replay' })
   }
   return list
 })
