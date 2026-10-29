@@ -35,7 +35,7 @@ $ node scripts/build-circuits.mjs chemin/vers/f1-circuits.geojson
 
 ## Collection de cartes
 
-Packs gratuits (1 toutes les 30 minutes, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** (onglet Boutique, `/boutique`) vend 1 pack pour 150 Pièces, 3 achats par jour au maximum.
+Packs gratuits (1 toutes les 30 minutes, 10 en réserve au maximum, 3 offerts au départ), 5 cartes par pack. Chances par pack : au moins une Rare 40 %, une Épique 5 % (1 sur 20), une Légendaire 1,6 % (1 sur 63), une Mythique 0,1 % (1 sur 1 000) ; une Légendaire est garantie au bout de 100 packs sans en obtenir. La **boutique** (onglet Boutique, `/boutique`) vend 1 pack pour 150 Pièces, sans limite d'achats (dans la limite de 10 packs en réserve).
 
 **Codes promo** (onglet Boutique) : un code rapporte des Pièces et/ou des packs bonus, une seule fois par joueur, avec une date de début, une date de fin et un nombre d'utilisations maximum facultatifs. Les codes se créent depuis l'éditeur SQL du dashboard Supabase (la fonction n'est pas accessible depuis l'app) :
 
@@ -106,7 +106,7 @@ Toutes les pages de la collection partagent une barre d'onglets : Mon profil, Pa
 
 **Week-end de course** : du jour des premiers essais à la fin du jour de la course, un **pack GP** est offert chaque jour et 3 sont achetables en boutique (200 Pièces). 2 de ses 5 cartes sont liées au circuit (GP disputés là-bas, pilotes et écuries qui y ont gagné). Les packs GP achetés et pas ouverts rejoignent la réserve bonus à la fin du week-end.
 
-**Édition vainqueur** : pendant les 7 jours qui suivent une course, la carte du vainqueur existe en édition tamponnée « Vainqueur ». Elle est garantie à ceux qui avaient trouvé le vainqueur, et tirable dans les packs (3 % par pack, 6 % dans un pack GP). Elle compte comme la carte normale pour les albums et s'affiche à part dans la collection.
+**Édition vainqueur** : pendant les 7 jours qui suivent une course, la carte du vainqueur existe en édition tamponnée « Vainqueur ». Elle est garantie à ceux qui avaient trouvé le vainqueur, et tirable dans les packs (0,5 % par pack, 1,5 % dans un pack GP). C'est une carte à part entière (id `e-<saison>-<manche>`, même rareté que la carte du pilote), unique pour chaque joueur : elle s'ajoute à la collection et à son compteur, mais ne sort jamais d'un tirage classique, de l'Atelier ni de la Vitesse supérieure. Les anciennes éditions ne sont plus distribuées et n'apparaissent dans la collection que chez ceux qui les possèdent (`supabase/migrations/20261110000000_edition_cards.sql`).
 
 Le calendrier et les résultats sont copiés depuis Jolpica dans la base par `scripts/sync-races.mjs`, que le workflow GitHub `Courses` lance toutes les heures du vendredi au lundi et une fois par jour le reste de la semaine : il ferme les pronostics, les note dès que le podium est connu et ouvre les week-ends de course (`supabase/migrations/20261106000000_predictions.sql`).
 

@@ -10,7 +10,7 @@
       <div class="completion">
         <div class="comp-total">
           <span class="mono comp-num">{{ col.ownedCount }}</span>
-          <span class="muted">/ {{ col.cards.length }} · {{ percent(col.ownedCount, col.cards.length) }} %</span>
+          <span class="muted">/ {{ col.collectionCards.length }} · {{ percent(col.ownedCount, col.collectionCards.length) }} %</span>
         </div>
         <div class="comp-types">
           <div v-for="t in CARD_TYPES" :key="t.id" class="comp-type">
@@ -167,11 +167,11 @@ import { CARD_TYPES, RARITIES, RARITY_RANK, useCollectionStore } from '@/stores/
 
 const col = useCollectionStore()
 
-/** Éditions vainqueur : la carte du vainqueur, tamponnée (plus récente d'abord) */
+/** Éditions vainqueur possédées, la plus récente d'abord */
 const editionCards = computed(() =>
-  col.editions
-    .map((e) => col.byId.get(e.card_id) && { ...col.byId.get(e.card_id), edition: { season: e.season, round: e.round, name: e.name } })
-    .filter(Boolean),
+  col.editionCards
+    .filter((c) => col.owned.has(c.id))
+    .sort((a, b) => b.edition.season - a.edition.season || b.edition.round - a.edition.round),
 )
 
 const type = ref('all')
@@ -218,7 +218,7 @@ const searching = computed(() => Boolean(query.value) || rarities.value.size > 0
 const filtered = computed(() => {
   const q = normalize(query.value)
   const ownedFilter = ownedOnly.value || searching.value
-  return col.cards.filter(
+  return col.collectionCards.filter(
     (c) =>
       (type.value === 'all' || c.type === type.value) &&
       (!ownedFilter || col.owned.has(c.id)) &&
@@ -270,8 +270,8 @@ const visible = computed(() => sorted.value.slice(0, limit.value))
 const ownedVisible = computed(() => visible.value.filter((c) => col.owned.has(c.id)))
 watch([type, rarities, ownedOnly, query, sort], () => (limit.value = PAGE))
 
-const totalByType = computed(() => countBy(col.cards))
-const ownedByType = computed(() => countBy(col.cards.filter((c) => col.owned.has(c.id))))
+const totalByType = computed(() => countBy(col.collectionCards))
+const ownedByType = computed(() => countBy(col.collectionCards.filter((c) => col.owned.has(c.id))))
 
 function countBy(cards) {
   return cards.reduce((acc, c) => ((acc[c.type] = (acc[c.type] ?? 0) + 1), acc), {})

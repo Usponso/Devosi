@@ -57,7 +57,7 @@
             <div class="item-body">
               <h2 class="title-md">Pack {{ gp.name }}</h2>
               <p class="muted small">
-                5 cartes dont 2 liées au circuit, chances doublées pour l'édition vainqueur. Disponible jusqu'à la fin du week-end de course :
+                5 cartes dont 2 liées au circuit, 3 fois plus de chances d'avoir l'édition vainqueur. Disponible jusqu'à la fin du week-end de course :
                 {{ gp.left }}/3 achat{{ gp.left > 1 ? 's' : '' }} restant{{ gp.left > 1 ? 's' : '' }}.
               </p>
               <div class="item-buy">

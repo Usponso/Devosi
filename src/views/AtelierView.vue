@@ -290,7 +290,7 @@ const craftMatches = computed(() => {
   if (!craftSearching.value) return []
   const words = normalize(craftQuery.value).split(/\s+/).filter(Boolean)
   return col.cards.filter((card) => {
-    if (col.owned.has(card.id)) return false
+    if (card.edition || col.owned.has(card.id)) return false
     if (craftRarity.value && card.rarity !== craftRarity.value) return false
     if (!words.length) return true
     const text = normalize(`${card.name} ${card.sub ?? ''} ${card.stats?.winner ?? ''} ${card.years?.join(' ') ?? ''} ${TYPE_LABEL[card.type]}`)

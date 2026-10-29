@@ -1,7 +1,7 @@
 <template>
   <div class="page packs">
     <header class="container page-head">
-      <div class="eyebrow">Collection · {{ col.ownedCount }} / {{ col.cards.length || '…' }} cartes</div>
+      <div class="eyebrow">Collection · {{ col.ownedCount }} / {{ col.collectionCards.length || '…' }} cartes</div>
       <div class="head-row">
         <h1 class="title-lg">Packs</h1>
         <div class="head-links">
@@ -152,7 +152,7 @@
           <span v-if="editionOwned">Édition vainqueur du {{ edition.name }} obtenue !</span>
           <span v-else>
             <b>Carte limitée : {{ editionDriver }}, vainqueur du {{ edition.name }}</b>, avec un tampon doré « Vainqueur ».
-            À trouver dans les packs jusqu'au {{ editionUntil }} (3 % de chances par pack, 6 % dans un pack GP).
+            À trouver dans les packs jusqu'au {{ editionUntil }} (0,5 % de chances par pack, 1,5 % dans un pack GP).
             Au prochain GP, pronostique le bon vainqueur pour recevoir sa carte à coup sûr.
             <router-link to="/pronostics" class="link-arrow">Pronostics →</router-link>
           </span>
@@ -356,7 +356,7 @@ const gpEndsIn = computed(() => {
 })
 const edition = computed(() => col.status?.edition ?? null)
 const editionOwned = computed(() =>
-  col.editions.some((e) => e.season === edition.value?.season && e.round === edition.value?.round),
+  col.owned.has(edition.value?.card),
 )
 const editionDriver = computed(() => col.byId.get(edition.value?.card)?.name ?? 'le vainqueur')
 const editionUntil = computed(() =>

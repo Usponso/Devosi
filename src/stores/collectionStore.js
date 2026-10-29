@@ -8,7 +8,7 @@ import {
   buyGpPack,
   buyPack,
   claimPrediction,
-  fetchMyEditions,
+  fetchEditionCards,
   fetchPredictions,
   savePrediction,
   claimAlbum,
@@ -96,7 +96,6 @@ export const useCollectionStore = defineStore('collection', {
     quests: null, // quêtes du jour (chargées par la page Packs)
     predictions: null, // pronostics : { season, next, history, total, rank, players }
     achievements: null, // succès : { achievements, badges }
-    editions: [], // éditions vainqueur : [{ season, round, card_id, name, obtained_at }]
     email: null, // email du compte (null pour une session invité)
     clockOffset: 0, // écart horloge serveur - horloge locale (ms)
     loading: false,
@@ -105,6 +104,16 @@ export const useCollectionStore = defineStore('collection', {
 
   getters: {
     byId: (state) => new Map(state.cards.map((c) => [c.id, c])),
+    /** Éditions vainqueur : cartes uniques, distribuées 7 jours après chaque GP */
+    editionCards: (state) => state.cards.filter((c) => c.edition),
+    /**
+     * Cartes de la collection (listes et compteurs) : le catalogue, plus les éditions
+     * possédées et celle encore en jeu (les anciennes ne sont plus distribuées)
+     */
+    collectionCards: (state) => {
+      const active = state.status?.edition?.card
+      return state.cards.filter((c) => !c.edition || state.owned.has(c.id) || c.id === active)
+    },
     ownedCount: (state) => state.owned.size,
     isGuest: (state) => !state.profile?.permanent,
     showcase: (state) => state.profile?.showcase ?? [],
@@ -174,9 +183,26 @@ export const useCollectionStore = defineStore('collection', {
     async loadCatalog() {
       if (this.cards.length) return
       catalogPromise ??= import('@/data/catalog.json').then((m) => m.default)
-      const catalog = await catalogPromise
-      this.cards = catalog.cards
+      const [catalog, editions] = await Promise.all([catalogPromise, fetchEditionCards().catch(() => [])])
       this.albums = catalog.albums ?? []
+      this.cards = [...catalog.cards, ...this.toEditionCards(editions, catalog.cards)]
+    },
+
+    /** Éditions : la carte du vainqueur, avec son propre id et le Grand Prix */
+    toEditionCards(editions, cards = this.cards) {
+      const base = new Map(cards.map((c) => [c.id, c]))
+      return editions
+        .filter((e) => base.has(e.base))
+        .map((e) => ({ ...base.get(e.base), id: e.id, edition: { season: e.season, round: e.round, name: e.name } }))
+    },
+
+    /** Recharge les éditions si une carte reçue est inconnue (édition créée après le chargement) */
+    async ensureCards(ids) {
+      await this.loadCatalog()
+      if (ids.every((id) => this.byId.has(id))) return
+      const known = new Set(this.cards.map((c) => c.id))
+      const fresh = this.toEditionCards(await fetchEditionCards()).filter((c) => !known.has(c.id))
+      this.cards = [...this.cards, ...fresh]
     },
 
     setStatus(status) {
@@ -205,16 +231,14 @@ export const useCollectionStore = defineStore('collection', {
       this.loading = true
       this.error = null
       try {
-        const [, status, mine, profile, user, claimed, editions] = await Promise.all([
+        const [, status, mine, profile, user, claimed] = await Promise.all([
           this.loadCatalog(),
           fetchPackStatus(),
           fetchMyCards(),
           fetchMyProfile(),
           currentUser(),
           fetchMyAlbums(),
-          fetchMyEditions().catch(() => []),
         ])
-        this.editions = editions
         this.claimedAlbums = claimed
         this.setStatus(status)
         this.owned = mine.owned
@@ -248,7 +272,6 @@ export const useCollectionStore = defineStore('collection', {
       this.quests = null
       this.predictions = null
       this.achievements = null
-      this.editions = []
       this.email = null
       this.loading = false
       await this.init()
@@ -372,18 +395,11 @@ export const useCollectionStore = defineStore('collection', {
       this.setStatus(status)
       let card = null
       if (edition) {
-        await this.loadCatalog()
-        this.addEdition(edition)
-        card = { ...this.addCard(edition), edition }
+        await this.ensureCards([edition.id])
+        card = this.addCard(edition)
         this.refreshQuests()
       }
       return { coins, packs, edition: card }
-    },
-
-    /** Mémorise une édition vainqueur obtenue */
-    addEdition({ id, season, round, name }) {
-      if (this.editions.some((e) => e.season === season && e.round === round)) return
-      this.editions = [{ season, round, card_id: id, name, obtained_at: new Date().toISOString() }, ...this.editions]
     },
 
     async buyGpPack() {
@@ -495,14 +511,14 @@ export const useCollectionStore = defineStore('collection', {
     },
 
     /** Cartes d'un pack ouvert : collection, quêtes et ordre de révélation */
-    applyOpening({ cards, status, source }) {
+    async applyOpening({ cards, status, source }) {
+      await this.ensureCards(cards.map((c) => c.id))
       this.setStatus(status)
       this.refreshQuests()
       const owned = new Map(this.owned)
       const drawn = cards.map((c) => {
         owned.set(c.id, (owned.get(c.id) ?? 0) + 1)
-        if (c.edition) this.addEdition({ id: c.id, ...c.edition })
-        return { ...this.byId.get(c.id), isNew: c.is_new, edition: c.edition ?? null, circuitCard: c.circuit }
+        return { ...this.byId.get(c.id), isNew: c.is_new, circuitCard: c.circuit }
       })
       this.owned = owned
       this.markObtained(cards.filter((c) => c.is_new).map((c) => c.id))

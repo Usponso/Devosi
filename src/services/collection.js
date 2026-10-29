@@ -242,15 +242,12 @@ export const rerollQuest = (slot) => rpc('reroll_quest', { p_slot: slot })
 /** Code promo : { coins, packs, status } ou { error } (CODE_INVALID, CODE_EXPIRED…) */
 export const redeemCode = (code) => rpc('redeem_code', { p_code: code })
 
-/** Éditions vainqueur obtenues : [{ season, round, card_id, name, obtained_at }] */
-export async function fetchMyEditions() {
-  await ensureSession()
-  const { data, error } = await supabase
-    .from('user_editions')
-    .select('season, round, card_id, name, obtained_at')
-    .order('obtained_at', { ascending: false })
+/** Cartes d'édition vainqueur : [{ id, base, season, round, name }] (lisible sans session) */
+export async function fetchEditionCards() {
+  if (!supabase) return []
+  const { data, error } = await supabase.rpc('edition_cards')
   if (error) throw error
-  return data
+  return data ?? []
 }
 
 /** Pack du week-end de course : { status } — erreurs `NO_WEEKEND`, `GP_SHOP_LIMIT`, `NOT_ENOUGH_COINS` */
