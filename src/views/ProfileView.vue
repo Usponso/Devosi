@@ -1,5 +1,4 @@
 <template>
-  <!-- Joueur avec un pseudo : sa page publique, modifiable sur place -->
   <PlayerView v-if="col.isPlayer" :username="col.profile.username" />
 
   <div v-else class="page my-profile">
@@ -39,6 +38,8 @@ import AccountDialog from '@/components/cards/AccountDialog.vue'
 import PlayerView from '@/views/PlayerView.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 
+// Racine unique (aucun commentaire au-dessus) : les transitions de page en ont besoin.
+// Joueur avec un pseudo : sa page publique, modifiable sur place ; sinon l'invitation.
 const col = useCollectionStore()
 const accountOpen = ref(false)
 

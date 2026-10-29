@@ -105,8 +105,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 
 .header.scrolled {
-  background: rgba(11, 12, 15, 0.82);
-  backdrop-filter: blur(14px);
+  /* Fond presque opaque plutôt qu'un flou : le lien « Cartes » s'anime en continu et
+     un backdrop-filter serait recalculé à chaque image */
+  background: rgb(11 12 15 / 0.96);
   border-bottom-color: var(--line);
 }
 
@@ -328,8 +329,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 @media (max-width: 860px) {
   .nav { display: none; }
   .header {
-    background: rgba(11, 12, 15, 0.82);
-    backdrop-filter: blur(14px);
+    background: rgb(11 12 15 / 0.96);
     border-bottom-color: var(--line);
   }
 }

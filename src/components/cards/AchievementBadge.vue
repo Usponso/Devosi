@@ -46,28 +46,12 @@ defineProps({
   border-color: transparent;
   background:
     linear-gradient(rgb(40 22 44), rgb(40 22 44)) padding-box,
-    conic-gradient(from var(--holo-spin, 0deg), #ff4fd8, #5ad1ff, #ffe066, #7dff9b, #ff4fd8) border-box;
-  animation: holo-spin 6s linear infinite;
+    conic-gradient(from 30deg, #ff4fd8, #5ad1ff, #ffe066, #7dff9b, #ff4fd8) border-box;
 }
 
 .badge.locked {
   color: var(--text-muted);
   background: var(--surface-2);
   border-color: var(--line);
-  animation: none;
-}
-
-@property --holo-spin {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@keyframes holo-spin {
-  to { --holo-spin: 360deg; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tier-4 { animation: none; }
 }
 </style>

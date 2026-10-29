@@ -83,8 +83,8 @@ watch(
   position: sticky;
   top: var(--header-h);
   z-index: 90;
-  background: rgb(11 12 15 / 0.9);
-  backdrop-filter: blur(12px);
+  /* Fond opaque : un flou serait recalculé à chaque image pendant le défilement */
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 

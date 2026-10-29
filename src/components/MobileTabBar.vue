@@ -49,8 +49,8 @@ const isActive = (item) => isNavActive(item, route.path)
     grid-template-columns: repeat(7, minmax(0, 1fr));
     height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
     padding-bottom: env(safe-area-inset-bottom);
-    background: rgba(11, 12, 15, 0.92);
-    backdrop-filter: blur(14px);
+    /* Fond presque opaque : le flou serait recalculé à chaque image (lien « Cartes » animé) */
+    background: rgb(11 12 15 / 0.97);
     border-top: 1px solid var(--line);
   }
 
