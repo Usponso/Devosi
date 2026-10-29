@@ -289,6 +289,18 @@ export const useCollectionStore = defineStore('collection', {
       this.profile = await saveShowcase(next)
     },
 
+    /** Nouvel ordre de la vitrine (affiché tout de suite, annulé si le serveur refuse) */
+    async setShowcase(ids) {
+      const previous = this.profile
+      this.profile = { ...previous, showcase: ids }
+      try {
+        this.profile = await saveShowcase(ids)
+      } catch (err) {
+        this.profile = previous
+        throw err
+      }
+    },
+
     /** Nouvelles cartes : obtenues maintenant (tri « plus récentes ») */
     markObtained(ids) {
       if (!ids.length) return

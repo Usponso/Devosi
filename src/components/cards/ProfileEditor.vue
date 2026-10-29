@@ -34,18 +34,8 @@
 
         <!-- Vitrine : 5 cartes affichées sur le profil public -->
         <section v-if="tab === 'showcase'" class="panel">
-          <p class="muted small">Tes 5 cartes préférées, en tête de ton profil public. Touche une carte pour l'ajouter ou la retirer.</p>
-          <div class="sc-slots">
-            <div v-for="i in 5" :key="i" class="sc-slot" :class="{ filled: showcaseCards[i - 1] }">
-              <template v-if="showcaseCards[i - 1]">
-                <F1Card :card="showcaseCards[i - 1]" :finish="col.finishes.get(showcaseCards[i - 1].id) ?? 0" :interactive="false" :zoomable="false" />
-                <button class="sc-remove" :disabled="busy" :aria-label="`Retirer ${showcaseCards[i - 1].name} de la vitrine`" @click="toggleShowcase(showcaseCards[i - 1].id)">
-                  <Icon name="x" :size="14" />
-                </button>
-              </template>
-              <span v-else class="mono">{{ i }}</span>
-            </div>
-          </div>
+          <p class="muted small">Tes 5 cartes préférées, en tête de ton profil public. Touche une carte de ta collection pour l'ajouter, et glisse les cartes de la vitrine pour changer leur ordre.</p>
+          <ShowcaseSlots :ids="col.showcase" :busy="busy" @reorder="reorderShowcase" @remove="toggleShowcase" />
           <div class="filters">
             <div class="chips">
               <button v-for="t in CARD_TYPES" :key="t.id" class="chip" :class="{ active: type === t.id }" @click="type = t.id">{{ t.label }}</button>
@@ -184,6 +174,7 @@ import Icon from '@/components/Icon.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import AchievementBadge from '@/components/cards/AchievementBadge.vue'
+import ShowcaseSlots from '@/components/cards/ShowcaseSlots.vue'
 import { PICKABLE_TEAMS } from '@/data/teams'
 import { CARD_TYPES, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 import { usePrefsStore } from '@/stores/prefsStore'
@@ -235,7 +226,6 @@ const ownedOfType = computed(() => {
     .sort((a, b) => RARITY_RANK[b.rarity] - RARITY_RANK[a.rarity] || a.name.localeCompare(b.name))
 })
 const visibleCards = computed(() => ownedOfType.value.slice(0, limit.value))
-const showcaseCards = computed(() => col.showcase.map((id) => col.byId.get(id)).filter(Boolean))
 
 async function toggleShowcase(cardId) {
   busy.value = true
@@ -244,6 +234,18 @@ async function toggleShowcase(cardId) {
     await col.toggleShowcase(cardId)
   } catch (err) {
     error.value = err.code === 'SHOWCASE_FULL' ? 'Ta vitrine est pleine : retire d’abord une carte.' : economyMessage(err)
+  } finally {
+    busy.value = false
+  }
+}
+
+async function reorderShowcase(ids) {
+  busy.value = true
+  error.value = ''
+  try {
+    await col.setShowcase(ids)
+  } catch (err) {
+    error.value = economyMessage(err)
   } finally {
     busy.value = false
   }
@@ -529,43 +531,6 @@ function close() {
 
 .more { align-self: center; }
 
-.sc-slots {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.sc-slot {
-  position: relative;
-  aspect-ratio: 5 / 7;
-  display: grid;
-  place-items: center;
-  border-radius: 8px;
-  font-size: 14px;
-  color: var(--text-muted);
-  border: 1px dashed var(--line-strong);
-}
-
-/* La carte prend la largeur de l'emplacement (centrée, elle n'aurait aucune largeur) */
-.sc-slot.filled { display: block; place-items: normal; border: none; }
-
-.sc-remove {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  color: var(--text);
-  background: var(--surface-3);
-  border: 1px solid var(--line-strong);
-}
-
-.sc-remove:hover { background: var(--danger); color: #fff; }
-
 .sc-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -656,7 +621,6 @@ function close() {
 @media (max-width: 520px) {
   .dialog { padding: 20px 16px; }
   .sc-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; }
-  .sc-slots { gap: 6px; }
   .tabs { gap: 2px; }
   .tabs .tab { padding: 8px; font-size: 13px; }
   .avatar-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
