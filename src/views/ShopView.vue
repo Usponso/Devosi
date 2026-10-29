@@ -32,7 +32,7 @@
             <div class="item-body">
               <h2 class="title-md">Pack de 5 cartes</h2>
               <p class="muted small">
-                Ajouté à ta réserve. {{ shop.left }}/{{ shop.daily }} achat{{ shop.daily > 1 ? 's' : '' }} restant{{ shop.left > 1 ? 's' : '' }} aujourd'hui.
+                Ajouté à ta réserve ({{ available }}/{{ max }}), sans limite d'achats.
               </p>
               <div class="item-buy">
                 <span class="price"><span class="mono">{{ formatCoins(shop.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
@@ -146,9 +146,8 @@ const error = ref(false)
 const available = computed(() => col.status?.available ?? 0)
 const max = computed(() => col.status?.max ?? 10)
 const shop = computed(() => col.status?.shop ?? { price: 150, daily: 3, left: 0 })
-const canBuy = computed(() => shop.value.left > 0 && available.value < max.value && col.coins >= shop.value.price)
+const canBuy = computed(() => available.value < max.value && col.coins >= shop.value.price)
 const buyBlocker = computed(() => {
-  if (shop.value.left <= 0) return "Limite d'achats atteinte pour aujourd'hui, reviens demain."
   if (available.value >= max.value) return 'Ta réserve de packs est pleine : ouvre-en avant d’en acheter.'
   return `Encore ${formatCoins(shop.value.price - col.coins)} Pièces à gagner.`
 })

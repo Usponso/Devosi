@@ -180,7 +180,7 @@
             <Icon name="cart" :size="20" />
             <span class="sc-text">
               <span class="sc-title">Boutique</span>
-              <span class="muted small">1 pack pour {{ formatCoins(shop.price) }} Pièces · {{ shop.left }}/{{ shop.daily }} aujourd'hui</span>
+              <span class="muted small">1 pack pour {{ formatCoins(shop.price) }} Pièces, sans limite</span>
             </span>
             <Icon name="chevron-right" :size="16" class="sc-arrow" />
           </router-link>
