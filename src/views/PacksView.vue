@@ -27,6 +27,50 @@
         Impossible de charger ta collection pour le moment. <button class="link-arrow" @click="col.init()">Réessayer</button>
       </p>
 
+      <!-- Bienvenue (1re visite) : pack doré à ouvrir -->
+      <section v-else-if="stage === 'idle' && col.welcomeAvailable" class="welcome card">
+        <div class="eyebrow">Étape 1 / 2</div>
+        <h1 class="title-lg">Bienvenue dans ta collection</h1>
+        <p class="dim">2 240 cartes de pilotes, écuries, Grands Prix et moments de légende depuis 1950. Ton premier pack t'attend.</p>
+        <button class="welcome-pack" :disabled="busy" aria-label="Ouvrir mon pack de bienvenue" @click="openWelcome">
+          <span class="pack-brand">DEVOSI</span>
+          <span class="pack-title">BIENVENUE</span>
+          <span class="pack-sub">Pack doré</span>
+        </button>
+        <p class="muted small">
+          Une Épique garantie<template v-if="prefs.favoriteTeam"> et une carte {{ prefs.favoriteTeam.name }}, ton écurie</template>.
+        </p>
+        <button class="btn" :disabled="busy" @click="openWelcome">
+          <Icon name="gift" :size="16" /> {{ busy ? 'Ouverture…' : 'Ouvrir mon pack de bienvenue' }}
+        </button>
+        <p v-if="message" class="message">{{ message }}</p>
+      </section>
+
+      <!-- Bienvenue, étape 2 : comment continuer -->
+      <section v-else-if="stage === 'tips'" class="welcome card">
+        <div class="eyebrow">Étape 2 / 2</div>
+        <h2 class="title-lg">Pour aller plus loin</h2>
+        <ul class="tips">
+          <li>
+            <Icon name="package" :size="22" />
+            <span><b>Un pack toutes les 30 min</b><span class="muted">{{ available }} pack{{ available > 1 ? 's' : '' }} t'attende{{ available > 1 ? 'nt' : '' }} déjà dans ta réserve.</span></span>
+          </li>
+          <li>
+            <Icon name="trophy" :size="22" />
+            <span><b>4 quêtes par jour</b><span class="muted">Des Pièces, des packs bonus et une série à tenir.</span></span>
+          </li>
+          <li>
+            <Icon name="flag" :size="22" />
+            <span><b>Pronostique chaque Grand Prix</b><span class="muted">Trouve le vainqueur et gagne sa carte en édition limitée.</span></span>
+          </li>
+          <li>
+            <Icon name="user" :size="22" />
+            <span><b>Crée ton profil</b><span class="muted">Avatar, vitrine et badges, visibles par tes amis.</span></span>
+          </li>
+        </ul>
+        <button class="btn" @click="stage = 'idle'">C'est parti <Icon name="arrow-right" :size="16" /></button>
+      </section>
+
       <!-- Réserve de packs -->
       <section v-else-if="stage === 'idle'" class="reserve card">
         <button
@@ -168,6 +212,7 @@
             Carte {{ index + 1 }} / {{ drawn.length }}
             <span v-if="drawn.source === 'special'" class="source-tag special">Pack spécial</span>
             <span v-else-if="drawn.source?.startsWith('gp')" class="source-tag gp">Pack GP</span>
+            <span v-else-if="drawn.source === 'welcome'" class="source-tag">Pack de bienvenue</span>
             <span v-else-if="drawn.source === 'bonus'" class="source-tag">Pack bonus</span>
           </span>
           <div class="reveal-actions">
@@ -208,9 +253,10 @@
         <div class="summary-head">
           <h2 class="title-md">{{ newCount ? `${newCount} nouvelle${newCount > 1 ? 's' : ''} carte${newCount > 1 ? 's' : ''} !` : 'Pack ouvert' }}</h2>
           <div class="actions">
-            <button v-if="lastWasGp && col.gpPacksToOpen" class="btn" @click="openPack(true)">Ouvrir un autre pack GP ({{ col.gpPacksToOpen }})</button>
+            <button v-if="drawn.source === 'welcome'" class="btn" @click="stage = 'tips'">Continuer <Icon name="arrow-right" :size="16" /></button>
+            <button v-else-if="lastWasGp && col.gpPacksToOpen" class="btn" @click="openPack(true)">Ouvrir un autre pack GP ({{ col.gpPacksToOpen }})</button>
             <button v-else-if="total" class="btn" @click="openPack()">Ouvrir un autre pack ({{ total }})</button>
-            <button class="btn btn-ghost" @click="stage = 'idle'">Retour aux packs</button>
+            <button v-if="drawn.source !== 'welcome'" class="btn btn-ghost" @click="stage = 'idle'">Retour aux packs</button>
           </div>
         </div>
         <!-- Rappel : une belle carte mérite la vitrine -->
@@ -364,6 +410,26 @@ async function openPack(gp = false) {
     play('rip')
   } catch (err) {
     message.value = err.code === 'NO_PACK' ? 'Plus de pack disponible pour le moment.' : "L'ouverture a échoué, réessaie."
+    await col.refreshStatus().catch(() => {})
+  } finally {
+    busy.value = false
+  }
+}
+
+/** Pack de bienvenue : même révélation qu'un pack, puis les conseils */
+async function openWelcome() {
+  if (busy.value) return
+  busy.value = true
+  message.value = ''
+  try {
+    const [cards] = await Promise.all([col.openWelcome(prefs.favoriteTeamId ?? null), new Promise((r) => setTimeout(r, 650))])
+    drawn.value = cards
+    index.value = 0
+    flipped.value = false
+    stage.value = 'reveal'
+    play('rip')
+  } catch {
+    message.value = "L'ouverture a échoué, réessaie."
     await col.refreshStatus().catch(() => {})
   } finally {
     busy.value = false
@@ -723,6 +789,78 @@ onUnmounted(() => {
 .profile-line:hover { border-color: var(--accent); }
 .profile-line > .icon:first-child { color: var(--accent); flex-shrink: 0; }
 .profile-line > span { flex: 1; }
+
+/* Bienvenue */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 36px 24px;
+  text-align: center;
+  border-color: rgb(232 193 90 / 0.4);
+  background: radial-gradient(80% 60% at 50% 40%, rgb(232 193 90 / 0.12), transparent 70%), var(--surface);
+}
+
+.welcome .title-lg { margin: 0; }
+.welcome > p { margin: 0; max-width: 520px; }
+
+.welcome-pack {
+  width: 150px;
+  aspect-ratio: 5 / 7;
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 14px;
+  color: #ffe08a;
+  background:
+    repeating-linear-gradient(135deg, rgb(255 255 255 / 0.06) 0 4px, transparent 4px 12px),
+    linear-gradient(155deg, #6b5520, #2a2212 70%);
+  border: 2px solid #e8c15a;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45), 0 0 32px rgb(232 193 90 / 0.35);
+  cursor: pointer;
+  animation: welcome-float 2.8s var(--ease) infinite;
+}
+
+.welcome-pack:disabled { animation: shake 0.12s linear infinite; cursor: default; }
+.welcome-pack .pack-title { font-size: 20px; }
+
+@keyframes welcome-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.tips {
+  margin: 6px 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 720px;
+  text-align: left;
+}
+
+.tips li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.tips li > .icon { color: var(--accent); flex-shrink: 0; }
+.tips li > span { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-pack { animation: none; }
+}
 
 .source-tag.gp { color: #ff8a8a; background: rgb(225 6 0 / 0.16); }
 

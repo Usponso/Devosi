@@ -73,6 +73,14 @@ export async function openPack(gp = false) {
   return data
 }
 
+/** Pack de bienvenue (une fois) : même réponse qu'openPack, `source` welcome — erreur `WELCOME_OPENED` */
+export async function openWelcomePack(team = null) {
+  await ensureSession()
+  const { data, error } = await supabase.rpc('open_welcome_pack', { p_team: team })
+  if (error) throw toError(error)
+  return data
+}
+
 // ---------------------------------------------------------------------------
 // Compte : code à 6 chiffres envoyé par email (sans mot de passe)
 // ---------------------------------------------------------------------------

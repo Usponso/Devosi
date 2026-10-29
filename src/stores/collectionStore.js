@@ -36,6 +36,7 @@ import {
   saveTitle,
   sendFriendRequest,
   openPack,
+  openWelcomePack,
   peekPackStatus,
   saveShowcase,
   saveUsername,
@@ -130,12 +131,16 @@ export const useCollectionStore = defineStore('collection', {
     },
     /** Week-end de course en cours : { season, round, name, circuit, ends_at, free, packs, left, price } */
     gpWeekend: (state) => state.status?.gp ?? null,
+    /** Nouveau joueur : pack de bienvenue pas encore ouvert */
+    welcomeAvailable: (state) => Boolean(state.status?.welcome),
     /** Packs GP à ouvrir : l'offert du jour et ceux achetés */
     gpPacksToOpen: (state) => (state.status?.gp ? Number(state.status.gp.free) + state.status.gp.packs : 0),
     /** Tous les packs à ouvrir : réserve rechargée (10 max), réserve bonus, packs spéciaux et GP */
     packsToOpen(state) {
       if (!state.status) return 0
-      return state.status.available + (state.status.bonus ?? 0) + (state.status.special ?? 0) + this.gpPacksToOpen
+      return (
+        state.status.available + (state.status.bonus ?? 0) + (state.status.special ?? 0) + this.gpPacksToOpen + Number(this.welcomeAvailable)
+      )
     },
     /** Succès débloqués dont la récompense attend */
     achievementsReady: (state) => state.status?.achievements_ready ?? 0,
@@ -143,9 +148,9 @@ export const useCollectionStore = defineStore('collection', {
     predictionsReady: (state) => state.status?.predictions_ready ?? 0,
     /** Quêtes terminées dont la récompense attend */
     questsReady: (state) => state.status?.quests_ready ?? 0,
-    /** Pastille du menu : packs à ouvrir et récompenses de quêtes (3 packs offerts à un nouveau visiteur) */
+    /** Pastille du menu : packs à ouvrir et récompenses de quêtes (pack de bienvenue et 3 packs offerts à un nouveau visiteur) */
     packBadge(state) {
-      if (!state.status) return state.noSession ? 3 : 0
+      if (!state.status) return state.noSession ? 4 : 0
       return this.packsToOpen + this.questsReady + this.achievementsReady
     },
     /** Doublons par rareté : { common: { copies, value }, … } */
@@ -480,7 +485,17 @@ export const useCollectionStore = defineStore('collection', {
      */
     async open(gp = false) {
       await this.loadCatalog()
-      const { cards, status, source } = await openPack(gp)
+      return this.applyOpening(await openPack(gp))
+    },
+
+    /** Pack de bienvenue (une carte de l'écurie `team`, une Épique garantie) */
+    async openWelcome(team = null) {
+      await this.loadCatalog()
+      return this.applyOpening(await openWelcomePack(team))
+    },
+
+    /** Cartes d'un pack ouvert : collection, quêtes et ordre de révélation */
+    applyOpening({ cards, status, source }) {
       this.setStatus(status)
       this.refreshQuests()
       const owned = new Map(this.owned)

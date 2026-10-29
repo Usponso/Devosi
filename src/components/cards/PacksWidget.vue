@@ -32,8 +32,8 @@ const now = ref(Date.now())
 let timer = null
 let refreshing = false
 
-// Nouveau visiteur (pas encore de session) : les 3 packs offerts au départ
-const available = computed(() => (hasSession.value ? col.packsToOpen : 3))
+// Nouveau visiteur (pas encore de session) : le pack de bienvenue et les 3 packs offerts au départ
+const available = computed(() => (hasSession.value ? col.packsToOpen : 4))
 const max = computed(() => col.status?.max ?? 10)
 const stackSize = computed(() => Math.min(3, Math.max(available.value, 1)))
 
@@ -44,7 +44,7 @@ const countdown = computed(() => {
 })
 
 const title = computed(() => {
-  if (!hasSession.value) return '3 packs offerts t’attendent'
+  if (!hasSession.value) return 'Un pack de bienvenue et 3 packs offerts'
   if (!available.value) return 'Aucun pack disponible'
   return `${available.value} pack${available.value > 1 ? 's' : ''} à ouvrir`
 })
