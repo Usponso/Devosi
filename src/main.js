@@ -5,6 +5,8 @@ import App from './App.vue'
 import { reveal } from './directives/reveal'
 import { countup } from './directives/countup'
 import { registerServiceWorker } from './services/push'
+// Écoute la proposition d'installation du navigateur dès le chargement
+import './composables/useInstall'
 import './assets/global.css'
 
 const app = createApp(App)

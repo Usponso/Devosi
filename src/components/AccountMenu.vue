@@ -60,6 +60,9 @@
           <button class="item" role="menuitem" @click="openNotifications">
             <Icon name="bell" :size="16" /> Notifications
           </button>
+          <button v-if="canInstall" class="item" role="menuitem" @click="installApp">
+            <Icon name="save" :size="16" /> Installer l'appli
+          </button>
           <div class="sep"></div>
           <button class="item" role="menuitem" @click="openAccount('link')">
             <Icon name="save" :size="16" /> Mon compte
@@ -93,6 +96,7 @@ import AccountDialog from './cards/AccountDialog.vue'
 import PlayerAvatar from './cards/PlayerAvatar.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import NotificationSettings from './NotificationSettings.vue'
+import { useInstall } from '@/composables/useInstall'
 import { signOut } from '@/services/collection'
 import { albumTitle } from '@/utils/cards'
 
@@ -105,6 +109,14 @@ const open = ref(false)
 const busy = ref(false)
 const accountOpen = ref(false)
 const notificationsOpen = ref(false)
+
+// Installation : fenêtre du navigateur, ou étapes sur iPhone (fenêtre des notifications)
+const { canInstall, iosSteps, install } = useInstall()
+function installApp() {
+  open.value = false
+  if (iosSteps.value) notificationsOpen.value = true
+  else install()
+}
 
 function openNotifications() {
   open.value = false

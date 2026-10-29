@@ -36,6 +36,7 @@
         </div>
       </section>
 
+      <InstallBanner />
       <PacksWidget />
       <PredictionWidget />
 
@@ -214,6 +215,7 @@ import LineChart from '@/components/charts/LineChart.vue'
 import FormStrip from '@/components/charts/FormStrip.vue'
 import CarImage from '@/components/CarImage.vue'
 import PacksWidget from '@/components/cards/PacksWidget.vue'
+import InstallBanner from '@/components/InstallBanner.vue'
 import PredictionWidget from '@/components/cards/PredictionWidget.vue'
 import { useF1Store } from '@/stores/f1Store'
 import { usePrefsStore } from '@/stores/prefsStore'
