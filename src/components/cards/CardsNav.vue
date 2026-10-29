@@ -29,8 +29,10 @@ import { useCollectionStore } from '@/stores/collectionStore'
 
 /** Onglets communs à toutes les pages de la collection de cartes */
 const TABS = [
+  { to: '/profil', label: 'Mon profil', icon: 'user', badge: 'profile' },
   { to: '/packs', label: 'Packs', icon: 'package', badge: 'packs' },
   { to: '/quetes', label: 'Quêtes', icon: 'trophy', badge: 'quests' },
+  { to: '/succes', label: 'Succès', icon: 'star', badge: 'achievements' },
   { to: '/boutique', label: 'Boutique', icon: 'cart' },
   { to: '/collection', label: 'Collection', icon: 'album' },
   { to: '/atelier', label: 'Atelier', icon: 'hammer' },
@@ -41,11 +43,26 @@ const route = useRoute()
 const col = useCollectionStore()
 const scroller = ref(null)
 
-const isActive = (tab) => route.path.startsWith(tab.to)
+/** Ma page publique (/joueurs/mon-pseudo) compte comme « Mon profil », pas comme « Joueurs » */
+const isMine = (path) => {
+  const name = col.profile?.username
+  return Boolean(name) && path.toLowerCase() === `/joueurs/${name}`.toLowerCase()
+}
+const isActive = (tab) =>
+  tab.to === '/profil' ? route.path === '/profil' || isMine(route.path) : route.path.startsWith(tab.to) && !(tab.to === '/joueurs' && isMine(route.path))
+
+/** Complétion du profil tant qu'il reste quelque chose à faire, ou la récompense à récupérer */
+function profileBadge() {
+  const c = col.profile?.completion
+  if (!c || c.rewarded || !col.isPlayer) return 0
+  return c.percent >= 100 ? '+200' : `${c.percent} %`
+}
 
 function badge(tab) {
+  if (tab.badge === 'profile') return profileBadge()
   if (tab.badge === 'packs') return col.packsToOpen
   if (tab.badge === 'quests') return col.questsReady
+  if (tab.badge === 'achievements') return col.achievementsReady
   if (tab.badge === 'friends') return col.friendRequests
   return 0
 }

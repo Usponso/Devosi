@@ -14,7 +14,19 @@
           <router-link to="/joueurs" class="back muted">← Joueurs</router-link>
           <div class="hero-row">
             <div class="identity">
+              <button v-if="self" class="avatar-edit" aria-label="Changer mon avatar" @click="edit('avatar')">
+                <PlayerAvatar
+                  :card-id="player.avatar"
+                  :finish="player.avatar_finish"
+                  :username="player.username"
+                  :team="player.team"
+                  :size="96"
+                  class="hero-avatar"
+                />
+                <span class="edit-pen"><Icon name="edit" :size="14" /></span>
+              </button>
               <PlayerAvatar
+                v-else
                 :card-id="player.avatar"
                 :finish="player.avatar_finish"
                 :username="player.username"
@@ -25,15 +37,39 @@
               <div class="identity-text">
                 <div class="eyebrow">Rang {{ player.rank }} sur {{ player.players }} · membre depuis {{ formatDate(player.member_since, { month: 'long', year: 'numeric' }) }}</div>
                 <h1 class="title-xl name">{{ player.username }}</h1>
-                <div class="tags">
+                <!-- Mon profil : chaque élément se modifie sur place -->
+                <div v-if="self" class="tags">
+                  <button class="title-badge editable" :class="{ empty: !playerTitle }" @click="edit('title')">
+                    <Icon :name="playerTitle ? 'trophy' : 'plus'" :size="13" /> {{ playerTitle ?? 'Choisir un titre' }}
+                    <Icon v-if="playerTitle" name="edit" :size="12" class="pen" />
+                  </button>
+                  <button class="team-tag editable" :class="{ empty: !team }" @click="edit('team')">
+                    <span v-if="team" class="team-swatch"></span><Icon v-else name="plus" :size="13" />
+                    {{ team?.name ?? 'Choisir une écurie' }}
+                    <Icon v-if="team" name="edit" :size="12" class="pen" />
+                  </button>
+                </div>
+                <div v-else class="tags">
                   <span v-if="playerTitle" class="title-badge"><Icon name="trophy" :size="13" /> {{ playerTitle }}</span>
                   <span v-if="team" class="team-tag"><span class="team-swatch"></span>{{ team.name }}</span>
                 </div>
-                <div class="hero-actions">
-                  <button v-if="player.friendship === 'self'" class="btn btn-ghost" @click="editing = true">
-                    <Icon name="edit" :size="16" /> Personnaliser mon profil
-                  </button>
-                  <FriendButton v-else v-model:status="player.friendship" :username="player.username" />
+
+                <div v-if="self" class="badges">
+                  <template v-for="i in 3" :key="i">
+                    <button v-if="player.badges?.[i - 1]" class="badge-btn" :aria-label="`Changer mes badges (${player.badges[i - 1].title})`" @click="edit('badges')">
+                      <AchievementBadge :achievement="player.badges[i - 1]" :size="34" />
+                    </button>
+                    <button v-else class="badge-slot" aria-label="Choisir un badge" @click="edit('badges')"><Icon name="plus" :size="14" /></button>
+                  </template>
+                  <span v-if="(player.badges?.length ?? 0) < 3" class="muted small">Choisis 3 badges parmi tes succès</span>
+                  <router-link to="/succes" class="link-arrow small">Mes succès →</router-link>
+                </div>
+                <div v-else-if="player.badges?.length" class="badges">
+                  <AchievementBadge v-for="b in player.badges" :key="b.id" :achievement="b" :size="34" />
+                </div>
+
+                <div v-if="!self" class="hero-actions">
+                  <FriendButton v-model:status="player.friendship" :username="player.username" />
                 </div>
               </div>
             </div>
@@ -46,15 +82,30 @@
       </header>
 
       <div class="container body">
+        <ProfileCompletion v-if="self" @edit="edit" />
+
         <!-- Vitrine -->
         <section>
           <div class="section-row">
             <h2 class="title-md section-title">Vitrine</h2>
-            <button v-if="player.friendship === 'self'" class="btn btn-ghost" @click="editing = true">
+            <button v-if="self" class="btn btn-ghost" @click="edit('showcase')">
               <Icon name="edit" :size="16" /> Modifier ma vitrine
             </button>
           </div>
-          <div v-if="showcaseCards.length" class="showcase">
+          <!-- Ma vitrine : emplacements libres à remplir -->
+          <div v-if="self" class="showcase">
+            <template v-for="i in 5" :key="i">
+              <div v-if="showcaseCards[i - 1]" class="showcase-card" :style="{ animationDelay: `${(i - 1) * 90}ms` }">
+                <F1Card :card="showcaseCards[i - 1]" :finish="player.finishes?.[showcaseCards[i - 1].id] ?? 0" :zoom-list="showcaseCards" :zoom-finishes="player.finishes ?? {}" />
+                <div class="caption"><span class="muted">{{ RARITY_LABEL[showcaseCards[i - 1].rarity] }}</span></div>
+              </div>
+              <button v-else class="showcase-slot" @click="edit('showcase')">
+                <Icon name="plus" :size="20" />
+                <span class="muted small">Ajouter une carte</span>
+              </button>
+            </template>
+          </div>
+          <div v-else-if="showcaseCards.length" class="showcase">
             <div v-for="(card, i) in showcaseCards" :key="card.id" class="showcase-card" :style="{ animationDelay: `${i * 90}ms` }">
               <F1Card :card="card" :finish="player.finishes?.[card.id] ?? 0" :zoom-list="showcaseCards" :zoom-finishes="player.finishes ?? {}" />
               <div class="caption">
@@ -93,7 +144,7 @@
       </div>
     </template>
 
-    <ProfileEditor :open="editing" @close="closeEditor" />
+    <ProfileEditor :open="Boolean(editing)" :initial-tab="editing || 'showcase'" single @close="closeEditor" />
   </div>
 </template>
 
@@ -105,19 +156,31 @@ import F1Card from '@/components/cards/F1Card.vue'
 import StatTile from '@/components/StatTile.vue'
 import FriendButton from '@/components/cards/FriendButton.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
+import AchievementBadge from '@/components/cards/AchievementBadge.vue'
 import ProfileEditor from '@/components/cards/ProfileEditor.vue'
+import ProfileCompletion from '@/components/cards/ProfileCompletion.vue'
 import { PICKABLE_TEAMS, getTeamColor } from '@/data/teams'
 import { albumTitle } from '@/utils/cards'
 import { RARITIES, RARITY_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { fetchPlayer } from '@/services/collection'
 import { formatDate } from '@/utils/race'
 
+/** `username` : profil affiché par /profil (le mien) ; sinon le pseudo de l'adresse */
+const props = defineProps({ username: { type: String, default: null } })
+
 const route = useRoute()
 const col = useCollectionStore()
 
 const player = ref(null)
 const loading = ref(true)
-const editing = ref(false)
+// Zone en cours de modification (avatar, title, team, badges, showcase) ou null
+const editing = ref(null)
+const self = computed(() => player.value?.friendship === 'self')
+const username = computed(() => props.username ?? route.params.username)
+
+function edit(tab) {
+  editing.value = tab
+}
 
 const playerTitle = computed(() => (player.value?.title ? albumTitle(player.value.title, col.albums) : null))
 const team = computed(() => PICKABLE_TEAMS.find((t) => t.id === player.value?.team) ?? null)
@@ -138,16 +201,12 @@ async function load(username, quiet = false) {
   }
 }
 
-watch(
-  () => route.params.username,
-  (username) => username && load(username),
-  { immediate: true },
-)
+watch(username, (name) => name && load(name), { immediate: true })
 
 /** Les changements de l'éditeur apparaissent sur le profil public */
 function closeEditor() {
-  editing.value = false
-  load(route.params.username, true)
+  editing.value = null
+  load(username.value, true)
 }
 
 const completedAlbums = computed(() =>
@@ -338,4 +397,91 @@ function rarityShare(rarity) {
   .score { text-align: left; }
   .score-num { font-size: 44px; }
 }
+.badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.badges .small { font-size: 13px; margin-left: 4px; }
+/* Mon profil : éléments modifiables */
+.avatar-edit {
+  position: relative;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.edit-pen {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+.editable {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--t);
+}
+
+.editable .pen { opacity: 0.6; }
+.editable:hover { border-color: var(--accent-line); }
+
+.editable.empty {
+  color: var(--accent);
+  background: transparent;
+  border: 1px dashed var(--accent-line);
+}
+
+.badge-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.badge-slot {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 28%;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1.5px dashed var(--line-strong);
+  cursor: pointer;
+}
+
+.badge-slot:hover { color: var(--accent); border-color: var(--accent-line); }
+
+.showcase-slot {
+  aspect-ratio: 5 / 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 10px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1.5px dashed var(--line-strong);
+  cursor: pointer;
+}
+
+.showcase-slot:hover { color: var(--accent); border-color: var(--accent-line); }
+.showcase-slot .small { font-size: 12px; text-align: center; padding: 0 6px; }
 </style>

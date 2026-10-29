@@ -46,12 +46,10 @@
             </div>
           </div>
 
-          <router-link :to="`/joueurs/${col.profile.username}`" class="item" role="menuitem">
+          <router-link to="/profil" class="item" role="menuitem">
             <Icon name="user" :size="16" /> Mon profil
+            <span v-if="completion && completion.percent < 100" class="item-percent mono">{{ completion.percent }} %</span>
           </router-link>
-          <button class="item" role="menuitem" @click="openEditor">
-            <Icon name="edit" :size="16" /> Personnaliser
-          </button>
           <router-link to="/joueurs?onglet=amis" class="item" role="menuitem">
             <Icon name="users" :size="16" /> Amis
             <span v-if="col.friendRequests" class="item-badge mono">{{ col.friendRequests }}</span>
@@ -79,7 +77,6 @@
     <!-- Hors de l'en-tête : son backdrop-filter piégerait les fenêtres en position fixed -->
     <Teleport to="body">
       <AccountDialog :open="accountOpen" :start-mode="accountMode" @close="accountOpen = false" />
-      <ProfileEditor :open="editorOpen" @close="editorOpen = false" />
     </Teleport>
   </div>
 </template>
@@ -90,7 +87,6 @@ import { useRoute } from 'vue-router'
 import Icon from './Icon.vue'
 import AccountDialog from './cards/AccountDialog.vue'
 import PlayerAvatar from './cards/PlayerAvatar.vue'
-import ProfileEditor from './cards/ProfileEditor.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { signOut } from '@/services/collection'
 import { albumTitle } from '@/utils/cards'
@@ -104,7 +100,8 @@ const open = ref(false)
 const busy = ref(false)
 const accountOpen = ref(false)
 const accountMode = ref('link')
-const editorOpen = ref(false)
+/** Complétion du profil (pseudo, avatar, écurie, vitrine, badges) */
+const completion = computed(() => col.profile?.completion ?? null)
 
 const title = computed(() => (col.profile?.title ? albumTitle(col.profile.title, col.albums) : null))
 const guestLabel = computed(() => {
@@ -123,13 +120,6 @@ function openAccount(mode) {
   open.value = false
   accountMode.value = mode
   accountOpen.value = true
-}
-
-function openEditor() {
-  open.value = false
-  // L'éditeur a besoin des cartes possédées et des albums complétés
-  if (!col.ready) col.init()
-  editorOpen.value = true
 }
 
 async function logout() {
@@ -181,6 +171,13 @@ onUnmounted(() => {
 .bubble-avatar { position: relative; display: inline-flex; }
 
 .bubble-badge,
+.item-percent {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
 .item-badge {
   min-width: 17px;
   height: 17px;

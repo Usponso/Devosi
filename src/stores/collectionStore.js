@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
 import { usePrefsStore } from '@/stores/prefsStore'
 import {
+  claimAchievement,
+  claimProfileReward,
+  fetchAchievements,
+  saveBadges,
   buyGpPack,
   buyPack,
   claimPrediction,
@@ -90,6 +94,7 @@ export const useCollectionStore = defineStore('collection', {
     friends: null, // { friends, incoming, outgoing } (chargé à la demande)
     quests: null, // quêtes du jour (chargées par la page Packs)
     predictions: null, // pronostics : { season, next, history, total, rank, players }
+    achievements: null, // succès : { achievements, badges }
     editions: [], // éditions vainqueur : [{ season, round, card_id, name, obtained_at }]
     email: null, // email du compte (null pour une session invité)
     clockOffset: 0, // écart horloge serveur - horloge locale (ms)
@@ -132,6 +137,8 @@ export const useCollectionStore = defineStore('collection', {
       if (!state.status) return 0
       return state.status.available + (state.status.bonus ?? 0) + (state.status.special ?? 0) + this.gpPacksToOpen
     },
+    /** Succès débloqués dont la récompense attend */
+    achievementsReady: (state) => state.status?.achievements_ready ?? 0,
     /** Pronostics notés dont les gains attendent */
     predictionsReady: (state) => state.status?.predictions_ready ?? 0,
     /** Quêtes terminées dont la récompense attend */
@@ -139,7 +146,7 @@ export const useCollectionStore = defineStore('collection', {
     /** Pastille du menu : packs à ouvrir et récompenses de quêtes (3 packs offerts à un nouveau visiteur) */
     packBadge(state) {
       if (!state.status) return state.noSession ? 3 : 0
-      return this.packsToOpen + this.questsReady
+      return this.packsToOpen + this.questsReady + this.achievementsReady
     },
     /** Doublons par rareté : { common: { copies, value }, … } */
     duplicates(state) {
@@ -235,6 +242,7 @@ export const useCollectionStore = defineStore('collection', {
       this.friends = null
       this.quests = null
       this.predictions = null
+      this.achievements = null
       this.editions = []
       this.email = null
       this.loading = false
@@ -305,6 +313,37 @@ export const useCollectionStore = defineStore('collection', {
       const { status, ...quests } = await rerollQuest(slot)
       this.quests = quests
       this.setStatus(status)
+    },
+
+    async loadAchievements() {
+      const { status, ...achievements } = await fetchAchievements()
+      this.achievements = achievements
+      this.setStatus(status)
+      return achievements
+    },
+
+    /** Récupère la récompense d'un succès ; renvoie les Pièces gagnées */
+    async claimAchievement(id) {
+      const { status, coins, ...achievements } = await claimAchievement(id)
+      this.achievements = achievements
+      this.setStatus(status)
+      return coins
+    },
+
+    async setBadges(ids) {
+      const { status, ...achievements } = await saveBadges(ids)
+      this.achievements = achievements
+      this.setStatus(status)
+      // Badges et complétion du profil
+      this.profile = await fetchMyProfile()
+    },
+
+    /** Récompense du profil complet ; renvoie les Pièces gagnées */
+    async claimProfileReward() {
+      const { coins, profile, status } = await claimProfileReward()
+      this.profile = profile
+      this.setStatus(status)
+      return coins
     },
 
     async loadPredictions() {

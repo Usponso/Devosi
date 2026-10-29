@@ -92,7 +92,11 @@ Puis, dans le projet Supabase :
 
 Comptes : chacun joue d'abord en invité (session anonyme). « Sauvegarder ma collection » relie la session à un email (code à 6 chiffres, collection conservée) ; « J'ai déjà un compte » permet de se connecter depuis un autre appareil. Seuls les comptes reliés à un email et dotés d'un pseudo apparaissent dans le classement (`/joueurs`) et ont une vitrine publique (`/joueurs/<pseudo>`).
 
-Toutes les pages de la collection partagent une barre d'onglets : Packs, Quêtes, Boutique, Collection, Atelier, Joueurs.
+Toutes les pages de la collection partagent une barre d'onglets : Mon profil, Packs, Quêtes, Succès, Boutique, Collection, Atelier, Joueurs.
+
+**Mon profil** (`/profil`) : la page publique du joueur, modifiable sur place. L'avatar, le titre, l'écurie, les badges et la vitrine ont chacun leur bouton, qui ouvre la fenêtre de cette zone ; les emplacements vides invitent à les remplir. Une jauge de complétion (pseudo, avatar, écurie, 5 cartes en vitrine, 3 badges) rapporte 200 Pièces à 100 %. Pour un invité, la page présente ce qu'apporte un profil public et propose de sauvegarder sa collection. Des rappels apparaissent aussi au bon moment : ajouter une Légendaire (ou mieux) tout juste obtenue à sa vitrine, afficher un succès récupéré sur son profil, terminer son profil depuis la page Packs.
+
+**Succès** (`/succes`) : 46 objectifs à long terme en 4 familles (collection, écuries et pilotes, pronostics, fidélité) et 4 niveaux : Bronze 50 Pièces, Argent 150, Or 500, Légende 1 000. La progression est calculée côté serveur à partir des données du jeu (packs ouverts, cartes, albums, pronostics, quêtes, amis…), donc les succès déjà mérités sont débloqués d'office. Jusqu'à 3 succès débloqués s'affichent en badges sur le profil public (`supabase/migrations/20261107000000_achievements.sql`).
 
 **Pronostics** (`/pronostics`, dans le menu principal) : avant chaque Grand Prix, on pronostique le podium (ordre exact) et la pole, jusqu'au début des qualifications. Barème : 10 points par pilote à la bonne place, 4 par pilote du podium mal placé, 10 pour la pole, +15 pour un podium parfait ; 1 point = 5 Pièces, podium parfait = 1 pack bonus. Classement de la saison (général et entre amis) ; en fin de saison, 10, 6 et 3 packs pour le top 3.
 

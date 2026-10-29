@@ -114,6 +114,13 @@
           </span>
         </div>
 
+        <!-- Rappel : profil à compléter -->
+        <router-link v-if="profileLeft" to="/profil" class="profile-line">
+          <Icon name="user-check" :size="16" />
+          <span>Ton profil est complété à <b>{{ profileLeft.percent }} %</b> : termine-le pour gagner {{ profileLeft.reward }} Pièces.</span>
+          <Icon name="chevron-right" :size="16" class="sc-arrow" />
+        </router-link>
+
         <!-- Raccourcis : quêtes du jour et boutique -->
         <div class="shortcuts">
           <router-link to="/quetes" class="shortcut" :class="{ ready: col.questsReady }">
@@ -206,10 +213,24 @@
             <button class="btn btn-ghost" @click="stage = 'idle'">Retour aux packs</button>
           </div>
         </div>
+        <!-- Rappel : une belle carte mérite la vitrine -->
+        <div v-if="highlight && !showcaseDone" class="reminder">
+          <Icon name="cards" :size="18" />
+          <span>
+            Tu viens d'obtenir <b>{{ highlight.name }}</b> ({{ highlight.edition ? 'édition vainqueur' : RARITY_LABEL[highlight.rarity] }}) :
+            {{ col.showcase.length < 5 ? 'ajoute-la à ta vitrine ?' : 'elle mérite ta vitrine !' }}
+          </span>
+          <button v-if="col.showcase.length < 5" class="btn btn-ghost" :disabled="showcaseBusy" @click="addToShowcase">Ajouter</button>
+          <button v-else class="btn btn-ghost" @click="showcaseEditor = true">Remplacer une carte</button>
+        </div>
+        <p v-else-if="showcaseDone" class="reminder done"><Icon name="check" :size="16" /> Ajoutée à ta vitrine.</p>
+
         <div class="summary-grid">
           <F1Card v-for="(c, i) in drawn" :key="i" :card="c" :is-new="c.isNew" :zoom-list="drawn" class="summary-card" :style="{ animationDelay: `${i * 80}ms` }" />
         </div>
       </section>
+
+      <ProfileEditor :open="showcaseEditor" initial-tab="showcase" single @close="showcaseEditor = false" />
     </div>
   </div>
 </template>
@@ -218,7 +239,8 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
-import { RARITIES, packChance, useCollectionStore } from '@/stores/collectionStore'
+import ProfileEditor from '@/components/cards/ProfileEditor.vue'
+import { RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'
 import { packSounds } from '@/utils/packSounds'
 import { usePrefsStore } from '@/stores/prefsStore'
@@ -247,6 +269,36 @@ const max = computed(() => col.status?.max ?? 10)
 const current = computed(() => drawn.value[index.value])
 const newCount = computed(() => drawn.value.filter((c) => c.isNew).length)
 const lastWasGp = computed(() => drawn.value.source?.startsWith('gp'))
+
+// Rappels : la plus belle carte du pack (Légendaire et plus, ou édition vainqueur) pour la vitrine
+const showcaseEditor = ref(false)
+const showcaseBusy = ref(false)
+const showcaseDone = ref(false)
+const highlight = computed(() => {
+  const best = [...drawn.value]
+    .filter((c) => c.edition || RARITY_RANK[c.rarity] >= RARITY_RANK.legendary)
+    .sort((a, b) => Boolean(b.edition) - Boolean(a.edition) || RARITY_RANK[b.rarity] - RARITY_RANK[a.rarity])[0]
+  return best && !col.showcase.includes(best.id) ? best : null
+})
+watch(drawn, () => (showcaseDone.value = false))
+
+async function addToShowcase() {
+  showcaseBusy.value = true
+  try {
+    await col.toggleShowcase(highlight.value.id)
+    showcaseDone.value = true
+  } catch {
+    showcaseEditor.value = true
+  } finally {
+    showcaseBusy.value = false
+  }
+}
+
+// Profil public à compléter (joueurs avec un pseudo)
+const profileLeft = computed(() => {
+  const c = col.profile?.completion
+  return col.isPlayer && c && !c.rewarded && c.percent < 100 ? c : null
+})
 
 // Week-end de course et édition vainqueur
 const gp = computed(() => col.gpWeekend)
@@ -636,6 +688,41 @@ onUnmounted(() => {
 .edition-line .icon { flex-shrink: 0; }
 .edition-line .link-arrow { margin-left: 6px; }
 .edition-line.owned { color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); background: color-mix(in srgb, var(--success) 8%, transparent); }
+
+.reminder {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgb(232 193 90 / 0.4);
+  background: rgb(232 193 90 / 0.08);
+}
+
+.reminder > .icon { color: #ffd65a; flex-shrink: 0; }
+.reminder > span { flex: 1; min-width: 200px; }
+.reminder .btn { padding: 6px 14px; }
+.reminder.done { color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); background: color-mix(in srgb, var(--success) 8%, transparent); }
+
+.profile-line {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+  color: var(--text-dim);
+  border: 1px dashed var(--accent-line);
+  transition: border-color var(--t);
+}
+
+.profile-line:hover { border-color: var(--accent); }
+.profile-line > .icon:first-child { color: var(--accent); flex-shrink: 0; }
+.profile-line > span { flex: 1; }
 
 .source-tag.gp { color: #ff8a8a; background: rgb(225 6 0 / 0.16); }
 

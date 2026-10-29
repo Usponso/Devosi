@@ -1,11 +1,17 @@
 <template>
   <transition name="fade">
     <div v-if="open" class="backdrop" @click.self="close">
-      <div class="dialog card" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <div class="dialog card" :class="{ compact: single && !['showcase', 'avatar'].includes(tab) }" role="dialog" aria-modal="true" aria-labelledby="profile-title">
         <button class="close" aria-label="Fermer" @click="close"><Icon name="x" /></button>
 
+        <!-- Une seule section : titre de la fenêtre -->
+        <div v-if="single" class="single-head">
+          <div class="eyebrow">Mon profil</div>
+          <h2 id="profile-title" class="title-md">{{ SINGLE_TITLES[tab] }}</h2>
+        </div>
+
         <!-- Aperçu -->
-        <div class="preview">
+        <div v-else class="preview">
           <PlayerAvatar
             :card-id="profile.avatar"
             :finish="col.finishes.get(profile.avatar) ?? 0"
@@ -20,7 +26,7 @@
           </div>
         </div>
 
-        <div class="tabs" role="tablist">
+        <div v-if="!single" class="tabs" role="tablist">
           <button v-for="t in TABS" :key="t.id" role="tab" class="tab" :class="{ active: tab === t.id }" :aria-selected="tab === t.id" @click="tab = t.id">
             <Icon :name="t.icon" :size="15" /> {{ t.label }}
           </button>
@@ -118,6 +124,33 @@
           </div>
         </section>
 
+        <!-- Badges : 3 succès débloqués -->
+        <section v-else-if="tab === 'badges'" class="panel">
+          <p class="muted small">Jusqu'à 3 succès débloqués, affichés sous ton pseudo. Touche un succès pour l'ajouter ou le retirer.</p>
+          <p v-if="!col.achievements" class="muted small">Chargement…</p>
+          <p v-else-if="!unlockedAchievements.length" class="muted small">
+            Aucun succès débloqué pour l'instant. <router-link to="/succes" class="link-arrow" @click="close">Voir les succès →</router-link>
+          </p>
+          <div v-else class="badge-list">
+            <button
+              v-for="a in unlockedAchievements"
+              :key="a.id"
+              class="badge-pick"
+              :class="{ selected: badges.includes(a.id) }"
+              :disabled="busy"
+              :aria-pressed="badges.includes(a.id)"
+              @click="toggleBadge(a.id)"
+            >
+              <AchievementBadge :achievement="a" :size="40" />
+              <span class="bp-text">
+                <span class="bp-title">{{ a.title }}</span>
+                <span class="muted small">{{ a.description }}</span>
+              </span>
+              <span v-if="badges.includes(a.id)" class="bp-order mono">{{ badges.indexOf(a.id) + 1 }}</span>
+            </button>
+          </div>
+        </section>
+
         <!-- Écurie -->
         <section v-else class="panel">
           <p class="muted small">Ton profil public prend les couleurs de ton écurie.</p>
@@ -150,6 +183,7 @@ import { computed, onUnmounted, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
 import F1Card from '@/components/cards/F1Card.vue'
+import AchievementBadge from '@/components/cards/AchievementBadge.vue'
 import { PICKABLE_TEAMS } from '@/data/teams'
 import { CARD_TYPES, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 import { usePrefsStore } from '@/stores/prefsStore'
@@ -157,8 +191,10 @@ import { albumTitle, economyMessage } from '@/utils/cards'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
-  /** Onglet affiché à l'ouverture : showcase, avatar, title ou team */
+  /** Onglet affiché à l'ouverture : showcase, avatar, title, team ou badges */
   initialTab: { type: String, default: 'showcase' },
+  /** Fenêtre d'une seule section (sans onglets), ouverte depuis la zone du profil concernée */
+  single: { type: Boolean, default: false },
 })
 const emit = defineEmits(['close'])
 
@@ -167,7 +203,16 @@ const TABS = [
   { id: 'avatar', label: 'Avatar', icon: 'user' },
   { id: 'title', label: 'Titre', icon: 'trophy' },
   { id: 'team', label: 'Écurie', icon: 'flag' },
+  { id: 'badges', label: 'Badges', icon: 'star' },
 ]
+
+const SINGLE_TITLES = {
+  showcase: 'Ma vitrine',
+  avatar: 'Mon avatar',
+  title: 'Mon titre',
+  team: 'Mon écurie',
+  badges: 'Mes badges',
+}
 
 const col = useCollectionStore()
 const prefs = usePrefsStore()
@@ -219,6 +264,31 @@ const titles = computed(() =>
   }).sort((a, b) => b.unlocked - a.unlocked),
 )
 
+// Badges : succès débloqués, ceux affichés en premier
+const badges = computed(() => col.profile?.badges ?? [])
+const unlockedAchievements = computed(() =>
+  (col.achievements?.achievements ?? [])
+    .filter((a) => a.unlocked)
+    .sort((a, b) => badges.value.includes(b.id) - badges.value.includes(a.id) || b.tier - a.tier),
+)
+
+async function toggleBadge(id) {
+  const on = badges.value.includes(id)
+  if (!on && badges.value.length >= 3) {
+    error.value = '3 badges maximum : retire-en un avant d’en ajouter un autre.'
+    return
+  }
+  busy.value = true
+  error.value = ''
+  try {
+    await col.setBadges(on ? badges.value.filter((b) => b !== id) : [...badges.value, id])
+  } catch (err) {
+    error.value = economyMessage(err)
+  } finally {
+    busy.value = false
+  }
+}
+
 watch([type, search], () => (limit.value = 48))
 watch(
   () => props.open,
@@ -227,6 +297,7 @@ watch(
     if (open) {
       error.value = ''
       tab.value = props.initialTab
+      if (props.initialTab === 'badges' || !props.single) col.loadAchievements().catch(() => {})
     }
   },
 )
@@ -287,6 +358,46 @@ function close() {
 
 .small { font-size: 13px; }
 .error { color: var(--danger); }
+
+.dialog.compact { width: min(620px, 100%); height: auto; max-height: calc(100dvh - 32px); }
+
+.single-head { padding-right: 40px; }
+.single-head .title-md { margin-top: 4px; }
+
+.badge-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 8px;
+}
+
+.badge-pick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-align: left;
+  color: inherit;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: border-color var(--t);
+}
+
+.badge-pick:not(:disabled):hover { border-color: var(--accent-line); }
+.badge-pick.selected { border-color: var(--accent); background: var(--accent-soft); }
+.bp-text { display: flex; flex-direction: column; min-width: 0; }
+.bp-title { font-weight: 700; font-size: 14px; }
+
+.bp-order {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
 
 .preview {
   display: flex;

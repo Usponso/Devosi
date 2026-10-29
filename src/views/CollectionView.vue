@@ -39,7 +39,7 @@
             </div>
             <div class="showcase-actions">
               <button class="btn btn-ghost" @click="editorOpen = true"><Icon name="edit" :size="16" /> Modifier ma vitrine</button>
-              <router-link v-if="col.profile?.username" :to="`/joueurs/${col.profile.username}`" class="link-arrow">Voir ma vitrine publique →</router-link>
+              <router-link v-if="col.profile?.username" to="/profil" class="link-arrow">Voir mon profil →</router-link>
               <button v-else class="link-arrow" @click="accountOpen = true">{{ col.isGuest ? 'Sauvegarder ma collection →' : 'Choisir un pseudo →' }}</button>
             </div>
           </div>
@@ -147,7 +147,7 @@
 
 
     <AccountDialog :open="accountOpen" @close="accountOpen = false" @done="notify" />
-    <ProfileEditor :open="editorOpen" initial-tab="showcase" @close="editorOpen = false" />
+    <ProfileEditor :open="editorOpen" initial-tab="showcase" single @close="editorOpen = false" />
 
     <transition name="toast">
       <div v-if="notice" class="toast" role="status"><Icon name="check" :size="16" /> {{ notice }}</div>

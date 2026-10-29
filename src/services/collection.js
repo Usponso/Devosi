@@ -268,6 +268,23 @@ export const claimPrediction = (season, round) => rpc('claim_prediction', { p_se
 export const fetchPredictionLeaderboard = (season = null, friends = false, offset = 0, limit = 50) =>
   rpc('prediction_leaderboard', { p_season: season, p_friends: friends, p_limit: limit, p_offset: offset })
 
+// ---------------------------------------------------------------------------
+// Succès : { achievements: [{ id, family, tier, title, description, kind, param, progress,
+// target, coins, unlocked, claimed_at }], badges: [id], status }
+// ---------------------------------------------------------------------------
+
+export async function fetchAchievements() {
+  await ensureSession()
+  return rpc('my_achievements')
+}
+
+/** Même réponse, avec `coins` gagnées — erreurs `ACHIEVEMENT_LOCKED`, `ACHIEVEMENT_CLAIMED` */
+export const claimAchievement = (id) => rpc('claim_achievement', { p_id: id })
+/** Profil complet : { coins, profile, status } — erreurs `PROFILE_INCOMPLETE`, `PROFILE_REWARDED` */
+export const claimProfileReward = () => rpc('claim_profile_reward')
+/** Badges du profil public (3 succès débloqués au maximum) */
+export const saveBadges = (ids) => rpc('set_badges', { p_ids: ids })
+
 /** Albums dont la récompense a été récupérée : Set(album_id) */
 export async function fetchMyAlbums() {
   await ensureSession()
