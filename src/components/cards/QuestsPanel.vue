@@ -32,6 +32,7 @@
               {{ questLabel(q) }}
               <router-link v-if="ATELIER_KINDS.includes(q.kind) && !q.claimed && q.progress < q.target" to="/atelier" class="q-link">Atelier →</router-link>
             </div>
+            <div v-if="questHint(q)" class="q-hint">{{ questHint(q) }}</div>
             <span class="q-bar"><span :style="{ width: `${Math.min(1, q.progress / q.target) * 100}%` }"></span></span>
           </div>
           <div class="q-side">
@@ -123,6 +124,14 @@ function questLabel(q) {
     }
     default: return q.id
   }
+}
+
+/** Précision sur les cartes qui comptent, pour les quêtes qui ne sont pas évidentes */
+function questHint(q) {
+  if (q.claimed || q.progress >= q.target) return ''
+  if (q.kind === 'team' && q.param) return `Pilote (son écurie principale), carte Écurie ou Grand Prix gagné par ${teamName(q.param)}`
+  if (q.kind === 'decade') return 'Pilote ou écurie qui y a débuté, Grand Prix ou Moment de cette décennie'
+  return ''
 }
 
 const questIcon = (q) => ICONS[q.kind] ?? 'star'
@@ -393,4 +402,5 @@ const reroll = (q) => run(() => col.rerollQuest(q.slot))
   }
   .streak { align-items: flex-start; }
 }
+.q-hint { margin-top: 2px; font-size: 12px; color: var(--text-muted); }
 </style>

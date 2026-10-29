@@ -3,6 +3,13 @@ import { getNationalityLabel } from '@/data/nationalities'
 const plural = (n, word) => `${n} ${word}${n > 1 ? 's' : ''}`
 
 /** 1 234 Pièces */
+/**
+ * Écurie d'une carte pilote : celle où il a disputé le plus de courses (c'est elle qui
+ * compte pour les quêtes « carte de l'écurie X »). `byId` : catalogue indexé par id.
+ */
+export const driverTeamName = (card, byId) =>
+  card?.type === 'driver' && card.teamId ? byId.get(`t-${card.teamId}`)?.name ?? null : null
+
 export const formatCoins = (n) => (n ?? 0).toLocaleString('fr-FR')
 
 const ECONOMY_ERRORS = {

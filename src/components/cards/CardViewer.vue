@@ -62,6 +62,11 @@
             <span>{{ subLabel }}</span>
             <span v-if="yearsLabel" class="mono muted">· {{ yearsLabel }}</span>
           </div>
+          <div v-if="teamName" class="team-line" :style="{ '--tc': card.color }">
+            <span class="team-dot"></span>
+            Écurie : <b>{{ teamName }}</b>
+            <span class="muted">(celle où il a couru le plus)</span>
+          </div>
 
           <div class="rarity-line">
             <span class="rarity-pill">{{ RARITY_LABEL[card.rarity] }}</span>
@@ -109,6 +114,7 @@ import CardOwnerPanel from './CardOwnerPanel.vue'
 import { useCardViewer } from '@/composables/useCardViewer'
 import { RARITIES, RARITY_LABEL, TYPE_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { getNationalityLabel } from '@/data/nationalities'
+import { driverTeamName } from '@/utils/cards'
 
 const viewer = useCardViewer()
 const col = useCollectionStore()
@@ -126,6 +132,8 @@ const finish = computed(() => {
   if (viewer.state.finishes) return viewer.state.finishes[id] ?? 0
   return col.finishes.get(id) ?? viewer.state.finish ?? 0
 })
+
+const teamName = computed(() => driverTeamName(card.value, col.byId))
 
 const subLabel = computed(() =>
   ['driver', 'team'].includes(card.value?.type) ? getNationalityLabel(card.value.sub) : card.value?.sub,
@@ -433,6 +441,19 @@ onUnmounted(() => {
 }
 
 .flag { width: 22px; border-radius: 3px; }
+
+.team-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.team-line b { color: var(--text); }
+.team-line .muted { font-size: 12px; }
+.team-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--tc); flex-shrink: 0; }
 
 .rarity-line {
   display: flex;

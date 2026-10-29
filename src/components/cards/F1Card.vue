@@ -38,6 +38,7 @@
             <div class="sub">
               <img v-if="card.flag" :src="`https://flagcdn.com/${card.flag}.svg`" alt="" class="flag" draggable="false" />
               <span>{{ subLabel }}</span>
+              <span v-if="teamName" class="team-tag">{{ teamName }}</span>
             </div>
 
             <div class="stats">
@@ -71,7 +72,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 import CircuitMap from '@/components/CircuitMap.vue'
-import { RARITY_LABEL, TYPE_LABEL } from '@/stores/collectionStore'
+import { RARITY_LABEL, TYPE_LABEL, useCollectionStore } from '@/stores/collectionStore'
+import { driverTeamName } from '@/utils/cards'
 import { getNationalityLabel } from '@/data/nationalities'
 import circuits from '@/data/circuits.json'
 import { useCardViewer } from '@/composables/useCardViewer'
@@ -95,6 +97,8 @@ const props = defineProps({
 })
 
 const viewer = useCardViewer()
+const col = useCollectionStore()
+const teamName = computed(() => driverTeamName(props.card, col.byId))
 const canZoom = computed(() => props.zoomable && !props.locked && !props.faceDown)
 
 function zoom() {
@@ -392,6 +396,18 @@ function onLeave() {
 }
 
 .sub span { overflow: hidden; text-overflow: ellipsis; }
+
+/* Écurie du pilote : prioritaire sur la nationalité quand la place manque */
+.sub .team-tag {
+  flex-shrink: 0;
+  max-width: 55%;
+  margin-left: auto;
+  padding: 0.4cqw 1.8cqw;
+  border-radius: 99px;
+  font-weight: 700;
+  color: #fff;
+  background: color-mix(in srgb, var(--tc) 45%, rgb(0 0 0 / 0.5));
+}
 .flag { width: 5.6cqw; height: 4cqw; object-fit: cover; border-radius: 0.6cqw; flex-shrink: 0; }
 
 .stats {
