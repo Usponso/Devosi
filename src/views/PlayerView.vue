@@ -11,7 +11,7 @@
       <header class="hero" :style="teamColor ? { '--tc': teamColor } : null">
         <div class="hero-glow" aria-hidden="true"></div>
         <div class="container hero-inner">
-          <router-link to="/joueurs" class="back muted">← Joueurs</router-link>
+          <router-link v-if="!self" to="/joueurs" class="back muted">← Joueurs</router-link>
           <div class="hero-row">
             <div class="identity">
               <button v-if="self" class="avatar-edit" aria-label="Changer mon avatar" @click="edit('avatar')">

@@ -1,6 +1,6 @@
 <template>
   <span
-    class="badge"
+    class="ach-badge"
     :class="[`tier-${achievement.tier}`, { locked }]"
     :style="{ '--size': `${size}px` }"
     :title="`${achievement.title} : ${achievement.description}`"
@@ -24,7 +24,7 @@ defineProps({
 </script>
 
 <style scoped>
-.badge {
+.ach-badge {
   flex: none;
   width: var(--size);
   height: var(--size);
@@ -49,7 +49,7 @@ defineProps({
     conic-gradient(from 30deg, #ff4fd8, #5ad1ff, #ffe066, #7dff9b, #ff4fd8) border-box;
 }
 
-.badge.locked {
+.ach-badge.locked {
   color: var(--text-muted);
   background: var(--surface-2);
   border-color: var(--line);
