@@ -1,0 +1,34 @@
+# Copie le calendrier et les résultats de la saison (Jolpica) dans la base de production :
+# ferme les pronostics, les note dès que le podium est connu et ouvre les week-ends de course.
+# Toutes les heures du vendredi au lundi (UTC), une fois par jour le reste de la semaine.
+#
+# Secret GitHub requis : SUPABASE_DB_URL (voir supabase.yml)
+name: Courses
+
+on:
+  schedule:
+    - cron: '15 * * * 5,6,0,1'
+    - cron: '15 6 * * 2,3,4'
+  workflow_dispatch:
+
+concurrency:
+  group: races-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Récupérer le calendrier et les résultats
+        run: node scripts/sync-races.mjs > races.sql
+
+      - name: Mettre à jour la base
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -q -f races.sql

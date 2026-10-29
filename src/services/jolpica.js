@@ -73,6 +73,12 @@ export async function fetchDriverStandings(season = 'current') {
   }
 }
 
+/** Pilotes engagés dans la saison (sans écurie) : utile avant la première course */
+export async function fetchSeasonDrivers(season = 'current') {
+  const data = await fetchErgast(`/${season}/drivers`, {}, { ttl: seasonTTL(season) })
+  return (data?.MRData?.DriverTable?.Drivers ?? []).map(mapDriverBase)
+}
+
 export async function fetchConstructorStandings(season = 'current') {
   const data = await fetchErgast(`/${season}/constructorStandings`, {}, { ttl: seasonTTL(season) })
   const standings = data?.MRData?.StandingsTable?.StandingsLists?.[0]?.ConstructorStandings ?? []

@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia'
 import { usePrefsStore } from '@/stores/prefsStore'
 import {
+  buyGpPack,
   buyPack,
+  claimPrediction,
+  fetchMyEditions,
+  fetchPredictions,
+  savePrediction,
   claimAlbum,
   claimQuest,
   fetchMyAlbums,
@@ -84,6 +89,8 @@ export const useCollectionStore = defineStore('collection', {
     profile: null, // { username, showcase, avatar, title, team, permanent, requests }
     friends: null, // { friends, incoming, outgoing } (chargé à la demande)
     quests: null, // quêtes du jour (chargées par la page Packs)
+    predictions: null, // pronostics : { season, next, history, total, rank, players }
+    editions: [], // éditions vainqueur : [{ season, round, card_id, name, obtained_at }]
     email: null, // email du compte (null pour une session invité)
     clockOffset: 0, // écart horloge serveur - horloge locale (ms)
     loading: false,
@@ -116,9 +123,17 @@ export const useCollectionStore = defineStore('collection', {
         return s.complete && !s.claimed
       }).length
     },
-    /** Tous les packs à ouvrir : réserve rechargée (10 max), réserve bonus et packs spéciaux */
-    packsToOpen: (state) =>
-      state.status ? state.status.available + (state.status.bonus ?? 0) + (state.status.special ?? 0) : 0,
+    /** Week-end de course en cours : { season, round, name, circuit, ends_at, free, packs, left, price } */
+    gpWeekend: (state) => state.status?.gp ?? null,
+    /** Packs GP à ouvrir : l'offert du jour et ceux achetés */
+    gpPacksToOpen: (state) => (state.status?.gp ? Number(state.status.gp.free) + state.status.gp.packs : 0),
+    /** Tous les packs à ouvrir : réserve rechargée (10 max), réserve bonus, packs spéciaux et GP */
+    packsToOpen(state) {
+      if (!state.status) return 0
+      return state.status.available + (state.status.bonus ?? 0) + (state.status.special ?? 0) + this.gpPacksToOpen
+    },
+    /** Pronostics notés dont les gains attendent */
+    predictionsReady: (state) => state.status?.predictions_ready ?? 0,
     /** Quêtes terminées dont la récompense attend */
     questsReady: (state) => state.status?.quests_ready ?? 0,
     /** Pastille du menu : packs à ouvrir et récompenses de quêtes (3 packs offerts à un nouveau visiteur) */
@@ -178,14 +193,16 @@ export const useCollectionStore = defineStore('collection', {
       this.loading = true
       this.error = null
       try {
-        const [, status, mine, profile, user, claimed] = await Promise.all([
+        const [, status, mine, profile, user, claimed, editions] = await Promise.all([
           this.loadCatalog(),
           fetchPackStatus(),
           fetchMyCards(),
           fetchMyProfile(),
           currentUser(),
           fetchMyAlbums(),
+          fetchMyEditions().catch(() => []),
         ])
+        this.editions = editions
         this.claimedAlbums = claimed
         this.setStatus(status)
         this.owned = mine.owned
@@ -217,6 +234,8 @@ export const useCollectionStore = defineStore('collection', {
       this.profile = null
       this.friends = null
       this.quests = null
+      this.predictions = null
+      this.editions = []
       this.email = null
       this.loading = false
       await this.init()
@@ -286,6 +305,45 @@ export const useCollectionStore = defineStore('collection', {
       const { status, ...quests } = await rerollQuest(slot)
       this.quests = quests
       this.setStatus(status)
+    },
+
+    async loadPredictions() {
+      const { status, ...predictions } = await fetchPredictions()
+      this.predictions = predictions
+      this.setStatus(status)
+      return predictions
+    },
+
+    async savePrediction(season, round, picks) {
+      const { status, ...predictions } = await savePrediction(season, round, picks)
+      this.predictions = predictions
+      this.setStatus(status)
+    },
+
+    /** Récupère les gains d'un pronostic ; renvoie { coins, packs, edition } (edition : carte du catalogue) */
+    async claimPrediction(season, round) {
+      const { coins, packs, edition, predictions } = await claimPrediction(season, round)
+      const { status, ...rest } = predictions
+      this.predictions = rest
+      this.setStatus(status)
+      let card = null
+      if (edition) {
+        await this.loadCatalog()
+        this.addEdition(edition)
+        card = { ...this.addCard(edition), edition }
+        this.refreshQuests()
+      }
+      return { coins, packs, edition: card }
+    },
+
+    /** Mémorise une édition vainqueur obtenue */
+    addEdition({ id, season, round, name }) {
+      if (this.editions.some((e) => e.season === season && e.round === round)) return
+      this.editions = [{ season, round, card_id: id, name, obtained_at: new Date().toISOString() }, ...this.editions]
+    },
+
+    async buyGpPack() {
+      this.setStatus((await buyGpPack()).status)
     },
 
     async loadFriends() {
@@ -377,23 +435,26 @@ export const useCollectionStore = defineStore('collection', {
     },
 
     /**
-     * Ouvre un pack ; renvoie les cartes du catalogue, de la moins rare à la plus rare.
-     * `source` du pack ouvert sur le tableau renvoyé (special, regular, bonus).
+     * Ouvre un pack (`gp` : pack du week-end de course) ; renvoie les cartes du catalogue,
+     * de la moins rare à la plus rare, l'édition vainqueur en dernier.
+     * `source` du pack ouvert sur le tableau renvoyé (special, regular, bonus, gp_free, gp).
      */
-    async open() {
+    async open(gp = false) {
       await this.loadCatalog()
-      const { cards, status, source } = await openPack()
+      const { cards, status, source } = await openPack(gp)
       this.setStatus(status)
       this.refreshQuests()
       const owned = new Map(this.owned)
       const drawn = cards.map((c) => {
         owned.set(c.id, (owned.get(c.id) ?? 0) + 1)
-        return { ...this.byId.get(c.id), isNew: c.is_new }
+        if (c.edition) this.addEdition({ id: c.id, ...c.edition })
+        return { ...this.byId.get(c.id), isNew: c.is_new, edition: c.edition ?? null, circuitCard: c.circuit }
       })
       this.owned = owned
       this.markObtained(cards.filter((c) => c.is_new).map((c) => c.id))
-      // Suspense : la carte la plus rare est révélée en dernier
-      return Object.assign(drawn.sort((a, b) => RARITY_RANK[a.rarity] - RARITY_RANK[b.rarity]), { source })
+      // Suspense : la carte la plus rare est révélée en dernier, l'édition vainqueur tout à la fin
+      const rank = (c) => (c.edition ? 99 : RARITY_RANK[c.rarity])
+      return Object.assign(drawn.sort((a, b) => rank(a) - rank(b)), { source })
     },
   },
 })

@@ -94,6 +94,14 @@ Comptes : chacun joue d'abord en invité (session anonyme). « Sauvegarder ma co
 
 Toutes les pages de la collection partagent une barre d'onglets : Packs, Quêtes, Boutique, Collection, Atelier, Joueurs.
 
+**Pronostics** (`/pronostics`, dans le menu principal) : avant chaque Grand Prix, on pronostique le podium (ordre exact) et la pole, jusqu'au début des qualifications. Barème : 10 points par pilote à la bonne place, 4 par pilote du podium mal placé, 10 pour la pole, +15 pour un podium parfait ; 1 point = 5 Pièces, podium parfait = 1 pack bonus. Classement de la saison (général et entre amis) ; en fin de saison, 10, 6 et 3 packs pour le top 3.
+
+**Week-end de course** : du jour des premiers essais à la fin du jour de la course, un **pack GP** est offert chaque jour et 3 sont achetables en boutique (200 Pièces). 2 de ses 5 cartes sont liées au circuit (GP disputés là-bas, pilotes et écuries qui y ont gagné). Les packs GP achetés et pas ouverts rejoignent la réserve bonus à la fin du week-end.
+
+**Édition vainqueur** : pendant les 7 jours qui suivent une course, la carte du vainqueur existe en édition tamponnée « Vainqueur ». Elle est garantie à ceux qui avaient trouvé le vainqueur, et tirable dans les packs (3 % par pack, 6 % dans un pack GP). Elle compte comme la carte normale pour les albums et s'affiche à part dans la collection.
+
+Le calendrier et les résultats sont copiés depuis Jolpica dans la base par `scripts/sync-races.mjs`, que le workflow GitHub `Courses` lance toutes les heures du vendredi au lundi et une fois par jour le reste de la semaine : il ferme les pronostics, les note dès que le podium est connu et ouvre les week-ends de course (`supabase/migrations/20261106000000_predictions.sql`).
+
 Profil public : chaque joueur choisit sa **vitrine** (5 cartes), un **avatar** parmi ses cartes (cadre aux couleurs de la rareté, reflet Chrome ou Or), un **titre** débloqué en complétant un album et son **écurie favorite** (couleurs du profil). Les **amis** s'ajoutent depuis un profil (demande à accepter) ; l'onglet Amis de `/joueurs` affiche les demandes reçues et envoyées et le classement entre amis. La bulle du compte, en haut à droite, donne accès à tout cela depuis n'importe quelle page (profil, personnalisation, amis, collection, compte) ; pour un invité, elle devient « Sauvegarder » ou « Se connecter ».
 
 ## Lancer le projet

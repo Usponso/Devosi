@@ -11,8 +11,11 @@
         <Icon :name="item.icon" :size="20" />
         <span v-if="packBadge" class="tab-badge mono" :aria-label="`${packBadge} packs ou récompenses en attente`">{{ packBadge }}</span>
       </span>
-      <Icon v-else :name="item.icon" :size="22" />
-      <span :class="{ 'featured-label': item.featured }">{{ item.label }}</span>
+      <span v-else class="tab-icon">
+        <Icon :name="item.icon" :size="22" />
+        <span v-if="item.badge === 'predictions' && col.predictionsReady" class="tab-dot"></span>
+      </span>
+      <span :class="{ 'featured-label': item.featured }">{{ item.short ?? item.label }}</span>
     </router-link>
   </nav>
 </template>
@@ -22,9 +25,11 @@ import { useRoute } from 'vue-router'
 import Icon from './Icon.vue'
 import { NAV_ITEMS, isNavActive } from './navItems'
 import { usePackBadge } from '@/composables/usePackBadge'
+import { useCollectionStore } from '@/stores/collectionStore'
 
 const route = useRoute()
 const packBadge = usePackBadge()
+const col = useCollectionStore()
 const isActive = (item) => isNavActive(item, route.path)
 </script>
 
@@ -41,7 +46,7 @@ const isActive = (item) => isNavActive(item, route.path)
     bottom: 0;
     z-index: 100;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
     padding-bottom: env(safe-area-inset-bottom);
     background: rgba(11, 12, 15, 0.92);
@@ -73,6 +78,19 @@ const isActive = (item) => isNavActive(item, route.path)
     background: var(--accent);
     transform: scaleX(0);
     transition: transform 0.35s var(--ease);
+  }
+
+  .tab-icon { position: relative; display: grid; }
+
+  .tab-dot {
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px rgb(11 12 15);
   }
 
   .tabbar-item.active { color: var(--text); }

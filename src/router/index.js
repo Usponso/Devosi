@@ -11,6 +11,7 @@ const routes = [
   { path: '/teams', component: () => import('@/views/TeamsView.vue') },
   { path: '/teams/:id', component: () => import('@/views/TeamDetail.vue') },
   { path: '/packs', component: () => import('@/views/PacksView.vue') },
+  { path: '/pronostics', component: () => import('@/views/PredictionsView.vue') },
   { path: '/quetes', component: () => import('@/views/QuestsView.vue') },
   { path: '/boutique', component: () => import('@/views/ShopView.vue') },
   { path: '/collection', component: () => import('@/views/CollectionView.vue') },

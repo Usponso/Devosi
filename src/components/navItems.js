@@ -5,6 +5,8 @@ export const NAV_ITEMS = [
   { to: '/', label: 'Accueil', icon: 'home', exact: true },
   { to: '/standings', label: 'Classements', icon: 'trophy' },
   { to: '/season', label: 'Calendrier', icon: 'calendar' },
+  // Pastille : gains de pronostics à récupérer ; `short` : libellé de la barre mobile
+  { to: '/pronostics', label: 'Pronostics', short: 'Pronos', icon: 'flag', badge: 'predictions' },
   { to: '/drivers', label: 'Pilotes', icon: 'helmet' },
   { to: '/teams', label: 'Écuries', icon: 'shield' },
   // Mis en avant dans les menus (reflet holographique, badge des packs à ouvrir)

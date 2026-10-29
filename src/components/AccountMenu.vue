@@ -275,14 +275,14 @@ onUnmounted(() => {
 .menu-enter-from,
 .menu-leave-to { opacity: 0; transform: translateY(-6px); }
 
-/* Mobile : l'avatar seul */
-@media (max-width: 860px) {
+/* Écrans moyens et mobile : l'avatar seul */
+@media (max-width: 1180px) {
   .bubble:not(.plain) { padding: 3px; }
   .bubble:not(.plain) .bubble-name,
   .bubble-chevron { display: none; }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 1180px) and (min-width: 861px), (max-width: 420px) {
   .bubble.plain .bubble-name { display: none; }
   .bubble.plain { padding: 9px; }
 }

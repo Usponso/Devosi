@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="f1card"
-    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked }]"
+    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked, edition: editionLabel }]"
     :style="locked ? null : { '--tc': card.color }"
     @pointermove="onMove"
     @pointerleave="onLeave"
@@ -32,6 +32,7 @@
               <CircuitMap v-if="hasPhoto && hasCircuit" :circuit-id="card.circuitId" small class="art-circuit badge" />
               <span v-if="card.number" class="art-number">{{ card.number }}</span>
               <span class="years">{{ yearsLabel }}</span>
+              <span v-if="editionLabel" class="edition-stamp">Vainqueur<br />{{ editionLabel }}</span>
             </div>
 
             <div class="name">{{ card.name }}</div>
@@ -126,6 +127,12 @@ const monogram = computed(() =>
     .join('')
     .toUpperCase(),
 )
+
+/** Édition vainqueur : « GP de Monaco » 2026 → « Monaco 2026 » */
+const editionLabel = computed(() => {
+  const e = !props.locked && props.card.edition
+  return e ? `${(e.name ?? 'GP').replace(/^GP (de |du |des |d’|d')?/, '')} ${e.season}` : ''
+})
 
 const yearsLabel = computed(() => {
   const [a, b] = props.card.years ?? []
@@ -371,6 +378,30 @@ function onLeave() {
   font-weight: 700;
   background: rgba(0, 0, 0, 0.55);
   color: #fff;
+}
+
+.edition-stamp {
+  position: absolute;
+  right: 3cqw;
+  top: 14cqw;
+  z-index: 2;
+  padding: 1cqw 2.4cqw;
+  border: 0.7cqw solid #e8c15a;
+  border-radius: 1.6cqw;
+  transform: rotate(-10deg);
+  font-size: 4cqw;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #ffd65a;
+  background: rgb(14 15 18 / 0.82);
+  box-shadow: 0 0 3cqw rgb(232 193 90 / 0.45);
+}
+
+.edition .frame {
+  background: linear-gradient(155deg, #ffd65a, color-mix(in srgb, var(--c) 35%, #0d0e11) 45%, #e8c15a);
 }
 
 .name {

@@ -61,12 +61,14 @@ export async function peekPackStatus() {
 }
 
 /**
- * { cards: [{ id, rarity, is_new }], source, status } — erreur `NO_PACK` si aucun pack.
- * `source` : special (Épique garantie), regular (réserve rechargée) ou bonus.
+ * { cards: [{ id, rarity, is_new, edition, circuit }], source, circuit, status } — erreur
+ * `NO_PACK` si aucun pack. `source` : special (Épique garantie), regular (réserve
+ * rechargée), bonus, ou pour un pack GP (`gp`) gp_free (offert du jour) et gp (acheté).
+ * `edition` : { season, round, name } si la carte est l'édition vainqueur.
  */
-export async function openPack() {
+export async function openPack(gp = false) {
   await ensureSession()
-  const { data, error } = await supabase.rpc('open_pack')
+  const { data, error } = await supabase.rpc('open_pack', { p_gp: gp })
   if (error) throw toError(error)
   return data
 }
@@ -231,6 +233,40 @@ export const rerollQuest = (slot) => rpc('reroll_quest', { p_slot: slot })
 
 /** Code promo : { coins, packs, status } ou { error } (CODE_INVALID, CODE_EXPIRED…) */
 export const redeemCode = (code) => rpc('redeem_code', { p_code: code })
+
+/** Éditions vainqueur obtenues : [{ season, round, card_id, name, obtained_at }] */
+export async function fetchMyEditions() {
+  await ensureSession()
+  const { data, error } = await supabase
+    .from('user_editions')
+    .select('season, round, card_id, name, obtained_at')
+    .order('obtained_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+/** Pack du week-end de course : { status } — erreurs `NO_WEEKEND`, `GP_SHOP_LIMIT`, `NOT_ENOUGH_COINS` */
+export const buyGpPack = () => rpc('buy_gp_pack')
+
+// ---------------------------------------------------------------------------
+// Pronostics : { season, next, history, total, rank, players, status }
+// ---------------------------------------------------------------------------
+
+export async function fetchPredictions() {
+  await ensureSession()
+  return rpc('my_predictions')
+}
+
+/** Erreurs `PREDICTION_CLOSED`, `PREDICTION_INVALID`, `PREDICTION_DUPLICATE` */
+export const savePrediction = (season, round, { p1, p2, p3, pole }) =>
+  rpc('save_prediction', { p_season: season, p_round: round, p_p1: p1, p_p2: p2, p_p3: p3, p_pole: pole })
+
+/** { coins, packs, edition, predictions } */
+export const claimPrediction = (season, round) => rpc('claim_prediction', { p_season: season, p_round: round })
+
+/** [{ rank, username, points, races, perfect, avatar, avatar_finish, title, team, is_me }] */
+export const fetchPredictionLeaderboard = (season = null, friends = false, offset = 0, limit = 50) =>
+  rpc('prediction_leaderboard', { p_season: season, p_friends: friends, p_limit: limit, p_offset: offset })
 
 /** Albums dont la récompense a été récupérée : Set(album_id) */
 export async function fetchMyAlbums() {

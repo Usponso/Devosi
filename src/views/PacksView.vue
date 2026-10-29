@@ -79,6 +79,41 @@
           <p v-if="message" class="message">{{ message }}</p>
         </div>
 
+        <!-- Week-end de course : pack GP (1 offert par jour, 3 en boutique) -->
+        <div v-if="gp" class="gp-block">
+          <span class="gp-pack" aria-hidden="true">
+            <span class="pack-brand">DEVOSI</span>
+            <span class="pack-title">{{ gpShortName }}</span>
+            <span class="pack-sub">GP PACK</span>
+          </span>
+          <div class="gp-info">
+            <span class="gp-tag"><Icon name="flag" :size="12" /> Week-end de course · encore {{ gpEndsIn }}</span>
+            <div class="gp-title">Pack {{ gp.name }}</div>
+            <p class="muted small">5 cartes dont 2 liées au circuit : Grands Prix disputés là-bas, pilotes et écuries qui y ont gagné.</p>
+          </div>
+          <div class="gp-actions">
+            <button class="btn" :disabled="!col.gpPacksToOpen || busy" @click="openPack(true)">
+              <Icon name="package" :size="16" />
+              {{ gp.free ? 'Ouvrir le pack du jour (offert)' : gp.packs ? `Ouvrir un pack GP (${gp.packs})` : 'Pack du jour ouvert' }}
+            </button>
+            <router-link to="/boutique" class="muted small gp-shop">
+              En boutique : {{ formatCoins(gp.price) }} Pièces · {{ gp.left }}/3 restant{{ gp.left > 1 ? 's' : '' }}
+            </router-link>
+          </div>
+        </div>
+
+        <!-- Édition vainqueur en jeu -->
+        <div v-if="edition" class="edition-line" :class="{ owned: editionOwned }">
+          <Icon name="star" :size="16" />
+          <span v-if="editionOwned">Édition vainqueur du {{ edition.name }} obtenue !</span>
+          <span v-else>
+            <b>Carte limitée : {{ editionDriver }}, vainqueur du {{ edition.name }}</b>, avec un tampon doré « Vainqueur ».
+            À trouver dans les packs jusqu'au {{ editionUntil }} (3 % de chances par pack, 6 % dans un pack GP).
+            Au prochain GP, pronostique le bon vainqueur pour recevoir sa carte à coup sûr.
+            <router-link to="/pronostics" class="link-arrow">Pronostics →</router-link>
+          </span>
+        </div>
+
         <!-- Raccourcis : quêtes du jour et boutique -->
         <div class="shortcuts">
           <router-link to="/quetes" class="shortcut" :class="{ ready: col.questsReady }">
@@ -125,6 +160,7 @@
           <span class="eyebrow">
             Carte {{ index + 1 }} / {{ drawn.length }}
             <span v-if="drawn.source === 'special'" class="source-tag special">Pack spécial</span>
+            <span v-else-if="drawn.source?.startsWith('gp')" class="source-tag gp">Pack GP</span>
             <span v-else-if="drawn.source === 'bonus'" class="source-tag">Pack bonus</span>
           </span>
           <div class="reveal-actions">
@@ -165,7 +201,8 @@
         <div class="summary-head">
           <h2 class="title-md">{{ newCount ? `${newCount} nouvelle${newCount > 1 ? 's' : ''} carte${newCount > 1 ? 's' : ''} !` : 'Pack ouvert' }}</h2>
           <div class="actions">
-            <button v-if="total" class="btn" @click="openPack">Ouvrir un autre pack ({{ total }})</button>
+            <button v-if="lastWasGp && col.gpPacksToOpen" class="btn" @click="openPack(true)">Ouvrir un autre pack GP ({{ col.gpPacksToOpen }})</button>
+            <button v-else-if="total" class="btn" @click="openPack()">Ouvrir un autre pack ({{ total }})</button>
             <button class="btn btn-ghost" @click="stage = 'idle'">Retour aux packs</button>
           </div>
         </div>
@@ -205,10 +242,28 @@ const message = ref('')
 const available = computed(() => col.status?.available ?? 0)
 const bonus = computed(() => col.status?.bonus ?? 0)
 const special = computed(() => col.status?.special ?? 0)
-const total = computed(() => col.packsToOpen)
+const total = computed(() => available.value + bonus.value + special.value)
 const max = computed(() => col.status?.max ?? 10)
 const current = computed(() => drawn.value[index.value])
 const newCount = computed(() => drawn.value.filter((c) => c.isNew).length)
+const lastWasGp = computed(() => drawn.value.source?.startsWith('gp'))
+
+// Week-end de course et édition vainqueur
+const gp = computed(() => col.gpWeekend)
+const gpShortName = computed(() => (gp.value?.name ?? '').replace(/^GP (de |du |des |d’|d')?/, '').toUpperCase())
+const gpEndsIn = computed(() => {
+  if (!gp.value) return ''
+  const min = Math.max(0, Math.round((new Date(gp.value.ends_at).getTime() - (now.value + col.clockOffset)) / 60000))
+  return min >= 1440 ? `${Math.floor(min / 1440)} j ${Math.floor((min % 1440) / 60)} h` : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, '0')}`
+})
+const edition = computed(() => col.status?.edition ?? null)
+const editionOwned = computed(() =>
+  col.editions.some((e) => e.season === edition.value?.season && e.round === edition.value?.round),
+)
+const editionDriver = computed(() => col.byId.get(edition.value?.card)?.name ?? 'le vainqueur')
+const editionUntil = computed(() =>
+  edition.value ? new Date(edition.value.until).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) : '',
+)
 
 // Raccourcis : boutique et avancement des quêtes du jour
 const shop = computed(() => col.status?.shop ?? { price: 150, daily: 3, left: 0 })
@@ -242,13 +297,14 @@ async function tick() {
   }
 }
 
-async function openPack() {
-  if (busy.value || !total.value) return
+/** Ouvre un pack de la réserve, ou un pack GP (`gp`) */
+async function openPack(gp = false) {
+  if (busy.value || !(gp === true ? col.gpPacksToOpen : total.value)) return
   busy.value = true
   message.value = ''
   try {
     // Petite attente minimale : le pack « tremble » avant de s'ouvrir
-    const [cards] = await Promise.all([col.open(), new Promise((r) => setTimeout(r, 650))])
+    const [cards] = await Promise.all([col.open(gp === true), new Promise((r) => setTimeout(r, 650))])
     drawn.value = cards
     index.value = 0
     flipped.value = false
@@ -506,6 +562,83 @@ onUnmounted(() => {
 .source-tag.special { color: #d9c2ff; background: rgb(168 85 247 / 0.16); }
 .stack.special .pack { box-shadow: 0 0 22px rgb(168 85 247 / 0.45); }
 
+/* Week-end de course */
+.gp-block {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgb(225 6 0 / 0.45);
+  background: linear-gradient(90deg, rgb(225 6 0 / 0.14), transparent 70%), var(--surface-2);
+  text-align: left;
+}
+
+.gp-pack {
+  flex-shrink: 0;
+  width: 70px;
+  aspect-ratio: 5 / 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 9px;
+  color: #fff;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0 3px, transparent 3px 9px),
+    linear-gradient(155deg, #e10600, #4a0a0a 80%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 20px rgba(225, 6, 0, 0.3);
+}
+
+.gp-pack .pack-brand { font-size: 7px; }
+.gp-pack .pack-title { font-size: 10px; letter-spacing: 0; text-align: center; max-width: 100%; overflow-wrap: anywhere; padding: 0 3px; }
+.gp-pack .pack-sub { font-size: 7px; }
+
+.gp-info { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 4px; }
+.gp-info p { margin: 0; }
+
+.gp-tag {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ff8a8a;
+  background: rgb(225 6 0 / 0.16);
+}
+
+.gp-title { font-size: 18px; font-weight: 800; }
+
+.gp-actions { display: flex; flex-direction: column; align-items: stretch; gap: 6px; text-align: center; }
+.gp-shop:hover { color: var(--text); }
+
+.edition-line {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #ffe08a;
+  border: 1px solid rgb(232 193 90 / 0.35);
+  background: rgb(232 193 90 / 0.08);
+  text-align: left;
+}
+
+.edition-line .icon { flex-shrink: 0; }
+.edition-line .link-arrow { margin-left: 6px; }
+.edition-line.owned { color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); background: color-mix(in srgb, var(--success) 8%, transparent); }
+
+.source-tag.gp { color: #ff8a8a; background: rgb(225 6 0 / 0.16); }
+
 .odds-intro { font-size: 13px; margin: 4px 0 10px; }
 
 .odds-table {
@@ -686,6 +819,7 @@ onUnmounted(() => {
   .count-row,
   .actions { justify-content: center; }
   .gauge { margin-left: 0; width: 100%; justify-content: center; }
+  .gp-actions { width: 100%; }
   .odds-table { font-size: 12px; }
   .odds-table th,
   .odds-table td { padding: 8px 6px; }

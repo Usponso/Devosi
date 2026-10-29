@@ -56,6 +56,17 @@
           </div>
         </section>
 
+        <!-- Éditions vainqueur (pronostics et packs après chaque GP) -->
+        <section v-if="editionCards.length" class="editions card">
+          <div class="editions-head">
+            <h2 class="title-md"><Icon name="star" :size="18" class="gold" /> Éditions vainqueur</h2>
+            <span class="muted small">{{ editionCards.length }} obtenue{{ editionCards.length > 1 ? 's' : '' }} · distribuées 7 jours après chaque GP</span>
+          </div>
+          <div class="editions-row">
+            <F1Card v-for="c in editionCards" :key="`${c.edition.season}-${c.edition.round}`" :card="c" :zoom-list="editionCards" class="edition-card" />
+          </div>
+        </section>
+
         <!-- Classeur ou liste complète -->
         <div class="tabs view-tabs" role="tablist">
           <button class="tab" role="tab" :aria-selected="view === 'albums'" :class="{ active: view === 'albums' }" @click="setView('albums')">
@@ -155,6 +166,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { CARD_TYPES, RARITIES, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 
 const col = useCollectionStore()
+
+/** Éditions vainqueur : la carte du vainqueur, tamponnée (plus récente d'abord) */
+const editionCards = computed(() =>
+  col.editions
+    .map((e) => col.byId.get(e.card_id) && { ...col.byId.get(e.card_id), edition: { season: e.season, round: e.round, name: e.name } })
+    .filter(Boolean),
+)
 
 const type = ref('all')
 const rarities = ref(new Set())
@@ -327,6 +345,29 @@ onUnmounted(() => {
 
 /* Vitrine */
 .showcase { margin-bottom: 24px; }
+
+.editions { margin-bottom: 24px; }
+
+.editions-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 14px;
+}
+
+.editions-head .title-md { display: inline-flex; align-items: center; gap: 8px; }
+.gold { color: #e8c15a; }
+
+.editions-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 140px;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
 
 .showcase-head {
   display: flex;

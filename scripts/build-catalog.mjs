@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url'
 import { getTeamColor } from '../src/data/teams.js'
 import { NATIONALITY_CODES, COUNTRY_CODES } from '../src/data/nationalities.js'
 import { writeSeed } from './catalog/seed.mjs'
+import { gpNameFr } from './catalog/gp-names.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const CACHE_DIR = `${ROOT}scripts/catalog/.cache`
@@ -159,65 +160,6 @@ const ICONIC_GPS = {
     '2012 Abu Dhabi Grand Prix', '2013 Malaysian Grand Prix', '2016 Spanish Grand Prix', '2020 Italian Grand Prix',
     '2020 Bahrain Grand Prix', '2024 Monaco Grand Prix',
   ],
-}
-/** Noms français des Grands Prix (nom Jolpica sans « Grand Prix ») */
-const GP_NAME_FR = {
-  '70th Anniversary': 'GP du 70e anniversaire',
-  'Abu Dhabi': "GP d'Abou Dabi",
-  Argentine: "GP d'Argentine",
-  Australian: "GP d'Australie",
-  Austrian: "GP d'Autriche",
-  Azerbaijan: "GP d'Azerbaïdjan",
-  Bahrain: 'GP de Bahreïn',
-  'Bahrain Grand Prix in Malaysia': 'GP de Bahreïn en Malaisie',
-  Barcelona: 'GP de Barcelone',
-  Belgian: 'GP de Belgique',
-  Brazilian: 'GP du Brésil',
-  British: 'GP de Grande-Bretagne',
-  'Caesars Palace': 'GP de Caesars Palace',
-  Canadian: 'GP du Canada',
-  Chinese: 'GP de Chine',
-  Dallas: 'GP de Dallas',
-  Detroit: 'GP de Détroit',
-  Dutch: 'GP des Pays-Bas',
-  Eifel: "GP de l'Eifel",
-  'Emilia Romagna': "GP d'Émilie-Romagne",
-  European: "GP d'Europe",
-  French: 'GP de France',
-  German: "GP d'Allemagne",
-  Hungarian: 'GP de Hongrie',
-  Indian: "GP d'Inde",
-  'Indianapolis 500': "500 miles d'Indianapolis",
-  Italian: "GP d'Italie",
-  Japanese: 'GP du Japon',
-  Korean: 'GP de Corée',
-  'Las Vegas': 'GP de Las Vegas',
-  Luxembourg: 'GP du Luxembourg',
-  Malaysian: 'GP de Malaisie',
-  Mexican: 'GP du Mexique',
-  'Mexico City': 'GP de Mexico',
-  Miami: 'GP de Miami',
-  Monaco: 'GP de Monaco',
-  Moroccan: 'GP du Maroc',
-  Pacific: 'GP du Pacifique',
-  Pescara: 'GP de Pescara',
-  Portuguese: 'GP du Portugal',
-  Qatar: 'GP du Qatar',
-  Russian: 'GP de Russie',
-  Sakhir: 'GP de Sakhir',
-  'San Marino': 'GP de Saint-Marin',
-  'Saudi Arabian': "GP d'Arabie saoudite",
-  Singapore: 'GP de Singapour',
-  'South African': "GP d'Afrique du Sud",
-  Spanish: "GP d'Espagne",
-  Styrian: 'GP de Styrie',
-  Swedish: 'GP de Suède',
-  Swiss: 'GP de Suisse',
-  'São Paulo': 'GP de São Paulo',
-  Turkish: 'GP de Turquie',
-  Tuscan: 'GP de Toscane',
-  'United States': 'GP des États-Unis',
-  'United States Grand Prix West': 'GP des États-Unis Ouest',
 }
 
 const iconicRarity = new Map(Object.entries(ICONIC_GPS).flatMap(([rarity, list]) => list.map((key) => [key, rarity])))
@@ -541,7 +483,7 @@ for (const race of racesByPos[1]) {
     id: `g-${race.season}-${race.round}`,
     type: 'gp',
     rarity: iconicRarity.get(key) ?? (isFinale ? 'rare' : 'common'),
-    name: GP_NAME_FR[race.raceName.replace(/ Grand Prix$/, '')] ?? race.raceName,
+    name: gpNameFr(race.raceName),
     sub: race.Circuit.circuitName,
     years: [parseInt(race.season), parseInt(race.season)],
     flag: flag(COUNTRY_CODES[race.Circuit.Location.country]),

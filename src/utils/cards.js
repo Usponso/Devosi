@@ -38,6 +38,14 @@ const ECONOMY_ERRORS = {
   CODE_NOT_STARTED: 'Ce code n’est pas encore actif.',
   CODE_USED_UP: 'Ce code a déjà été utilisé le nombre maximum de fois.',
   CODE_RATE_LIMIT: 'Trop de codes invalides, réessaie dans une heure.',
+  NO_WEEKEND: 'Le week-end de course est terminé.',
+  GP_SHOP_LIMIT: 'Tu as déjà acheté 3 packs GP ce week-end.',
+  RACE_UNKNOWN: 'Course inconnue.',
+  PREDICTION_CLOSED: 'Les pronostics sont fermés : les qualifications ont commencé.',
+  PREDICTION_INVALID: 'Choisis les 3 pilotes du podium et le poleman.',
+  PREDICTION_DUPLICATE: 'Un pilote ne peut être qu’une fois sur le podium.',
+  PREDICTION_PENDING: 'Les résultats ne sont pas encore connus.',
+  PREDICTION_CLAIMED: 'Gains déjà récupérés.',
 }
 
 /** Message lisible pour une erreur des fonctions de l'atelier (code = hint SQL) */

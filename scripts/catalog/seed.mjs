@@ -1,6 +1,7 @@
 /**
  * Écrit supabase/seed.sql à partir du catalogue : la table `cards` (id, type, rareté,
- * écurie, année) utilisée pour tirer les packs et suivre les quêtes, et les albums.
+ * écurie, année) utilisée pour tirer les packs et suivre les quêtes, les cartes liées à
+ * chaque circuit (pack du week-end de course) et les albums.
  *
  * Appelé par scripts/build-catalog.mjs. Peut aussi être lancé seul pour régénérer le
  * seed depuis src/data/catalog.json, sans rien retélécharger :
@@ -26,6 +27,24 @@ function teamResolver(cards) {
   }
 }
 
+/**
+ * Cartes liées à chaque circuit : les GP qui s'y sont disputés, et les pilotes et
+ * écuries qui y ont gagné. Renvoie des paires [card_id, circuit_id] uniques.
+ */
+function circuitLinks(cards) {
+  const driverByName = new Map()
+  for (const c of cards) if (c.type === 'driver' && !driverByName.has(c.name)) driverByName.set(c.name, c.id)
+  const teamByName = new Map(cards.filter((c) => c.type === 'team').map((c) => [c.name, c.id]))
+  const links = new Set()
+  for (const c of cards) {
+    if (c.type !== 'gp' || !c.circuitId) continue
+    for (const id of [c.id, driverByName.get(c.stats?.winner), teamByName.get(c.stats?.team)]) {
+      if (id) links.add(`${id}|${c.circuitId}`)
+    }
+  }
+  return [...links].map((l) => l.split('|'))
+}
+
 export function writeSeed(root, cards, albums) {
   const teamOf = teamResolver(cards)
   const values = cards
@@ -41,6 +60,10 @@ export function writeSeed(root, cards, albums) {
       `insert into public.albums (id, reward) values\n${albums.map((a) => `('${a.id}',${a.reward})`).join(',\n')}\n` +
       `on conflict (id) do update set reward = excluded.reward;\n` +
       `delete from public.albums where id not in (${albums.map((a) => `'${a.id}'`).join(',')});\n` +
+      `delete from public.card_circuits;\n` +
+      `insert into public.card_circuits (card_id, circuit_id) values\n` +
+      circuitLinks(cards).map(([id, circuit]) => `('${esc(id)}','${esc(circuit)}')`).join(',\n') +
+      `;\n\n` +
       `delete from public.album_cards;\n` +
       `insert into public.album_cards (album_id, card_id) values\n` +
       albums.flatMap((a) => a.cards.map((id) => `('${a.id}','${esc(id)}')`)).join(',\n') +

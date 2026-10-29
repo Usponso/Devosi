@@ -44,6 +44,34 @@
               <p v-if="message" class="small" :class="error ? 'error' : 'accent'">{{ message }}</p>
             </div>
           </article>
+
+          <!-- Pack du week-end de course -->
+          <article v-if="gp" class="item card gp-item">
+            <div class="item-visual" aria-hidden="true">
+              <span class="pack gp">
+                <span class="pack-brand">DEVOSI</span>
+                <span class="pack-title gp-name">{{ gpShortName }}</span>
+                <span class="pack-sub">GP pack</span>
+              </span>
+            </div>
+            <div class="item-body">
+              <h2 class="title-md">Pack {{ gp.name }}</h2>
+              <p class="muted small">
+                5 cartes dont 2 liées au circuit, chances doublées pour l'édition vainqueur. Disponible jusqu'à la fin du week-end de course :
+                {{ gp.left }}/3 achat{{ gp.left > 1 ? 's' : '' }} restant{{ gp.left > 1 ? 's' : '' }}.
+              </p>
+              <div class="item-buy">
+                <span class="price"><span class="mono">{{ formatCoins(gp.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
+                <button class="btn" :class="{ 'btn-ghost': !canBuyGp }" :disabled="busy || !canBuyGp" @click="buyGp">
+                  <Icon name="cart" :size="16" /> Acheter
+                </button>
+              </div>
+              <p v-if="gp.packs" class="small">
+                {{ gp.packs }} pack{{ gp.packs > 1 ? 's' : '' }} GP à ouvrir. <router-link to="/packs" class="link-arrow">Ouvrir →</router-link>
+              </p>
+              <p v-if="gpMessage" class="small" :class="gpError ? 'error' : 'accent'">{{ gpMessage }}</p>
+            </div>
+          </article>
         </section>
 
         <!-- Code promo -->
@@ -124,6 +152,27 @@ const buyBlocker = computed(() => {
   if (available.value >= max.value) return 'Ta réserve de packs est pleine : ouvre-en avant d’en acheter.'
   return `Encore ${formatCoins(shop.value.price - col.coins)} Pièces à gagner.`
 })
+
+// Pack du week-end de course
+const gp = computed(() => col.gpWeekend)
+const gpShortName = computed(() => (gp.value?.name ?? '').replace(/^GP (de |du |des |d’|d')?/, '').toUpperCase())
+const canBuyGp = computed(() => gp.value && gp.value.left > 0 && col.coins >= gp.value.price)
+const gpMessage = ref('')
+const gpError = ref(false)
+
+async function buyGp() {
+  busy.value = true
+  gpError.value = false
+  try {
+    await col.buyGpPack()
+    gpMessage.value = 'Pack GP ajouté : ouvre-le depuis la page Packs.'
+  } catch (err) {
+    gpError.value = true
+    gpMessage.value = economyMessage(err)
+  } finally {
+    busy.value = false
+  }
+}
 
 // Code promo
 const code = ref('')
@@ -228,6 +277,10 @@ onMounted(() => !col.ready && col.init())
 .pack-brand { font-size: 9px; letter-spacing: 0.3em; opacity: 0.8; }
 .pack-title { font-size: 15px; font-weight: 900; line-height: 1; }
 .pack-sub { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.8; }
+
+.pack.gp { background: linear-gradient(150deg, #e10600, #4a0a0a); box-shadow: 0 10px 24px rgb(225 6 0 / 0.3); }
+.gp-name { font-size: 12px; padding: 0 4px; overflow-wrap: anywhere; }
+.gp-item { border-color: rgb(225 6 0 / 0.4); }
 
 .item-body {
   flex: 1;

@@ -19,7 +19,10 @@
             <span class="featured-label">{{ item.label }}</span>
             <span v-if="packBadge" class="nav-badge mono" :aria-label="`${packBadge} packs ou récompenses en attente`">{{ packBadge }}</span>
           </template>
-          <template v-else>{{ item.label }}</template>
+          <template v-else>
+            {{ item.label }}
+            <span v-if="item.badge === 'predictions' && col.predictionsReady" class="nav-dot" :aria-label="`${col.predictionsReady} pronostics à récupérer`"></span>
+          </template>
         </router-link>
       </nav>
 
@@ -53,10 +56,12 @@ import { NAV_ITEMS, isNavActive } from './navItems'
 import { useF1Store } from '@/stores/f1Store'
 import { usePrefsStore } from '@/stores/prefsStore'
 import { usePackBadge } from '@/composables/usePackBadge'
+import { useCollectionStore } from '@/stores/collectionStore'
 
 const store = useF1Store()
 const prefs = usePrefsStore()
 const packBadge = usePackBadge()
+const col = useCollectionStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -204,6 +209,16 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   animation: label-shine 4.5s ease-in-out infinite;
 }
 
+.nav-dot {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
 .nav-badge {
   position: absolute;
   top: -7px;
@@ -299,6 +314,15 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 10px var(--accent);
+}
+
+/* Écrans moyens : liens resserrés, écurie en pastille seule */
+@media (max-width: 1180px) {
+  .nav { margin-left: 8px; gap: 0; }
+  .nav-link { padding: 8px 9px; }
+  .nav-link::after { left: 9px; right: 9px; }
+  .team-chip-name { display: none; }
+  .team-chip { padding: 9px; }
 }
 
 @media (max-width: 860px) {
