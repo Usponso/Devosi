@@ -21,7 +21,7 @@
   <main class="app-main">
     <CardsNav v-if="inCards" />
     <router-view v-slot="{ Component, route }">
-      <transition name="page" mode="out-in">
+      <transition name="page">
         <component :is="Component" :key="route.path" />
       </transition>
     </router-view>

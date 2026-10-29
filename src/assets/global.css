@@ -372,10 +372,10 @@ img {
   transform: none;
 }
 
-/* Transitions de page */
+/* Transitions de page : seule la nouvelle page s'anime. L'ancienne disparaît aussitôt, sans
+   sortie animée à attendre : des clics rapides sur le menu ne peuvent pas bloquer la navigation */
 .page-enter-active { animation: rise 0.45s var(--ease) both; }
-.page-leave-active { transition: opacity 0.15s ease; }
-.page-leave-to { opacity: 0; }
+.page-leave-active { display: none; }
 
 .fade-enter-active,
 .fade-leave-active { transition: opacity 0.3s ease; }
