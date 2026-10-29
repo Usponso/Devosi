@@ -5,6 +5,8 @@
 #   SUPABASE_ACCESS_TOKEN  jeton personnel (supabase.com/dashboard/account/tokens)
 #   SUPABASE_PROJECT_ID    référence du projet (Project Settings > General)
 #   SUPABASE_DB_PASSWORD   mot de passe de la base (choisi à la création du projet)
+#   SUPABASE_DB_URL        chaîne de connexion « Session pooler » (bouton Connect du dashboard),
+#                          avec le mot de passe à la place de [YOUR-PASSWORD]
 name: Base de données
 
 on:
@@ -13,6 +15,7 @@ on:
     paths:
       - 'supabase/migrations/**'
       - 'supabase/seed.sql'
+      - '.github/workflows/supabase.yml'
   workflow_dispatch:
 
 concurrency:
@@ -35,6 +38,13 @@ jobs:
       - name: Lier le projet
         run: supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_ID }}"
 
-      # Le seed est idempotent : il met à jour les cartes et le contenu des albums
-      - name: Appliquer les migrations et le catalogue
-        run: supabase db push --include-seed
+      - name: Appliquer les migrations
+        run: supabase db push
+
+      # Le seed est idempotent : il met à jour les cartes et le contenu des albums.
+      # Il est rejoué à chaque fois avec psql : `db push --include-seed` ne l'applique
+      # qu'une seule fois et ignore ensuite ses modifications.
+      - name: Appliquer le catalogue
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 --single-transaction -q -f supabase/seed.sql

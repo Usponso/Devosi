@@ -78,8 +78,10 @@ $ npm run dev
 
 ```sh
 $ npx supabase link --project-ref <ref-du-projet>
-$ npx supabase db push --include-seed
+$ npx supabase db push
 ```
+
+Puis exécuter `supabase/seed.sql` (le catalogue) dans le SQL Editor du dashboard. Ensuite, le workflow GitHub `Base de données` applique les migrations et rejoue le catalogue à chaque push (secret `SUPABASE_DB_URL` requis). `db push --include-seed` n'applique le seed qu'une seule fois puis ignore ses modifications : ne pas compter dessus.
 
 Puis, dans le projet Supabase :
 
