@@ -116,7 +116,7 @@ function questLabel(q) {
     case 'craft': return 'Fabriquer une carte à l’Atelier'
     case 'trade_up': return 'Faire une « Vitesse supérieure »'
     case 'upgrade': return 'Débloquer une finition Chrome ou Or'
-    case 'team': return `Obtenir une carte ${teamName(q.param)}`
+    case 'team': return q.param ? `Obtenir une carte ${teamName(q.param)}` : 'Obtenir une carte Écurie'
     case 'decade': {
       const y = Number(q.param)
       return `Obtenir une carte des années ${y < 2000 ? y % 100 : y}`

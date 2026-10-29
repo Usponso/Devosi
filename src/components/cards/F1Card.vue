@@ -215,6 +215,14 @@ function onLeave() {
 
 .back { transform: rotateY(180deg); }
 
+/*
+ * Carte face cachée : le recto est masqué explicitement. Firefox laisse sinon apparaître
+ * à travers le verso les éléments du recto qui ont un z-index (années, médaillon du circuit).
+ * Le changement se fait vers le milieu du retournement (rotation de 0,6 s).
+ */
+.front { transition: visibility 0s linear 0.12s; }
+.face-down .front { visibility: hidden; }
+
 /* ---------- Recto ---------- */
 .frame {
   height: 100%;
