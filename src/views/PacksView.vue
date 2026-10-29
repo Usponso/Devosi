@@ -154,6 +154,9 @@
           </span>
         </div>
 
+        <!-- Notifications : proposées après la première ouverture de pack -->
+        <NotificationsInvite v-if="col.status?.packs_opened > 0" />
+
         <!-- Rappel : profil à compléter -->
         <router-link v-if="profileLeft" to="/profil" class="profile-line">
           <Icon name="user-check" :size="16" />
@@ -283,6 +286,7 @@ import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import GpPack from '@/components/cards/GpPack.vue'
+import NotificationsInvite from '@/components/NotificationsInvite.vue'
 import { RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'
 import { packSounds } from '@/utils/packSounds'

@@ -15,6 +15,7 @@ on:
     paths:
       - 'supabase/migrations/**'
       - 'supabase/seed.sql'
+      - 'supabase/functions/**'
       - '.github/workflows/supabase.yml'
   workflow_dispatch:
 
@@ -40,6 +41,10 @@ jobs:
 
       - name: Appliquer les migrations
         run: supabase db push
+
+      # Fonction d'envoi des notifications push (appelée par la base, sans jeton utilisateur)
+      - name: Déployer les fonctions
+        run: supabase functions deploy send-push --no-verify-jwt
 
       # Le seed est idempotent : il met à jour les cartes et le contenu des albums.
       # Il est rejoué à chaque fois avec psql : `db push --include-seed` ne l'applique

@@ -57,6 +57,9 @@
           <router-link to="/collection" class="item" role="menuitem">
             <Icon name="album" :size="16" /> Ma collection
           </router-link>
+          <button class="item" role="menuitem" @click="openNotifications">
+            <Icon name="bell" :size="16" /> Notifications
+          </button>
           <div class="sep"></div>
           <button class="item" role="menuitem" @click="openAccount('link')">
             <Icon name="save" :size="16" /> Mon compte
@@ -78,6 +81,7 @@
     <Teleport to="body">
       <AccountDialog :open="accountOpen" :start-mode="accountMode" @close="accountOpen = false" />
     </Teleport>
+    <NotificationSettings :open="notificationsOpen" @close="notificationsOpen = false" />
   </div>
 </template>
 
@@ -88,6 +92,7 @@ import Icon from './Icon.vue'
 import AccountDialog from './cards/AccountDialog.vue'
 import PlayerAvatar from './cards/PlayerAvatar.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
+import NotificationSettings from './NotificationSettings.vue'
 import { signOut } from '@/services/collection'
 import { albumTitle } from '@/utils/cards'
 
@@ -99,6 +104,12 @@ const root = ref(null)
 const open = ref(false)
 const busy = ref(false)
 const accountOpen = ref(false)
+const notificationsOpen = ref(false)
+
+function openNotifications() {
+  open.value = false
+  notificationsOpen.value = true
+}
 const accountMode = ref('link')
 /** Complétion du profil (pseudo, avatar, écurie, vitrine, badges) */
 const completion = computed(() => col.profile?.completion ?? null)
