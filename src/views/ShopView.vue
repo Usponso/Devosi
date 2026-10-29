@@ -47,18 +47,16 @@
 
           <!-- Pack du week-end de course -->
           <article v-if="gp" class="item card gp-item">
-            <div class="item-visual" aria-hidden="true">
-              <span class="pack gp">
-                <span class="pack-brand">DEVOSI</span>
-                <span class="pack-title gp-name">{{ gpShortName }}</span>
-                <span class="pack-sub">GP pack</span>
-              </span>
+            <div class="item-visual">
+              <GpPack :name="gp.name" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="96" />
             </div>
             <div class="item-body">
+              <span class="gp-tag"><Icon name="flag" :size="12" /> Week-end de course · encore {{ countdown(gp.ends_at) }}</span>
               <h2 class="title-md">Pack {{ gp.name }}</h2>
               <p class="muted small">
-                5 cartes dont 2 liées au circuit, 3 fois plus de chances d'avoir l'édition vainqueur. Disponible jusqu'à la fin du week-end de course :
-                {{ gp.left }}/3 achat{{ gp.left > 1 ? 's' : '' }} restant{{ gp.left > 1 ? 's' : '' }}.
+                5 cartes dont 2 liées au circuit (Grands Prix disputés là-bas, pilotes et écuries qui y ont gagné)
+                et 3 fois plus de chances d'avoir l'édition vainqueur. 1 offert par jour sur la page Packs ;
+                {{ gp.left }}/3 achat{{ gp.left > 1 ? 's' : '' }} restant{{ gp.left > 1 ? 's' : '' }} ce week-end.
               </p>
               <div class="item-buy">
                 <span class="price"><span class="mono">{{ formatCoins(gp.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
@@ -70,6 +68,30 @@
                 {{ gp.packs }} pack{{ gp.packs > 1 ? 's' : '' }} GP à ouvrir. <router-link to="/packs" class="link-arrow">Ouvrir →</router-link>
               </p>
               <p v-if="gpMessage" class="small" :class="gpError ? 'error' : 'accent'">{{ gpMessage }}</p>
+            </div>
+          </article>
+
+          <!-- Prochain pack GP : annoncé avant son week-end -->
+          <article v-else-if="gpNext" class="item card gp-item upcoming">
+            <div class="item-visual">
+              <GpPack :name="gpNext.name" :circuit-id="gpNext.circuit" :season="gpNext.season" :round="gpNext.round" :width="96" locked />
+            </div>
+            <div class="item-body">
+              <span class="gp-tag"><Icon name="clock" :size="12" /> Prochainement</span>
+              <h2 class="title-md">Pack {{ gpNext.name }}</h2>
+              <div class="arrives">
+                <span class="muted small">Arrive dans</span>
+                <span class="mono arrives-clock">{{ countdown(gpNext.starts_at, true) }}</span>
+              </div>
+              <p class="muted small">
+                Disponible pendant tout le week-end de course, des premiers essais à la fin de la course :
+                1 pack offert chaque jour sur la page Packs, et jusqu'à 3 à acheter ici. 5 cartes dont 2 liées
+                au circuit, et 3 fois plus de chances d'avoir l'édition vainqueur.
+              </p>
+              <div class="item-buy">
+                <span class="price"><span class="mono">{{ formatCoins(gpNext.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
+                <button class="btn btn-ghost" disabled><Icon name="lock" :size="16" /> Bientôt</button>
+              </div>
             </div>
           </article>
         </section>
@@ -133,8 +155,9 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import Icon from '@/components/Icon.vue'
+import GpPack from '@/components/cards/GpPack.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { economyMessage, formatCoins } from '@/utils/cards'
 
@@ -154,7 +177,29 @@ const buyBlocker = computed(() => {
 
 // Pack du week-end de course
 const gp = computed(() => col.gpWeekend)
-const gpShortName = computed(() => (gp.value?.name ?? '').replace(/^GP (de |du |des |d’|d')?/, '').toUpperCase())
+const gpNext = computed(() => col.status?.gp_next ?? null)
+
+// Comptes à rebours (heure du serveur) : arrivée du prochain pack, fin du week-end
+const now = ref(Date.now())
+const clock = setInterval(() => {
+  now.value = Date.now()
+  // Le week-end commence : l'état est relu, le pack devient achetable
+  if (gpNext.value && !gp.value && new Date(gpNext.value.starts_at).getTime() <= now.value + col.clockOffset) {
+    col.refreshStatus().catch(() => {})
+  }
+}, 1000)
+onUnmounted(() => clearInterval(clock))
+
+/** « 1 j 03 h 12 min 05 s » (avec les secondes) ou « 1 j 03 h » */
+function countdown(iso, seconds = false) {
+  const s = Math.max(0, Math.floor((new Date(iso).getTime() - (now.value + col.clockOffset)) / 1000))
+  const d = Math.floor(s / 86400)
+  const h = String(Math.floor((s % 86400) / 3600)).padStart(2, '0')
+  const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0')
+  const sec = String(s % 60).padStart(2, '0')
+  if (seconds) return `${d ? `${d} j ` : ''}${h} h ${m} min ${sec} s`
+  return d ? `${d} j ${h} h` : `${h} h ${m} min`
+}
 const canBuyGp = computed(() => gp.value && gp.value.left > 0 && col.coins >= gp.value.price)
 const gpMessage = ref('')
 const gpError = ref(false)
@@ -277,9 +322,24 @@ onMounted(() => !col.ready && col.init())
 .pack-title { font-size: 15px; font-weight: 900; line-height: 1; }
 .pack-sub { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.8; }
 
-.pack.gp { background: linear-gradient(150deg, #e10600, #4a0a0a); box-shadow: 0 10px 24px rgb(225 6 0 / 0.3); }
-.gp-name { font-size: 12px; padding: 0 4px; overflow-wrap: anywhere; }
 .gp-item { border-color: rgb(225 6 0 / 0.4); }
+.gp-item.upcoming { border-style: dashed; }
+
+.gp-tag {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ff8a8a;
+  background: rgb(225 6 0 / 0.16);
+}
+
+.arrives { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.arrives-clock { font-size: 20px; font-weight: 800; color: var(--text); }
 
 .item-body {
   flex: 1;

@@ -125,11 +125,7 @@
 
         <!-- Week-end de course : pack GP (1 offert par jour, 3 en boutique) -->
         <div v-if="gp" class="gp-block">
-          <span class="gp-pack" aria-hidden="true">
-            <span class="pack-brand">DEVOSI</span>
-            <span class="pack-title">{{ gpShortName }}</span>
-            <span class="pack-sub">GP PACK</span>
-          </span>
+          <GpPack :name="gp.name" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="76" />
           <div class="gp-info">
             <span class="gp-tag"><Icon name="flag" :size="12" /> Week-end de course · encore {{ gpEndsIn }}</span>
             <div class="gp-title">Pack {{ gp.name }}</div>
@@ -286,6 +282,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import ProfileEditor from '@/components/cards/ProfileEditor.vue'
+import GpPack from '@/components/cards/GpPack.vue'
 import { RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'
 import { packSounds } from '@/utils/packSounds'
@@ -348,7 +345,6 @@ const profileLeft = computed(() => {
 
 // Week-end de course et édition vainqueur
 const gp = computed(() => col.gpWeekend)
-const gpShortName = computed(() => (gp.value?.name ?? '').replace(/^GP (de |du |des |d’|d')?/, '').toUpperCase())
 const gpEndsIn = computed(() => {
   if (!gp.value) return ''
   const min = Math.max(0, Math.round((new Date(gp.value.ends_at).getTime() - (now.value + col.clockOffset)) / 60000))
@@ -693,28 +689,6 @@ onUnmounted(() => {
   background: linear-gradient(90deg, rgb(225 6 0 / 0.14), transparent 70%), var(--surface-2);
   text-align: left;
 }
-
-.gp-pack {
-  flex-shrink: 0;
-  width: 70px;
-  aspect-ratio: 5 / 7;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  border-radius: 9px;
-  color: #fff;
-  background:
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0 3px, transparent 3px 9px),
-    linear-gradient(155deg, #e10600, #4a0a0a 80%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 20px rgba(225, 6, 0, 0.3);
-}
-
-.gp-pack .pack-brand { font-size: 7px; }
-.gp-pack .pack-title { font-size: 10px; letter-spacing: 0; text-align: center; max-width: 100%; overflow-wrap: anywhere; padding: 0 3px; }
-.gp-pack .pack-sub { font-size: 7px; }
 
 .gp-info { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 4px; }
 .gp-info p { margin: 0; }
