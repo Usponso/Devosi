@@ -282,7 +282,10 @@ function finish(message) {
   .dialog { padding: 24px 18px; }
   /* 16 px au moins : en dessous, Safari (iPhone) zoome sur le champ et décale la fenêtre */
   .input { font-size: 16px; }
-  .row { flex-wrap: wrap; }
-  .row .btn { flex: 1 1 auto; justify-content: center; }
+  /* Champ puis bouton, l'un sous l'autre, chacun sur toute la largeur */
+  .row { flex-direction: column; }
+  .row .btn { justify-content: center; }
+  .links { flex-wrap: wrap; }
+  .link-quiet { white-space: nowrap; }
 }
 </style>
