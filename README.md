@@ -86,7 +86,7 @@ Puis exécuter `supabase/seed.sql` (le catalogue) dans le SQL Editor du dashboar
 Puis, dans le projet Supabase :
 
 - **Authentication > Sign In / Providers** : activer *Allow anonymous sign-ins* et laisser *Confirm email* activé (sinon un email peut être relié sans vérification).
-- **Authentication > Emails** : dans les modèles *Magic Link*, *Confirm signup* et *Change Email Address*, afficher le code à 6 chiffres avec `{{ .Token }}` (voir `supabase/templates/code.html`). L'app demande un code, pas un lien.
+- **Authentication > Emails** : dans les modèles *Magic Link*, *Confirm signup* et *Change Email Address*, coller les modèles aux couleurs du site : *Magic Link* ← `supabase/templates/login.html` (connexion), *Change Email Address* ← `save.html` (sauvegarde d'une collection invité), *Confirm signup* ← `confirm.html`. Ils affichent le code à 6 chiffres (`{{ .Token }}`) : l'app demande un code, pas un lien. Pour les modifier : `scripts/email-templates.mjs`, puis `node scripts/email-templates.mjs`.
 - **Authentication > Emails > SMTP** : configurer un vrai fournisseur d'emails (le service intégré de Supabase est limité à quelques envois par heure).
 - Renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` dans les variables d'environnement Netlify.
 

@@ -1,0 +1,108 @@
+/**
+ * Génère les modèles d'email Supabase (code à 6 chiffres) aux couleurs du site :
+ * supabase/templates/{login,save,confirm}.html
+ *
+ * Usage : node scripts/email-templates.mjs
+ * Ensuite, coller chaque fichier dans le dashboard Supabase (Authentication > Emails).
+ *
+ * HTML d'email : tableaux et styles en ligne (Gmail, Outlook), police Titillium Web quand
+ * la messagerie la charge (Apple Mail, iPhone), Arial sinon.
+ */
+import { writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+
+const ROOT = fileURLToPath(new URL('..', import.meta.url))
+
+const TEMPLATES = {
+  login: {
+    kicker: 'Code de connexion',
+    title: 'Retrouve ta collection',
+    text: "Entre ce code dans l'appli pour te connecter et retrouver tes cartes sur cet appareil. Il est valable une heure.",
+  },
+  save: {
+    kicker: 'Sauvegarde',
+    title: 'Sauvegarde ta collection',
+    text: "Entre ce code dans l'appli pour relier ta collection à ton email : tu la retrouveras sur tous tes appareils. Il est valable une heure.",
+  },
+  confirm: {
+    kicker: 'Confirmation',
+    title: 'Confirme ton email',
+    text: "Entre ce code dans l'appli pour confirmer ton adresse email. Il est valable une heure.",
+  },
+}
+
+const FONT = "'Titillium Web', Arial, Helvetica, sans-serif"
+const MONO = "'JetBrains Mono', Menlo, Consolas, 'Courier New', monospace"
+
+const page = ({ kicker, title, text }) => `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<meta name="supported-color-schemes" content="dark" />
+<title>${title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
+</head>
+<body style="margin:0;padding:0;background-color:#050608;">
+<!-- Aperçu affiché dans la liste des emails -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Ton code Devosi : {{ .Token }}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#050608" style="background-color:#050608;">
+  <tr>
+    <td align="center" style="padding:32px 12px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0B0C0F" style="max-width:440px;background-color:#0B0C0F;border-radius:16px;font-family:${FONT};color:#EEF0F3;">
+        <!-- Logo : le D rouge et le trait de l'en-tête du site -->
+        <tr>
+          <td style="padding:28px 32px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="font-family:${FONT};font-size:24px;font-weight:900;letter-spacing:-0.5px;line-height:24px;color:#FFFFFF;text-transform:uppercase;"><span style="color:#E10600;">D</span>EVOSI</td>
+              </tr>
+              <tr>
+                <td height="2" style="height:2px;line-height:2px;font-size:0;background-color:#E10600;background-image:linear-gradient(90deg,#E10600,rgba(225,6,0,0));">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- Titre -->
+        <tr>
+          <td style="padding:28px 32px 8px;">
+            <div style="font-family:${FONT};font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E10600;">${kicker}</div>
+            <div style="font-family:${FONT};font-size:26px;font-weight:900;line-height:30px;margin:8px 0 10px;color:#FFFFFF;">${title}</div>
+            <div style="font-family:${FONT};font-size:15px;line-height:23px;color:#B4B9C2;">${text}</div>
+          </td>
+        </tr>
+        <!-- Code -->
+        <tr>
+          <td style="padding:18px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#14161B" style="background-color:#14161B;border:1px solid #262A33;border-radius:12px;">
+              <tr>
+                <td align="center" style="padding:20px 12px;font-family:${MONO};font-size:38px;font-weight:700;letter-spacing:10px;line-height:44px;color:#FFFFFF;">{{ .Token }}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- Sécurité -->
+        <tr>
+          <td style="padding:0 32px 26px;font-family:${FONT};font-size:13px;line-height:20px;color:#7D838E;">
+            Tu n'as rien demandé ? Ignore cet email : personne ne peut accéder à ton compte sans ce code.
+          </td>
+        </tr>
+        <!-- Pied -->
+        <tr>
+          <td style="padding:16px 32px;border-top:1px solid #1F2229;font-family:${FONT};font-size:12px;line-height:18px;color:#5B616C;">
+            Devosi · Classements, pronostics et cartes F1 · <a href="https://devosi.app" style="color:#5B616C;text-decoration:underline;">devosi.app</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+`
+
+for (const [name, content] of Object.entries(TEMPLATES)) {
+  writeFileSync(`${ROOT}supabase/templates/${name}.html`, page(content))
+  console.log(`supabase/templates/${name}.html`)
+}
