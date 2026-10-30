@@ -253,6 +253,11 @@ export async function fetchEditionCards() {
 /** Pack du week-end de course, sans limite d'achats : { status } — erreurs `NO_WEEKEND`, `NOT_ENOUGH_COINS` */
 export const buyGpPack = () => rpc('buy_gp_pack')
 
+/** Série de connexion : { day, coins, pack, streak, jokers_used, status } — erreur `ALREADY_CLAIMED` */
+export const claimLoginStreak = () => rpc('claim_login_streak')
+/** Carte mystère du jour (emplacement 0 à 2) : { cards, slot, card, status } — erreur `ALREADY_CLAIMED` */
+export const openMysteryCard = (slot) => rpc('open_mystery_card', { p_slot: slot })
+
 // ---------------------------------------------------------------------------
 // Pronostics : { season, next, history, total, rank, players, status }
 // ---------------------------------------------------------------------------

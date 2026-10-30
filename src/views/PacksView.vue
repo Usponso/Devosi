@@ -19,6 +19,9 @@
     </header>
 
     <div class="container">
+      <!-- Rendez-vous du jour : série de connexion et carte mystère -->
+      <DailyPanel v-if="col.ready && stage === 'idle' && !col.welcomeAvailable" />
+
       <p v-if="!col.configured" class="card empty">
         La collection n'est pas encore configurée (Supabase). Renseigne <code>.env.local</code> pour l'activer.
       </p>
@@ -31,7 +34,7 @@
       <section v-else-if="stage === 'idle' && col.welcomeAvailable" class="welcome card">
         <div class="eyebrow">Étape 1 / 2</div>
         <h1 class="title-lg">Bienvenue dans ta collection</h1>
-        <p class="dim">2 240 cartes de pilotes, écuries, Grands Prix et moments de légende depuis 1950. Ton premier pack t'attend.</p>
+        <p class="dim">{{ col.cards.length.toLocaleString('fr-FR') }} cartes de pilotes, écuries, Grands Prix et moments de légende depuis 1950. Ton premier pack t'attend.</p>
         <button class="welcome-pack" :disabled="busy" aria-label="Ouvrir mon pack de bienvenue" @click="openWelcome">
           <span class="pack-brand">DEVOSI</span>
           <span class="pack-title">BIENVENUE</span>
@@ -290,6 +293,7 @@ import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import GpPack from '@/components/cards/GpPack.vue'
+import DailyPanel from '@/components/cards/DailyPanel.vue'
 import NotificationsInvite from '@/components/NotificationsInvite.vue'
 import { RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'

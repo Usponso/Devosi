@@ -56,6 +56,7 @@ const ECONOMY_ERRORS = {
   PREDICTION_DUPLICATE: 'Un pilote ne peut être qu’une fois sur le podium.',
   PREDICTION_PENDING: 'Les résultats ne sont pas encore connus.',
   PREDICTION_CLAIMED: 'Gains déjà récupérés.',
+  ALREADY_CLAIMED: 'Déjà récupéré aujourd’hui, reviens demain.',
 }
 
 /** Message lisible pour une erreur des fonctions de l'atelier (code = hint SQL) */

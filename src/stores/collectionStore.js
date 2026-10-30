@@ -10,6 +10,8 @@ import {
   fetchAchievements,
   saveBadges,
   buyGpPack,
+  claimLoginStreak,
+  openMysteryCard,
   buyPack,
   claimPrediction,
   fetchEditionCards,
@@ -456,6 +458,22 @@ export const useCollectionStore = defineStore('collection', {
         this.refreshQuests()
       }
       return { coins, packs, edition: card }
+    },
+
+    /** Récompense du jour de la série de connexion : { day, coins, pack, streak, jokers_used } */
+    async claimLoginStreak() {
+      const { status, ...reward } = await claimLoginStreak()
+      this.setStatus(status)
+      return reward
+    },
+
+    /** Carte mystère : renvoie les 3 cartes tirées (catalogue) et l'emplacement gagné */
+    async openMystery(slot) {
+      const { status, cards, card } = await openMysteryCard(slot)
+      this.setStatus(status)
+      const won = this.addCard(card)
+      this.refreshQuests()
+      return { cards: cards.map((c, i) => (i === slot ? won : this.byId.get(c.id))), slot }
     },
 
     async buyGpPack() {
