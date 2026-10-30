@@ -56,7 +56,7 @@
               <p class="muted small">
                 5 cartes dont 2 liées au circuit (Grands Prix disputés là-bas, pilotes et écuries qui y ont gagné)
                 et 3 fois plus de chances d'avoir l'édition vainqueur. 1 offert par jour sur la page Packs ;
-                {{ gp.left }}/3 achat{{ gp.left > 1 ? 's' : '' }} restant{{ gp.left > 1 ? 's' : '' }} ce week-end.
+                en vente sans limite jusqu'à la fin du week-end.
               </p>
               <div class="item-buy">
                 <span class="price"><span class="mono">{{ formatCoins(gp.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
@@ -200,7 +200,7 @@ function countdown(iso, seconds = false) {
   if (seconds) return `${d ? `${d} j ` : ''}${h} h ${m} min ${sec} s`
   return d ? `${d} j ${h} h` : `${h} h ${m} min`
 }
-const canBuyGp = computed(() => gp.value && gp.value.left > 0 && col.coins >= gp.value.price)
+const canBuyGp = computed(() => gp.value && col.coins >= gp.value.price)
 const gpMessage = ref('')
 const gpError = ref(false)
 

@@ -137,7 +137,7 @@
               {{ gp.free ? 'Ouvrir le pack du jour (offert)' : gp.packs ? `Ouvrir un pack GP (${gp.packs})` : 'Pack du jour ouvert' }}
             </button>
             <router-link to="/boutique" class="muted small gp-shop">
-              En boutique : {{ formatCoins(gp.price) }} Pièces · {{ gp.left }}/3 restant{{ gp.left > 1 ? 's' : '' }}
+              En boutique : {{ formatCoins(gp.price) }} Pièces
             </router-link>
           </div>
         </div>

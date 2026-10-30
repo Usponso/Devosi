@@ -250,7 +250,7 @@ export async function fetchEditionCards() {
   return data ?? []
 }
 
-/** Pack du week-end de course : { status } — erreurs `NO_WEEKEND`, `GP_SHOP_LIMIT`, `NOT_ENOUGH_COINS` */
+/** Pack du week-end de course, sans limite d'achats : { status } — erreurs `NO_WEEKEND`, `NOT_ENOUGH_COINS` */
 export const buyGpPack = () => rpc('buy_gp_pack')
 
 // ---------------------------------------------------------------------------
