@@ -423,3 +423,12 @@ img {
 .viewer-open .tabbar {
   visibility: hidden;
 }
+
+/* iPhone / iPad : sous 16 px, Safari zoome sur le champ touché et la page reste décalée */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em) !important;
+  }
+}

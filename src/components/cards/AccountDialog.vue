@@ -229,6 +229,8 @@ function finish(message) {
   font-size: 12px;
   font-weight: 700;
   color: var(--text-dim);
+  /* Email long : passe à la ligne au lieu de déborder */
+  overflow-wrap: anywhere;
 }
 
 .row {
@@ -275,4 +277,12 @@ function finish(message) {
 .warning { color: var(--gold); }
 .error { color: var(--danger); }
 .info { color: var(--success); }
+
+@media (max-width: 640px) {
+  .dialog { padding: 24px 18px; }
+  /* 16 px au moins : en dessous, Safari (iPhone) zoome sur le champ et décale la fenêtre */
+  .input { font-size: 16px; }
+  .row { flex-wrap: wrap; }
+  .row .btn { flex: 1 1 auto; justify-content: center; }
+}
 </style>
