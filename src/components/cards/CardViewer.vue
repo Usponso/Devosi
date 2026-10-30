@@ -96,6 +96,7 @@
           </div>
 
           <p v-if="card.type === 'masterpiece'" class="credit muted">Peinture originale de la collection Devosi</p>
+          <p v-else-if="card.type === 'poster'" class="credit muted">Affiche originale de la collection Devosi</p>
           <p v-else-if="card.photo" class="credit muted">
             Photo : {{ card.photo.author }} ·
             <a :href="card.photo.source" target="_blank" rel="noopener">{{ card.photo.license }}</a>, via Wikimedia Commons

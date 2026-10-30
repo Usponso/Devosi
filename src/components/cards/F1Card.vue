@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="f1card"
-    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked, edition: editionLabel, 'is-masterpiece': isMasterpiece }]"
+    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked, edition: editionLabel, 'is-masterpiece': isMasterpiece, 'is-poster': isPoster }]"
     :style="locked ? null : { '--tc': card.color }"
     @pointermove="onMove"
     @pointerleave="onLeave"
@@ -25,6 +25,20 @@
             <b>{{ card.name }}</b>
             <span>{{ card.sub }} · {{ yearsLabel }} · {{ seriesLabel }}</span>
           </div>
+        </div>
+        <!-- Affiche d'époque : l'affiche scotchée au mur, titre Art déco dans sa marge -->
+        <div v-else-if="isPoster" class="poster">
+          <div class="pt-sheet">
+            <img :src="card.photo.url" alt="" loading="lazy" draggable="false" />
+            <div class="pt-title">
+              <span class="pt-kicker">{{ card.poster.kicker }}</span>
+              <span class="pt-name">{{ card.poster.title }}</span>
+              <span class="pt-date">{{ posterDate }}</span>
+            </div>
+          </div>
+          <span class="pt-tape t1"></span><span class="pt-tape t2"></span><span class="pt-tape t3"></span><span class="pt-tape t4"></span>
+          <span class="pt-foot">Manche {{ card.poster.round }} · #{{ String(card.n).padStart(4, '0') }}</span>
+          <span class="pt-rarity">{{ RARITY_LABEL[card.rarity] }}</span>
         </div>
         <div v-else class="frame">
           <div class="body">
@@ -127,6 +141,14 @@ const photoFailed = ref(false)
 const holo = computed(() => ['epic', 'legendary', 'mythic'].includes(props.card.rarity))
 
 const isMasterpiece = computed(() => !props.locked && props.card.type === 'masterpiece')
+const isPoster = computed(() => !props.locked && props.card.type === 'poster')
+/** Date de course façon affiche : « 1 · XI · 2026 » */
+const ROMAN_MONTHS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
+const posterDate = computed(() => {
+  const [y, m, d] = (props.card.poster?.date ?? '').split('-').map(Number)
+  return y ? `${d} · ${ROMAN_MONTHS[m - 1]} · ${y}` : ''
+})
+
 /** Numéro dans la série des Chefs-d'œuvre : « 04/13 » */
 const seriesLabel = computed(() => {
   const s = props.card.series
@@ -599,6 +621,114 @@ function onLeave() {
   text-transform: uppercase;
   color: #b9a46a;
 }
+
+/* ---------- Affiche d'époque ---------- */
+.is-poster .face { border-radius: 2.4cqw; }
+
+.poster {
+  position: relative;
+  height: 100%;
+  background:
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.03) 0 2cqw, transparent 2cqw 4cqw),
+    linear-gradient(160deg, #3a332c, #1e1a16);
+}
+
+/* Feuille légèrement de travers, bords usés, plis et grain du papier */
+.pt-sheet {
+  position: absolute;
+  inset: 5cqw 5cqw 10cqw;
+  overflow: hidden;
+  transform: rotate(-1.4deg);
+  background: #f1e8d6;
+  box-shadow: 0 1.4cqw 3cqw rgb(0 0 0 / 0.6);
+  clip-path: polygon(0 1%, 3% 0, 30% 0.6%, 60% 0, 100% 0.8%, 99.4% 30%, 100% 70%, 99% 100%, 70% 99.4%, 40% 100%, 2% 99.3%, 0 70%, 0.6% 40%);
+}
+
+.pt-sheet img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: sepia(0.12) saturate(1.05);
+}
+
+.pt-sheet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 49.6%, rgb(0 0 0 / 0.08) 50%, transparent 50.4%),
+    linear-gradient(0deg, transparent 49.6%, rgb(0 0 0 / 0.07) 50%, transparent 50.4%),
+    radial-gradient(rgb(120 90 40 / 0.18) 0.6px, transparent 0.7px) 0 0 / 3px 3px;
+}
+
+/* Titre dans la marge crème du haut de l'affiche */
+.pt-title {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 18.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #b3122a;
+}
+
+.pt-kicker,
+.pt-date {
+  font-family: 'Josefin Sans', 'Titillium Web', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1b2340;
+}
+
+.pt-kicker { font-size: 3cqw; letter-spacing: 0.42em; }
+.pt-name { margin: 0.6cqw 0; font-family: 'Limelight', Georgia, serif; font-size: 9.6cqw; line-height: 1; }
+.pt-date { font-size: 2.8cqw; letter-spacing: 0.28em; }
+
+.pt-date::before,
+.pt-date::after {
+  content: '';
+  display: inline-block;
+  width: 6cqw;
+  height: 0.35cqw;
+  margin: 0 2cqw;
+  vertical-align: middle;
+  background: #b3122a;
+}
+
+.pt-tape {
+  position: absolute;
+  z-index: 2;
+  width: 14cqw;
+  height: 4.4cqw;
+  background: rgb(240 228 196 / 0.75);
+  box-shadow: 0 0.3cqw 0.6cqw rgb(0 0 0 / 0.25);
+}
+
+.pt-tape.t1 { top: 3cqw; left: 2cqw; transform: rotate(-35deg); }
+.pt-tape.t2 { top: 3cqw; right: 2cqw; transform: rotate(32deg); }
+.pt-tape.t3 { bottom: 9.4cqw; left: 2.4cqw; transform: rotate(30deg); }
+.pt-tape.t4 { bottom: 9.4cqw; right: 2.4cqw; transform: rotate(-28deg); }
+
+.pt-foot,
+.pt-rarity {
+  position: absolute;
+  bottom: 2cqw;
+  font-family: 'Josefin Sans', 'Titillium Web', sans-serif;
+  font-size: 2.8cqw;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pt-foot { left: 6cqw; color: #b9ad97; }
+.pt-rarity { right: 6cqw; color: var(--c); filter: brightness(1.3); }
 
 /* Finitions Chrome et Or : cadre métallique et reflet qui balaie la carte */
 .finish-1 .frame,

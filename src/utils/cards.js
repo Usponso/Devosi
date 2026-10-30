@@ -49,7 +49,7 @@ const ECONOMY_ERRORS = {
   PROFILE_REWARDED: 'Récompense déjà récupérée.',
   BADGES_FULL: '3 badges maximum sur ton profil.',
   NO_WEEKEND: 'Le week-end de course est terminé.',
-  GP_SHOP_LIMIT: 'Tu as déjà acheté 3 packs GP ce week-end.',
+  POSTER_NOT_CRAFTABLE: "Les affiches ne se trouvent que dans le pack GP de leur week-end.",
   RACE_UNKNOWN: 'Course inconnue.',
   PREDICTION_CLOSED: 'Les pronostics sont fermés : les qualifications ont commencé.',
   PREDICTION_INVALID: 'Choisis les 3 pilotes du podium et le poleman.',

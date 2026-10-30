@@ -79,8 +79,9 @@ export const CARD_TYPES = [
   { id: 'gp', label: 'Grands Prix' },
   { id: 'moment', label: 'Moments' },
   { id: 'masterpiece', label: "Chefs-d'œuvre" },
+  { id: 'poster', label: 'Affiches' },
 ]
-export const TYPE_LABEL = { driver: 'Pilote', team: 'Écurie', gp: 'Grand Prix', moment: 'Moment', masterpiece: "Chef-d'œuvre" }
+export const TYPE_LABEL = { driver: 'Pilote', team: 'Écurie', gp: 'Grand Prix', moment: 'Moment', masterpiece: "Chef-d'œuvre", poster: 'Affiche' }
 
 let catalogPromise = null
 

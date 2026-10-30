@@ -50,11 +50,12 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const root = fileURLToPath(new URL('../..', import.meta.url))
   const path = `${root}src/data/catalog.json`
   const catalog = JSON.parse(readFileSync(path, 'utf8'))
+  const known = new Map(catalog.cards.filter((c) => c.type === 'masterpiece').map((c) => [c.id, c.n]))
   const others = catalog.cards.filter((c) => c.type !== 'masterpiece')
   const series = masterpieceCards(root, others)
-  const last = Math.max(...others.map((c) => c.n))
-  series.forEach((c, i) => (c.n = last + i + 1))
-  catalog.cards = [...others, ...series]
+  let last = Math.max(...catalog.cards.map((c) => c.n))
+  for (const c of series) c.n = known.get(c.id) ?? ++last
+  catalog.cards = [...others, ...series].sort((a, b) => a.n - b.n)
 
   const RARITY_ORDER = { mythic: 0, legendary: 1, epic: 2, rare: 3, common: 4 }
   const cover = [...series].sort((a, b) => RARITY_ORDER[a.rarity] - RARITY_ORDER[b.rarity] || b.years[0] - a.years[0])[0]
@@ -64,5 +65,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   ]
   writeFileSync(path, JSON.stringify(catalog))
   writeSeed(root, catalog.cards, catalog.albums)
-  console.log(`${series.length} Chefs-d'œuvre (#${last + 1} à #${last + series.length}), album ${MASTERPIECE_ALBUM.id}`)
+  console.log(`${series.length} Chefs-d'œuvre (#${series[0].n} à #${series.at(-1).n}), album ${MASTERPIECE_ALBUM.id}`)
 }

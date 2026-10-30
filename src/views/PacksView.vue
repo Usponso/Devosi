@@ -130,6 +130,10 @@
             <span class="gp-tag"><Icon name="flag" :size="12" /> Week-end de course · encore {{ gpEndsIn }}</span>
             <div class="gp-title">Pack {{ gp.name }}</div>
             <p class="muted small">5 cartes dont 2 liées au circuit : Grands Prix disputés là-bas, pilotes et écuries qui y ont gagné.</p>
+            <p v-if="gpPoster" class="small gp-poster">
+              <Icon name="star" :size="13" />
+              {{ col.owned.has(gpPoster.id) ? 'Affiche du week-end obtenue !' : "Affiche d'époque du week-end : 1 chance sur 4 par pack GP, introuvable ensuite." }}
+            </p>
           </div>
           <div class="gp-actions">
             <button class="btn" :disabled="!col.gpPacksToOpen || busy" @click="openPack(true)">
@@ -354,6 +358,8 @@ const gpEndsIn = computed(() => {
   const min = Math.max(0, Math.round((new Date(gp.value.ends_at).getTime() - (now.value + col.clockOffset)) / 60000))
   return min >= 1440 ? `${Math.floor(min / 1440)} j ${Math.floor((min % 1440) / 60)} h` : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, '0')}`
 })
+/** Affiche d'époque de ce week-end, si elle existe (uniquement dans le pack GP) */
+const gpPoster = computed(() => (gp.value ? col.byId.get(`a-${gp.value.season}-${gp.value.round}`) ?? null : null))
 const edition = computed(() => col.status?.edition ?? null)
 const editionOwned = computed(() =>
   col.owned.has(edition.value?.card),
@@ -696,6 +702,7 @@ onUnmounted(() => {
 
 .gp-info { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 4px; }
 .gp-info p { margin: 0; }
+.gp-poster { display: flex; align-items: center; gap: 6px; color: #e8c15a; }
 
 .gp-tag {
   align-self: flex-start;

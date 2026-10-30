@@ -17,6 +17,7 @@ import { NATIONALITY_CODES, COUNTRY_CODES } from '../src/data/nationalities.js'
 import { writeSeed } from './catalog/seed.mjs'
 import { gpNameFr } from './catalog/gp-names.mjs'
 import { MASTERPIECE_ALBUM, masterpieceCards } from './catalog/masterpieces.mjs'
+import { posterCards } from './catalog/posters.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const CACHE_DIR = `${ROOT}scripts/catalog/.cache`
@@ -699,10 +700,12 @@ for (const card of cards) {
 
 // Chefs-d'œuvre : les Moments repeints (scripts/catalog/masterpieces.mjs)
 cards.push(...masterpieceCards(ROOT, cards))
+// Affiches d'époque : une par Grand Prix (scripts/catalog/posters.mjs)
+cards.push(...posterCards(ROOT))
 
 // Numérotation : moments, pilotes, écuries, Grands Prix, chacun par ordre chronologique,
-// puis les Chefs-d'œuvre (ajoutés après coup : les numéros existants ne bougent pas)
-const TYPE_ORDER = { moment: 0, driver: 1, team: 2, gp: 3, masterpiece: 4 }
+// puis les séries ajoutées après coup (Chefs-d'œuvre, Affiches) : les numéros existants ne bougent pas
+const TYPE_ORDER = { moment: 0, driver: 1, team: 2, gp: 3, masterpiece: 4, poster: 5 }
 cards.sort((a, b) => TYPE_ORDER[a.type] - TYPE_ORDER[b.type] || (a.years?.[0] ?? 0) - (b.years?.[0] ?? 0) || a.id.localeCompare(b.id))
 cards.forEach((c, i) => (c.n = i + 1))
 
