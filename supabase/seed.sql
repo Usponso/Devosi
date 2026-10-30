@@ -2239,7 +2239,20 @@ insert into public.cards (id, type, rarity, team, year) values
 ('g-2026-6','gp','common','mercedes',2026),
 ('g-2026-7','gp','common','ferrari',2026),
 ('g-2026-8','gp','common','mercedes',2026),
-('g-2026-9','gp','common','ferrari',2026)
+('g-2026-9','gp','common','ferrari',2026),
+('cd-hill-triple-couronne','masterpiece','legendary',null,1972),
+('cd-villeneuve-arnoux-dijon-1979','masterpiece','legendary',null,1979),
+('cd-senna-monaco-1984','masterpiece','epic',null,1984),
+('cd-suzuka-1989','masterpiece','legendary',null,1989),
+('cd-mansell-senna-barcelone-1991','masterpiece','epic',null,1991),
+('cd-schumacher-spa-1995','masterpiece','rare',null,1995),
+('cd-alonso-2005','masterpiece','epic',null,2005),
+('cd-raikkonen-suzuka-2005','masterpiece','legendary',null,2005),
+('cd-alonso-valence-2012','masterpiece','rare',null,2012),
+('cd-ricciardo-monaco-2018','masterpiece','rare',null,2018),
+('cd-hamilton-7-titres','masterpiece','mythic',null,2020),
+('cd-abu-dhabi-2021','masterpiece','mythic',null,2021),
+('cd-leclerc-monaco-2024','masterpiece','epic',null,2024)
 on conflict (id) do update set type = excluded.type, rarity = excluded.rarity, team = excluded.team, year = excluded.year;
 
 insert into public.albums (id, reward) values
@@ -2263,9 +2276,10 @@ insert into public.albums (id, reward) values
 ('silverstone',400),
 ('spa',400),
 ('courses-mythiques',600),
-('moments',800)
+('moments',800),
+('chefs-d-oeuvre',1000)
 on conflict (id) do update set reward = excluded.reward;
-delete from public.albums where id not in ('champions','vainqueurs','podiums','francais','ecuries-championnes','ecuries-victorieuses','grille-2026','gp-1950','gp-1960','gp-1970','gp-1980','gp-1990','gp-2000','gp-2010','gp-2020','monaco','monza','silverstone','spa','courses-mythiques','moments');
+delete from public.albums where id not in ('champions','vainqueurs','podiums','francais','ecuries-championnes','ecuries-victorieuses','grille-2026','gp-1950','gp-1960','gp-1970','gp-1980','gp-1990','gp-2000','gp-2010','gp-2020','monaco','monza','silverstone','spa','courses-mythiques','moments','chefs-d-oeuvre');
 delete from public.card_circuits;
 insert into public.card_circuits (card_id, circuit_id) values
 ('g-1950-1','silverstone'),
@@ -6544,4 +6558,17 @@ insert into public.album_cards (album_id, card_id) values
 ('moments','m-abu-dhabi-2021'),
 ('moments','m-hamilton-100-victoires'),
 ('moments','m-verstappen-19-victoires'),
-('moments','m-leclerc-monaco-2024');
+('moments','m-leclerc-monaco-2024'),
+('chefs-d-oeuvre','cd-hill-triple-couronne'),
+('chefs-d-oeuvre','cd-villeneuve-arnoux-dijon-1979'),
+('chefs-d-oeuvre','cd-senna-monaco-1984'),
+('chefs-d-oeuvre','cd-suzuka-1989'),
+('chefs-d-oeuvre','cd-mansell-senna-barcelone-1991'),
+('chefs-d-oeuvre','cd-schumacher-spa-1995'),
+('chefs-d-oeuvre','cd-alonso-2005'),
+('chefs-d-oeuvre','cd-raikkonen-suzuka-2005'),
+('chefs-d-oeuvre','cd-alonso-valence-2012'),
+('chefs-d-oeuvre','cd-ricciardo-monaco-2018'),
+('chefs-d-oeuvre','cd-hamilton-7-titres'),
+('chefs-d-oeuvre','cd-abu-dhabi-2021'),
+('chefs-d-oeuvre','cd-leclerc-monaco-2024');

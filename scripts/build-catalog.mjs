@@ -16,6 +16,7 @@ import { getTeamColor } from '../src/data/teams.js'
 import { NATIONALITY_CODES, COUNTRY_CODES } from '../src/data/nationalities.js'
 import { writeSeed } from './catalog/seed.mjs'
 import { gpNameFr } from './catalog/gp-names.mjs'
+import { MASTERPIECE_ALBUM, masterpieceCards } from './catalog/masterpieces.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const CACHE_DIR = `${ROOT}scripts/catalog/.cache`
@@ -696,8 +697,12 @@ for (const card of cards) {
   delete card.photoFile
 }
 
-// Numérotation : moments, pilotes, écuries, Grands Prix, chacun par ordre chronologique
-const TYPE_ORDER = { moment: 0, driver: 1, team: 2, gp: 3 }
+// Chefs-d'œuvre : les Moments repeints (scripts/catalog/masterpieces.mjs)
+cards.push(...masterpieceCards(ROOT, cards))
+
+// Numérotation : moments, pilotes, écuries, Grands Prix, chacun par ordre chronologique,
+// puis les Chefs-d'œuvre (ajoutés après coup : les numéros existants ne bougent pas)
+const TYPE_ORDER = { moment: 0, driver: 1, team: 2, gp: 3, masterpiece: 4 }
 cards.sort((a, b) => TYPE_ORDER[a.type] - TYPE_ORDER[b.type] || (a.years?.[0] ?? 0) - (b.years?.[0] ?? 0) || a.id.localeCompare(b.id))
 cards.forEach((c, i) => (c.n = i + 1))
 
@@ -731,6 +736,7 @@ const ALBUMS = [
   { id: 'spa', section: 'Les temples', title: 'Spa-Francorchamps', subtitle: "L'Eau Rouge et le Raidillon", reward: 400, filter: atCircuit('spa') },
   { id: 'courses-mythiques', section: 'Les temples', title: 'Courses mythiques', subtitle: 'GP historiques et finales de saison', reward: 600, filter: (c) => isGp(c) && c.rarity !== 'common' },
   { id: 'moments', section: 'Légendes', title: 'Moments de légende', subtitle: "Les instants qui ont fait l'histoire", reward: 800, filter: (c) => c.type === 'moment' },
+  { ...MASTERPIECE_ALBUM, filter: (c) => c.type === 'masterpiece' },
 ]
 
 const RARITY_ORDER = { mythic: 0, legendary: 1, epic: 2, rare: 3, common: 4 }

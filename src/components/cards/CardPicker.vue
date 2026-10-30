@@ -54,6 +54,7 @@ const TYPES = [
   { id: 'team', label: 'Écuries' },
   { id: 'gp', label: 'GP' },
   { id: 'moment', label: 'Moments' },
+  { id: 'masterpiece', label: "Chefs-d'œuvre" },
 ]
 
 const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()

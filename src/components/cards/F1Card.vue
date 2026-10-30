@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="f1card"
-    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked, edition: editionLabel }]"
+    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked, edition: editionLabel, 'is-masterpiece': isMasterpiece }]"
     :style="locked ? null : { '--tc': card.color }"
     @pointermove="onMove"
     @pointerleave="onLeave"
@@ -13,6 +13,18 @@
       <div class="face front">
         <div v-if="locked" class="locked-face">
           <span class="locked-num">#{{ String(card.n).padStart(4, '0') }}</span>
+        </div>
+        <!-- Chef-d'œuvre : la peinture en pleine carte, effet toile, cadre doré Louis XV et cartel -->
+        <div v-else-if="isMasterpiece" class="masterpiece">
+          <div class="mp-canvas">
+            <img :src="card.photo.url" alt="" loading="lazy" draggable="false" />
+          </div>
+          <img class="mp-frame" src="/cards/chefs-d-oeuvre/cadre-louis-xv.webp" alt="" draggable="false" />
+          <span class="mp-rarity">{{ RARITY_LABEL[card.rarity] }}</span>
+          <div class="mp-plaque">
+            <b>{{ card.name }}</b>
+            <span>{{ card.sub }} · {{ yearsLabel }} · {{ seriesLabel }}</span>
+          </div>
         </div>
         <div v-else class="frame">
           <div class="body">
@@ -113,6 +125,13 @@ const root = ref(null)
 const photoFailed = ref(false)
 
 const holo = computed(() => ['epic', 'legendary', 'mythic'].includes(props.card.rarity))
+
+const isMasterpiece = computed(() => !props.locked && props.card.type === 'masterpiece')
+/** Numéro dans la série des Chefs-d'œuvre : « 04/13 » */
+const seriesLabel = computed(() => {
+  const s = props.card.series
+  return s ? `${String(s.index).padStart(2, '0')}/${s.total}` : ''
+})
 
 const hasPhoto = computed(() => Boolean(props.card.photo) && !photoFailed.value)
 // Grands Prix : photo du vainqueur pendant ce GP, sinon le tracé du circuit (en médaillon sur la photo)
@@ -469,6 +488,116 @@ function onLeave() {
   font-family: 'JetBrains Mono', monospace;
   font-size: 3.8cqw;
   color: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Chef-d'œuvre ---------- */
+.is-masterpiece .face { border-radius: 2cqw; }
+
+.masterpiece {
+  position: relative;
+  height: 100%;
+  background: #1a1206;
+}
+
+/* Ouverture du cadre (46/500 en largeur, 46/700 en hauteur), un peu recouverte par les moulures */
+.mp-canvas {
+  position: absolute;
+  inset: 6.1% 8.6%;
+  overflow: hidden;
+  background: #16181c;
+}
+
+.mp-canvas img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Effet toile et ombre portée du cadre */
+.mp-canvas::before,
+.mp-canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mp-canvas::before {
+  z-index: 1;
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image:
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.5) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.5) 0 1px, transparent 1px 3px);
+}
+
+.mp-canvas::after {
+  z-index: 1;
+  box-shadow: inset 0 2cqw 4cqw rgb(0 0 0 / 0.7), inset 0 0 1.4cqw rgb(0 0 0 / 0.6);
+}
+
+.mp-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mp-rarity {
+  position: absolute;
+  top: 9.4cqw;
+  left: 11.5cqw;
+  padding: 0.4cqw 1.8cqw;
+  border-radius: 0.6cqw;
+  font-size: 3cqw;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  background: color-mix(in srgb, var(--c) 70%, #000);
+  box-shadow: 0 0 1.6cqw color-mix(in srgb, var(--c) 70%, transparent);
+}
+
+.mp-plaque {
+  position: absolute;
+  left: 50%;
+  bottom: 1.3cqw;
+  transform: translateX(-50%);
+  min-width: 44%;
+  max-width: 76%;
+  padding: 0.8cqw 3cqw 1cqw;
+  border: 0.45cqw solid #d6b25a;
+  border-radius: 0.8cqw;
+  text-align: center;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #1c1c1c, #050505);
+  box-shadow: 0 0.6cqw 1.6cqw rgb(0 0 0 / 0.7);
+}
+
+.mp-plaque b,
+.mp-plaque span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-plaque b {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 4.6cqw;
+  font-style: italic;
+  line-height: 1.05;
+  color: #f3d27a;
+}
+
+.mp-plaque span {
+  margin-top: 0.2cqw;
+  font-size: 2.5cqw;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b9a46a;
 }
 
 /* Finitions Chrome et Or : cadre métallique et reflet qui balaie la carte */

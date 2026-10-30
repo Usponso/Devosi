@@ -84,7 +84,7 @@ import { RARITY_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { economyMessage } from '@/utils/cards'
 
 const TIERS = { 1: 'Facile', 2: 'Moyenne', 3: 'Difficile' }
-const TYPE_LABELS = { driver: ['carte Pilote', 'cartes Pilote'], team: ['carte Écurie', 'cartes Écurie'], gp: ['carte Grand Prix', 'cartes Grand Prix'], moment: ['carte Moment', 'cartes Moment'] }
+const TYPE_LABELS = { driver: ['carte Pilote', 'cartes Pilote'], team: ['carte Écurie', 'cartes Écurie'], gp: ['carte Grand Prix', 'cartes Grand Prix'], moment: ['carte Moment', 'cartes Moment'], masterpiece: ["carte Chef-d'œuvre", "cartes Chef-d'œuvre"] }
 const ICONS = { open: 'package', recycle: 'recycle', new: 'cards', cards: 'cards', type: 'album', rarity: 'star', craft: 'hammer', trade_up: 'gauge', upgrade: 'star', team: 'flag', decade: 'calendar' }
 const ATELIER_KINDS = ['recycle', 'craft', 'trade_up', 'upgrade']
 

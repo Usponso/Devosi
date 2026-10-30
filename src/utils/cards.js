@@ -84,6 +84,7 @@ const ALBUM_TITLES = {
   spa: "Maître de l'Eau Rouge",
   'courses-mythiques': 'Conteur de légendes',
   moments: 'Gardien des légendes',
+  'chefs-d-oeuvre': 'Conservateur du musée',
 }
 
 /** Titre affiché pour un album complété (repli sur le nom de l'album) */
