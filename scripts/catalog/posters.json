@@ -8,5 +8,45 @@
     "place": "Mexico",
     "rarity": "epic",
     "color": "#B3122A"
+  },
+  {
+    "season": 2026,
+    "round": 20,
+    "kicker": "Grande Prêmio do",
+    "title": "Brasil",
+    "date": "2026-11-08",
+    "place": "São Paulo",
+    "rarity": "epic",
+    "color": "#0F7A3C"
+  },
+  {
+    "season": 2026,
+    "round": 21,
+    "kicker": "Grand Prix of",
+    "title": "Las Vegas",
+    "date": "2026-11-22",
+    "place": "Las Vegas",
+    "rarity": "epic",
+    "color": "#C0C4CC"
+  },
+  {
+    "season": 2026,
+    "round": 22,
+    "kicker": "Grand Prix of",
+    "title": "Qatar",
+    "date": "2026-11-29",
+    "place": "Lusail",
+    "rarity": "epic",
+    "color": "#7A1F3D"
+  },
+  {
+    "season": 2026,
+    "round": 23,
+    "kicker": "Grand Prix of",
+    "title": "Abu Dhabi",
+    "date": "2026-12-06",
+    "place": "Abu Dhabi",
+    "rarity": "epic",
+    "color": "#1F4FBF"
   }
 ]

@@ -25,7 +25,7 @@ export function posterCards(root) {
       sub: p.place,
       years: [p.season, p.season],
       color: p.color,
-      text: `Affiche du ${p.kicker.toLowerCase()} ${p.title} ${p.season}, manche ${p.round} : à trouver dans le pack GP de son week-end, puis seulement par échange.`,
+      text: `Affiche d'époque de la manche ${p.round} de la saison ${p.season}, à ${p.place} : à trouver dans le pack GP de son week-end, puis seulement par échange.`,
       quote: null,
       photo: { url: `/cards/affiches/${p.season}-${p.round}.jpg` },
       poster: { kicker: p.kicker, title: p.title, date: p.date, round: p.round },

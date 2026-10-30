@@ -2253,7 +2253,11 @@ insert into public.cards (id, type, rarity, team, year) values
 ('cd-hamilton-7-titres','masterpiece','mythic',null,2020),
 ('cd-abu-dhabi-2021','masterpiece','mythic',null,2021),
 ('cd-leclerc-monaco-2024','masterpiece','epic',null,2024),
-('a-2026-19','poster','epic',null,2026)
+('a-2026-19','poster','epic',null,2026),
+('a-2026-20','poster','epic',null,2026),
+('a-2026-21','poster','epic',null,2026),
+('a-2026-22','poster','epic',null,2026),
+('a-2026-23','poster','epic',null,2026)
 on conflict (id) do update set type = excluded.type, rarity = excluded.rarity, team = excluded.team, year = excluded.year;
 
 insert into public.albums (id, reward) values
