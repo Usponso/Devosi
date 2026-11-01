@@ -52,21 +52,22 @@ import {
  * Probabilité par carte (%) et valeur en Pièces (recyclage / fabrication) — à garder
  * synchronisées avec public._roll_rarity() et public._card_value() (supabase/migrations)
  */
+// points : poids de la carte dans le score du classement (_rarity_points côté serveur)
 export const RARITIES = [
-  { id: 'common', label: 'Commune', odds: 88.94, recycle: 5, craft: 20 },
-  { id: 'rare', label: 'Rare', odds: 9.7, recycle: 20, craft: 80 },
-  { id: 'epic', label: 'Épique', odds: 1.02, recycle: 100, craft: 400 },
-  { id: 'legendary', label: 'Légendaire', odds: 0.32, recycle: 400, craft: 1600 },
-  { id: 'mythic', label: 'Mythique', odds: 0.02, recycle: 2000, craft: 8000 },
+  { id: 'common', label: 'Commune', odds: 88.94, recycle: 5, craft: 20, points: 1 },
+  { id: 'rare', label: 'Rare', odds: 9.7, recycle: 20, craft: 80, points: 3 },
+  { id: 'epic', label: 'Épique', odds: 1.02, recycle: 100, craft: 400, points: 10 },
+  { id: 'legendary', label: 'Légendaire', odds: 0.32, recycle: 400, craft: 1600, points: 25 },
+  { id: 'mythic', label: 'Mythique', odds: 0.02, recycle: 2000, craft: 8000, points: 100 },
 ]
 export const CARDS_PER_PACK = 5
 /** Vitesse supérieure : doublons consommés pour une carte de la rareté supérieure */
 export const TRADE_UP_COST = 5
-/** Finitions : exemplaires nécessaires (tous consommés sauf un) */
+/** Finitions : exemplaires nécessaires (tous consommés sauf un) et multiplicateur de points au classement */
 export const FINISHES = [
-  { id: 0, label: 'Standard' },
-  { id: 1, label: 'Chrome', copies: 5 },
-  { id: 2, label: 'Or', copies: 10 },
+  { id: 0, label: 'Standard', multiplier: 1 },
+  { id: 1, label: 'Chrome', copies: 5, multiplier: 2 },
+  { id: 2, label: 'Or', copies: 10, multiplier: 3 },
 ]
 export const RARITY_VALUE = Object.fromEntries(RARITIES.map((r) => [r.id, r]))
 

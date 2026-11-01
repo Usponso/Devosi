@@ -7,7 +7,9 @@
       </div>
       <p class="dim">
         Classement par score de collection : chaque carte distincte rapporte des points selon sa rareté
-        (Commune 1, Rare 3, Épique 10, Légendaire 25, Mythique 100).
+        (Commune 1, Rare 3, Épique 10, Légendaire 25, Mythique 100). Une finition multiplie les points de la
+        carte : <b class="f-chrome">Chrome ×2</b> (5 exemplaires), <b class="f-gold">Or ×3</b> (10 exemplaires).
+        Les doublons ne comptent pas tant qu'ils ne servent pas à une finition.
       </p>
     </header>
 
@@ -328,6 +330,8 @@ onMounted(async () => {
 .c-title { font-size: 12px; font-weight: 600; color: #ffe08a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .c-num { text-align: right; }
 .score { font-weight: 700; color: var(--accent); }
+.f-chrome { color: #dfe4ea; }
+.f-gold { color: #ffd65a; }
 
 .c-showcase {
   display: flex;

@@ -4,6 +4,11 @@
       <Icon name="album" :size="16" /> Dans ta collection ×{{ copies }}
       <span v-if="finish" class="finish-chip" :class="`f-${finish}`">{{ FINISHES[finish].label }}</span>
     </div>
+    <p class="small muted points-line">
+      <Icon name="trophy" :size="14" />
+      {{ points(finish) }} pt{{ points(finish) > 1 ? 's' : '' }} au classement
+      <template v-if="finish">({{ value.points }} × {{ FINISHES[finish].multiplier }}, finition {{ FINISHES[finish].label }})</template>
+    </p>
 
     <!-- Doublons : finition et recyclage -->
     <div v-if="nextFinish" class="upgrade">
@@ -12,6 +17,10 @@
         <span class="mono muted">{{ Math.min(copies, nextFinish.copies) }}/{{ nextFinish.copies }}</span>
       </div>
       <span class="meter"><span :class="`f-${nextFinish.id}`" :style="{ width: `${Math.min(1, copies / nextFinish.copies) * 100}%` }"></span></span>
+      <span class="small muted">
+        En {{ nextFinish.label }}, la carte compte ×{{ nextFinish.multiplier }} au classement :
+        <b class="mono">{{ points(nextFinish.id) }} pts</b> au lieu de {{ points(finish) }}.
+      </span>
       <button v-if="copies >= nextFinish.copies" class="btn" :disabled="busy" @click="upgrade">
         <Icon name="star" :size="16" /> Améliorer en {{ nextFinish.label }} ({{ nextFinish.copies - 1 }} doublons)
       </button>
@@ -54,6 +63,8 @@ const finish = computed(() => col.finishes.get(props.card.id) ?? 0)
 const nextFinish = computed(() => FINISHES[finish.value + 1] ?? null)
 const value = computed(() => RARITY_VALUE[props.card.rarity] ?? RARITIES[0])
 const inShowcase = computed(() => col.showcase.includes(props.card.id))
+/** Points de la carte au classement avec une finition donnée */
+const points = (f) => value.value.points * FINISHES[f].multiplier
 
 watch(() => props.card.id, () => (message.value = ''))
 
@@ -107,6 +118,7 @@ const toggleShowcase = () => run(async () => {
   color: #111;
 }
 
+.points-line { display: flex; align-items: center; gap: 6px; margin: -4px 0 0; }
 .upgrade { display: flex; flex-direction: column; gap: 8px; }
 .upgrade-head { display: flex; justify-content: space-between; font-size: 14px; }
 .upgrade .btn { align-self: flex-start; }
