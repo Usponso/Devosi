@@ -110,8 +110,15 @@
         <div class="results-row">
           <p class="muted results">
             {{ filtered.length }} carte{{ filtered.length > 1 ? 's' : '' }}
-            <template v-if="searching"> · recherche et raretés limitées aux cartes possédées</template>
+            <template v-if="searching"> · recherche, raretés et doublons limités aux cartes possédées</template>
           </p>
+          <label class="sort">
+            <span class="muted">Doublons</span>
+            <select v-model.number="minDuplicates" aria-label="Filtrer par nombre de doublons">
+              <option v-for="o in DUPLICATE_FILTERS" :key="o.min" :value="o.min">{{ o.label }}</option>
+            </select>
+            <Icon name="chevron-down" :size="14" class="sort-chevron" />
+          </label>
           <label class="sort">
             <span class="muted">Trier par</span>
             <select v-model="sort" aria-label="Trier les cartes">
@@ -178,6 +185,16 @@ const type = ref('all')
 const rarities = ref(new Set())
 const ownedOnly = ref(false)
 const query = ref('')
+// Doublons : exemplaires en plus du premier (finitions à 5 et 10 exemplaires)
+const DUPLICATE_FILTERS = [
+  { min: 0, label: 'Tous' },
+  { min: 1, label: 'Au moins 1' },
+  { min: 2, label: 'Au moins 2' },
+  { min: 4, label: '4 et plus (Chrome)' },
+  { min: 9, label: '9 et plus (Or)' },
+]
+const minDuplicates = ref(0)
+const duplicatesOf = (c) => Math.max(0, (col.owned.get(c.id) ?? 0) - 1)
 const accountOpen = ref(false)
 const editorOpen = ref(false)
 
@@ -212,8 +229,8 @@ function toggleRarity(id) {
 
 const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
-/** Recherche et raretés ne portent que sur les cartes possédées (pas d'indice sur les autres) */
-const searching = computed(() => Boolean(query.value) || rarities.value.size > 0)
+/** Recherche, raretés et doublons ne portent que sur les cartes possédées (pas d'indice sur les autres) */
+const searching = computed(() => Boolean(query.value) || rarities.value.size > 0 || minDuplicates.value > 0)
 
 const filtered = computed(() => {
   const q = normalize(query.value)
@@ -223,6 +240,7 @@ const filtered = computed(() => {
       (type.value === 'all' || c.type === type.value) &&
       (!ownedFilter || col.owned.has(c.id)) &&
       (!rarities.value.size || rarities.value.has(c.rarity)) &&
+      duplicatesOf(c) >= minDuplicates.value &&
       (!q || normalize(`${c.name} ${c.sub ?? ''} ${c.years?.[0] ?? ''}`).includes(q)),
   )
 })
@@ -232,6 +250,7 @@ const SORTS = [
   { id: 'number', label: 'Numéro' },
   { id: 'recent', label: 'Plus récentes' },
   { id: 'rarity', label: 'Rareté' },
+  { id: 'duplicates', label: 'Doublons' },
 ]
 const SORT_KEY = 'devosi:collection-sort'
 const sort = ref(readSort())
@@ -262,13 +281,16 @@ const sorted = computed(() => {
     const rank = (c) => (col.owned.has(c.id) ? RARITY_RANK[c.rarity] : -1)
     return [...list].sort((a, b) => rank(b) - rank(a) || a.n - b.n)
   }
+  if (sort.value === 'duplicates') {
+    return [...list].sort((a, b) => duplicatesOf(b) - duplicatesOf(a) || a.n - b.n)
+  }
   return list
 })
 
 const visible = computed(() => sorted.value.slice(0, limit.value))
 // Visionneuse : flèches entre les cartes possédées affichées
 const ownedVisible = computed(() => visible.value.filter((c) => col.owned.has(c.id)))
-watch([type, rarities, ownedOnly, query, sort], () => (limit.value = PAGE))
+watch([type, rarities, ownedOnly, query, sort, minDuplicates], () => (limit.value = PAGE))
 
 const totalByType = computed(() => countBy(col.collectionCards))
 const ownedByType = computed(() => countBy(col.collectionCards.filter((c) => col.owned.has(c.id))))
@@ -476,6 +498,9 @@ onUnmounted(() => {
   gap: 8px 16px;
   margin-bottom: 12px;
 }
+
+/* Les menus Doublons et Tri restent groupés à droite */
+.results-row .results { flex: 1; }
 
 .results { font-size: 13px; }
 

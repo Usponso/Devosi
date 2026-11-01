@@ -73,7 +73,7 @@
             </div>
 
             <div class="foot">
-              <span>#{{ String(card.n).padStart(4, '0') }}</span>
+              <span>#{{ String(card.n).padStart(4, '0') }}<span v-if="count > 1" class="foot-count">×{{ count }}</span></span>
               <span v-if="finish" class="finish-tag">{{ FINISH_LABEL[finish] }}</span>
               <span v-else>DEVOSI</span>
             </div>
@@ -82,7 +82,8 @@
         <div v-if="holo && !locked" class="holo"></div>
         <div v-if="finish && !locked" class="sheen"></div>
         <span v-if="isNew" class="new">Nouveau</span>
-        <span v-if="count > 1" class="count">×{{ count }}</span>
+        <!-- Exemplaires : dans le pied des cartes classiques, sur l'image pour les séries pleine carte -->
+        <span v-if="count > 1 && (isMasterpiece || isPoster)" class="count">×{{ count }}</span>
       </div>
 
       <!-- Verso -->
@@ -510,6 +511,16 @@ function onLeave() {
   font-family: 'JetBrains Mono', monospace;
   font-size: 3.8cqw;
   color: rgba(255, 255, 255, 0.35);
+}
+
+/* Nombre d'exemplaires, à côté du numéro */
+.foot-count {
+  margin-left: 2cqw;
+  padding: 0.2cqw 1.8cqw;
+  border-radius: 99px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* ---------- Chef-d'œuvre ---------- */
