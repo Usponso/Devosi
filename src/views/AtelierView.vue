@@ -109,19 +109,31 @@
                 @click="craftRarity = craftRarity === r.id ? null : r.id"
               >{{ r.label }} · {{ formatCoins(r.craft) }}</button>
             </div>
+            <label class="owned-toggle small">
+              <input v-model="craftShowOwned" type="checkbox" /> Afficher les cartes obtenues
+            </label>
           </div>
 
-          <p v-if="!craftSearching" class="small muted">Tape au moins 2 lettres ou choisis une rareté pour voir les cartes manquantes.</p>
-          <p v-else-if="!craftResults.length" class="small muted">Aucune carte manquante ne correspond.</p>
+          <p v-if="!craftSearching" class="small muted">Tape au moins 2 lettres ou choisis une rareté pour voir les cartes.</p>
+          <p v-else-if="!craftResults.length" class="small muted">
+            {{ craftShowOwned ? 'Aucune carte ne correspond.' : 'Aucune carte manquante ne correspond.' }}
+          </p>
           <ul v-else class="craft-list">
-            <li v-for="card in craftResults" :key="card.id" class="craft-row" :class="`r-${card.rarity}`">
+            <li v-for="card in craftResults" :key="card.id" class="craft-row" :class="[`r-${card.rarity}`, { owned: col.owned.has(card.id) }]">
               <span class="mono muted">#{{ String(card.n).padStart(4, '0') }}</span>
+              <button class="thumb" :aria-label="`Voir la carte ${card.name}`" @click="viewer.open(card, { list: craftResults })">
+                <img v-if="card.photo" :src="card.photo.url" alt="" loading="lazy" />
+                <span v-else>{{ card.name.slice(0, 1) }}</span>
+              </button>
               <span class="craft-name">
                 <b>{{ card.name }}</b>
                 <span class="small muted">{{ TYPE_LABEL[card.type] }} · {{ yearsOf(card) }}</span>
               </span>
               <span class="rarity-tag">{{ RARITY_LABEL[card.rarity] }}</span>
-              <button class="btn" :class="{ 'btn-ghost': col.coins < RARITY_VALUE[card.rarity].craft }" :disabled="busy || col.coins < RARITY_VALUE[card.rarity].craft" @click="craft(card)">
+              <span v-if="col.owned.has(card.id)" class="owned-tag">
+                <Icon name="check" :size="14" /> Obtenue<template v-if="col.owned.get(card.id) > 1"> ×{{ col.owned.get(card.id) }}</template>
+              </span>
+              <button v-else class="btn" :class="{ 'btn-ghost': col.coins < RARITY_VALUE[card.rarity].craft }" :disabled="busy || col.coins < RARITY_VALUE[card.rarity].craft" @click="craft(card)">
                 <Icon name="hammer" :size="14" /> {{ formatCoins(RARITY_VALUE[card.rarity].craft) }}
               </button>
             </li>
@@ -183,6 +195,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
+import { useCardViewer } from '@/composables/useCardViewer'
 import {
   RARITIES,
   RARITY_LABEL,
@@ -194,6 +207,7 @@ import {
 import { economyMessage, formatCoins } from '@/utils/cards'
 
 const col = useCollectionStore()
+const viewer = useCardViewer()
 const route = useRoute()
 const router = useRouter()
 
@@ -283,6 +297,8 @@ const recycleAll = () =>
 const CRAFT_LIMIT = 40
 const craftQuery = ref('')
 const craftRarity = ref(null)
+// Cartes déjà possédées : affichées et marquées « Obtenue », ou masquées
+const craftShowOwned = ref(true)
 const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 const craftSearching = computed(() => craftQuery.value.length >= 2 || Boolean(craftRarity.value))
 
@@ -290,7 +306,8 @@ const craftMatches = computed(() => {
   if (!craftSearching.value) return []
   const words = normalize(craftQuery.value).split(/\s+/).filter(Boolean)
   return col.cards.filter((card) => {
-    if (card.edition || card.type === 'poster' || col.owned.has(card.id)) return false
+    if (card.edition || card.type === 'poster') return false
+    if (!craftShowOwned.value && col.owned.has(card.id)) return false
     if (craftRarity.value && card.rarity !== craftRarity.value) return false
     if (!words.length) return true
     const text = normalize(`${card.name} ${card.sub ?? ''} ${card.stats?.winner ?? ''} ${card.years?.join(' ') ?? ''} ${TYPE_LABEL[card.type]}`)
@@ -480,7 +497,7 @@ onMounted(() => {
 
 .craft-row {
   display: grid;
-  grid-template-columns: 56px 1fr auto auto;
+  grid-template-columns: 56px 34px 1fr auto auto;
   align-items: center;
   gap: 14px;
   padding: 8px 8px 8px 14px;
@@ -488,6 +505,39 @@ onMounted(() => {
   background: var(--surface-2);
   border-left: 3px solid var(--c);
 }
+
+.craft-row.owned { opacity: 0.6; }
+
+/* Vignette de la carte (ouvre la visionneuse) */
+.thumb {
+  width: 34px;
+  aspect-ratio: 5 / 7;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: #16181c;
+  font-weight: 900;
+  color: var(--text-muted);
+  cursor: zoom-in;
+}
+
+.thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; }
+
+.owned-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--success);
+  white-space: nowrap;
+}
+
+.owned-toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--text-dim); cursor: pointer; }
 
 .craft-name { display: flex; flex-direction: column; min-width: 0; }
 .craft-name b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -577,7 +627,7 @@ onMounted(() => {
 @media (max-width: 640px) {
   .dup-row { grid-template-columns: 22px 1fr auto; }
   .dup-row > .muted { display: none; }
-  .craft-row { grid-template-columns: 1fr auto; }
+  .craft-row { grid-template-columns: 34px 1fr auto; }
   .craft-row > .mono, .craft-row .rarity-tag { display: none; }
   .wallet-amount { font-size: 28px; }
 }
