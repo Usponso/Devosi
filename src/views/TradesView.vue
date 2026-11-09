@@ -84,14 +84,28 @@
                 <div class="it-side">
                   <div class="muted small">{{ t.direction === 'received' ? 'Tu reçois' : 'Tu demandes' }}</div>
                   <div class="mini-cards">
-                    <F1Card v-for="c in cardsOf(t.direction === 'received' ? t.give : t.take)" :key="c.id" :card="c" :interactive="false" class="mini" />
+                    <div v-for="c in cardsOf(t.direction === 'received' ? t.give : t.take)" :key="c.id" class="mini-wrap">
+                      <F1Card :card="c" :interactive="false" class="mini" />
+                      <!-- Ce que j'en ai déjà (échanges en attente seulement) -->
+                      <template v-if="t.status === 'pending'">
+                        <span v-if="!col.owned.has(c.id)" class="mini-badge new">Nouvelle</span>
+                        <span v-else class="mini-badge mono">×{{ col.owned.get(c.id) }}</span>
+                      </template>
+                    </div>
                   </div>
                 </div>
                 <Icon name="swap" :size="20" class="arrow" />
                 <div class="it-side">
                   <div class="muted small">Tu donnes</div>
                   <div class="mini-cards">
-                    <F1Card v-for="c in cardsOf(t.direction === 'received' ? t.take : t.give)" :key="c.id" :card="c" :interactive="false" class="mini" />
+                    <div v-for="c in cardsOf(t.direction === 'received' ? t.take : t.give)" :key="c.id" class="mini-wrap">
+                      <F1Card :card="c" :interactive="false" class="mini" />
+                      <!-- Mes exemplaires de la carte donnée : doublon ou dernier -->
+                      <template v-if="t.status === 'pending'">
+                        <span v-if="(col.owned.get(c.id) ?? 0) <= 1" class="mini-badge last">Dernier</span>
+                        <span v-else class="mini-badge mono">×{{ col.owned.get(c.id) }}</span>
+                      </template>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -337,6 +351,27 @@ onMounted(async () => {
 .it-side { display: flex; flex-direction: column; gap: 6px; }
 .mini-cards { display: flex; flex-wrap: wrap; gap: 6px; }
 .mini { width: 64px; }
+.mini-wrap { position: relative; }
+
+/* Exemplaires que je possède : doublon (×N), nouvelle carte ou dernier exemplaire donné */
+.mini-badge {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  z-index: 2;
+  transform: translateX(-50%);
+  padding: 1px 7px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #fff;
+  background: rgb(0 0 0 / 0.8);
+  border: 1px solid var(--line-strong);
+}
+
+.mini-badge.new { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+.mini-badge.last { color: #2a1c00; background: #e8c15a; border-color: transparent; }
 .arrow { color: var(--text-muted); }
 
 .it-foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
