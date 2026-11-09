@@ -51,11 +51,15 @@
           <span v-for="i in MAX - take.length" :key="`t${i}`" class="slot"></span>
         </div>
         <p v-if="!theirCards" class="muted small">Chargement de sa collection…</p>
-        <CardPicker v-else v-model:query="theirQuery" v-model:type="theirType" :cards="theirPool" :selected="take" :limit="theirLimit" note="Sa collection · celles qui te manquent d'abord" @pick="(id) => toggle(take, id)" @more="theirLimit += 40">
+        <CardPicker v-else v-model:query="theirQuery" v-model:type="theirType" :cards="theirPool" :selected="take" :limit="theirLimit" note="Sa collection · celles qui te manquent, puis ses doublons d'abord" @pick="(id) => toggle(take, id)" @more="theirLimit += 40">
           <template #badge="{ card }">
+            <span class="count mono" :class="{ single: theirCount.get(card.id) === 1 }">×{{ theirCount.get(card.id) }}</span>
             <span v-if="!col.owned.has(card.id)" class="count new">Il te la manque</span>
           </template>
         </CardPicker>
+        <p v-if="theirLastCopies.length" class="warn small">
+          <Icon name="star" :size="13" /> Son dernier exemplaire : {{ theirLastCopies.map((c) => c.name).join(', ') }}. Il risque de refuser.
+        </p>
         <p class="muted small">Les éditions vainqueur ne s'échangent pas.</p>
       </div>
     </div>
@@ -111,18 +115,26 @@ const myPool = computed(() =>
     .sort((a, b) => col.owned.get(b.id) - col.owned.get(a.id) || RARITY_RANK[b.rarity] - RARITY_RANK[a.rarity]),
 )
 
-// Sa collection : celles qui me manquent d'abord, puis les plus rares
+// Sa collection : celles qui me manquent d'abord, puis ses doublons (plus faciles à obtenir), puis les plus rares
 const theirCards = ref(null)
 const theirQuery = ref('')
 const theirType = ref('all')
 const theirLimit = ref(40)
 const loadError = ref('')
+/** Nombre d'exemplaires de chaque carte chez l'ami */
+const theirCount = computed(() => new Map((theirCards.value ?? []).map((row) => [row.id, row.count])))
 const theirPool = computed(() =>
   (theirCards.value ?? [])
     .map((row) => col.byId.get(row.id))
     .filter((c) => c && !c.edition)
-    .sort((a, b) => col.owned.has(a.id) - col.owned.has(b.id) || RARITY_RANK[b.rarity] - RARITY_RANK[a.rarity]),
+    .sort(
+      (a, b) =>
+        col.owned.has(a.id) - col.owned.has(b.id) ||
+        theirCount.value.get(b.id) - theirCount.value.get(a.id) ||
+        RARITY_RANK[b.rarity] - RARITY_RANK[a.rarity],
+    ),
 )
+const theirLastCopies = computed(() => takeCards.value.filter((c) => theirCount.value.get(c.id) === 1))
 
 watch(
   () => props.friend,
@@ -245,7 +257,9 @@ async function send() {
   background: rgb(0 0 0 / 0.7);
 }
 
-.count.new { background: var(--accent); color: var(--on-accent); }
+.count.new { top: auto; bottom: 3px; background: var(--accent); color: var(--on-accent); }
+/* Exemplaire unique chez l'ami : moins susceptible d'être échangé */
+.count.single { color: rgba(255, 255, 255, 0.6); }
 
 .cp-foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .btn:disabled { opacity: 0.55; cursor: default; }
