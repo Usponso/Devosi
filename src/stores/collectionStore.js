@@ -39,6 +39,7 @@ import {
   respondFriendRequest,
   saveAvatar,
   saveTeam,
+  saveShowInTicker,
   saveTitle,
   sendFriendRequest,
   openPack,
@@ -328,6 +329,11 @@ export const useCollectionStore = defineStore('collection', {
 
     async setTitle(albumId) {
       this.profile = await saveTitle(albumId)
+    },
+
+    /** Apparaître (ou non) dans le bandeau « En direct » */
+    async setShowInTicker(show) {
+      this.profile = await saveShowInTicker(show)
     },
 
     async setTeam(teamId) {

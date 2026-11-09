@@ -19,6 +19,7 @@
   </div>
 
   <main class="app-main">
+    <LiveTicker />
     <CardsNav v-if="inCards" />
     <router-view v-slot="{ Component, route }">
       <transition name="page">
@@ -45,6 +46,7 @@ import { computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import MobileTabBar from '@/components/MobileTabBar.vue'
+import LiveTicker from '@/components/LiveTicker.vue'
 import TeamPicker from '@/components/TeamPicker.vue'
 import CardViewer from '@/components/cards/CardViewer.vue'
 import CardsNav from '@/components/cards/CardsNav.vue'

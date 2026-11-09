@@ -243,6 +243,20 @@ export const rerollQuest = (slot) => rpc('reroll_quest', { p_slot: slot })
 export const redeemCode = (code) => rpc('redeem_code', { p_code: code })
 
 /** Cartes d'édition vainqueur : [{ id, base, season, round, name }] (lisible sans session) */
+/**
+ * Bandeau « En direct » : tirages marquants des dernières 24 h, [{ username, card, at }].
+ * Lisible sans compte : ne crée jamais de session invité.
+ */
+export async function fetchLiveTicker() {
+  if (!supabase) return []
+  const { data, error } = await supabase.rpc('live_ticker')
+  if (error) throw error
+  return data ?? []
+}
+
+/** Apparaître (ou non) dans le bandeau « En direct » ; renvoie le profil */
+export const saveShowInTicker = (show) => rpc('set_show_in_ticker', { p_show: show })
+
 export async function fetchEditionCards() {
   if (!supabase) return []
   const { data, error } = await supabase.rpc('edition_cards')

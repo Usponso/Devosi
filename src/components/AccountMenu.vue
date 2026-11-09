@@ -60,6 +60,17 @@
           <button class="item" role="menuitem" @click="openNotifications">
             <Icon name="bell" :size="16" /> Notifications
           </button>
+          <button
+            class="item"
+            role="menuitemcheckbox"
+            :aria-checked="showInTicker"
+            :disabled="tickerBusy"
+            title="Tes Légendaires, Mythiques, affiches et Chefs-d'œuvre dans le bandeau En direct"
+            @click="toggleTicker"
+          >
+            <Icon name="flag" :size="16" /> Apparaître dans le direct
+            <span class="switch" :class="{ on: showInTicker }" aria-hidden="true"></span>
+          </button>
           <button v-if="canInstall" class="item" role="menuitem" @click="installApp">
             <Icon name="save" :size="16" /> Installer l'appli
           </button>
@@ -121,6 +132,18 @@ function installApp() {
 function openNotifications() {
   open.value = false
   notificationsOpen.value = true
+}
+
+// Bandeau « En direct » : mes tirages marquants y apparaissent, sauf si je m'en retire
+const showInTicker = computed(() => col.profile?.show_in_ticker !== false)
+const tickerBusy = ref(false)
+async function toggleTicker() {
+  tickerBusy.value = true
+  try {
+    await col.setShowInTicker(!showInTicker.value)
+  } finally {
+    tickerBusy.value = false
+  }
 }
 const accountMode = ref('link')
 /** Complétion du profil (pseudo, avatar, écurie, vitrine, badges) */
@@ -281,6 +304,33 @@ onUnmounted(() => {
 
 .item:hover { background: var(--surface-3); }
 .item .item-badge { margin-left: auto; }
+
+/* Interrupteur (Apparaître dans le direct) */
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 30px;
+  height: 17px;
+  margin-left: auto;
+  border-radius: 99px;
+  background: var(--line-strong);
+  transition: background var(--t);
+}
+
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--t);
+}
+
+.switch.on { background: var(--accent); }
+.switch.on::after { transform: translateX(13px); }
 .item.quiet { color: var(--text-muted); }
 .item:disabled { opacity: 0.5; }
 
