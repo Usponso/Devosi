@@ -209,7 +209,7 @@
             </tbody>
           </table>
           <p class="muted odds-glass">
-            <b>Vitraux numérotés</b> : environ 1 pack sur {{ Math.round(1 / GLASS_ODDS) }} en contient un, à la place d'une carte,
+            <b>Vitraux numérotés</b> : environ 1 pack sur {{ GLASS_PACKS }} en contient un, à la place d'une carte,
             tant qu'il en reste<template v-if="glassLeft !== null"> ({{ glassLeft }} exemplaire{{ glassLeft > 1 ? 's' : '' }} encore à distribuer)</template>.
           </p>
         </div>
@@ -299,7 +299,7 @@ import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import GpPack from '@/components/cards/GpPack.vue'
 import DailyPanel from '@/components/cards/DailyPanel.vue'
 import NotificationsInvite from '@/components/NotificationsInvite.vue'
-import { GLASS_ODDS, RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
+import { GLASS_PACKS, RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'
 import { packSounds } from '@/utils/packSounds'
 import { usePrefsStore } from '@/stores/prefsStore'

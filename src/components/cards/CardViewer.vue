@@ -102,7 +102,7 @@
               <b class="mono">{{ mySerials.map((n) => `n° ${String(n).padStart(2, '0')}`).join(', ') }}</b>
             </p>
             <p class="muted pr-note">
-              Chaque exemplaire porte son propre numéro. Les vitraux sortent d'environ 1 pack sur 60 tant qu'il en reste, ne se fabriquent pas et ne se recyclent pas.
+              Chaque exemplaire porte son propre numéro. Les vitraux sortent d'environ 1 pack sur {{ GLASS_PACKS }} tant qu'il en reste, ne se fabriquent pas et ne se recyclent pas.
             </p>
           </div>
 
@@ -149,7 +149,7 @@ import Icon from '@/components/Icon.vue'
 import F1Card from './F1Card.vue'
 import CardOwnerPanel from './CardOwnerPanel.vue'
 import { useCardViewer } from '@/composables/useCardViewer'
-import { RARITIES, RARITY_LABEL, TYPE_LABEL, useCollectionStore } from '@/stores/collectionStore'
+import { GLASS_PACKS, RARITIES, RARITY_LABEL, TYPE_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { getNationalityLabel } from '@/data/nationalities'
 import { driverTeamName } from '@/utils/cards'
 

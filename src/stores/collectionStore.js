@@ -103,7 +103,9 @@ export const TYPE_LABEL = {
   playing_card: 'Carte à jouer',
 }
 /** Vitraux numérotés : chances par pack (public._gp_setting('glass_odds'), en pour mille) */
-export const GLASS_ODDS = 17 / 1000
+export const GLASS_ODDS = 7 / 1000
+/** « 1 pack sur N », arrondi à la dizaine */
+export const GLASS_PACKS = Math.round(1 / GLASS_ODDS / 10) * 10
 
 let catalogPromise = null
 
