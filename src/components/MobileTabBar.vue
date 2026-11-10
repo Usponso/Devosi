@@ -13,7 +13,7 @@
       </span>
       <span v-else class="tab-icon">
         <Icon :name="item.icon" :size="22" />
-        <span v-if="item.badge === 'predictions' && col.predictionsReady" class="tab-dot"></span>
+        <span v-if="item.badge === 'predictions' && col.raceRewardsReady" class="tab-dot"></span>
       </span>
       <span :class="{ 'featured-label': item.featured }">{{ item.short ?? item.label }}</span>
     </router-link>

@@ -1,6 +1,12 @@
 <template>
   <div class="page predictions-page">
     <header class="container page-head">
+      <nav class="subnav" aria-label="Jeux du week-end">
+        <router-link to="/pronostics" class="subnav-link">Pronostics</router-link>
+        <router-link to="/pronostics/ecurie" class="subnav-link">
+          Écurie du week-end <span v-if="col.fantasyReady" class="subnav-dot" aria-label="Récompense à récupérer"></span>
+        </router-link>
+      </nav>
       <div class="eyebrow">Saison {{ data?.season ?? '' }}</div>
       <h1 class="title-lg">Pronostics</h1>
       <p class="dim">Avant chaque Grand Prix, pronostique le podium et la pole. Tes points te rapportent des Pièces, des packs et peut-être l'édition vainqueur.</p>
@@ -344,6 +350,31 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .page-head .title-lg { margin: 6px 0 6px; }
+
+/* Pronostics / Écurie du week-end (même barre que FantasyView) */
+.subnav { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+
+.subnav-link {
+  padding: 7px 14px;
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.subnav-link.router-link-exact-active { color: var(--on-accent); background: var(--accent); border-color: transparent; }
+
+.subnav-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: #e8c15a;
+  vertical-align: middle;
+}
 
 .body {
   display: flex;

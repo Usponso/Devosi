@@ -31,6 +31,9 @@ import {
   upgradeCard,
   resetSession,
   fetchMyCards,
+  fetchFantasy,
+  saveLineup,
+  claimFantasy,
   fetchMySerials,
   fetchSerialCounts,
   fetchMyProfile,
@@ -122,6 +125,7 @@ export const useCollectionStore = defineStore('collection', {
     friends: null, // { friends, incoming, outgoing } (chargé à la demande)
     quests: null, // quêtes du jour (chargées par la page Packs)
     predictions: null, // pronostics : { season, next, history, total, rank, players }
+    fantasy: null, // Écurie du week-end : { season, next, history, total, rank, players }
     achievements: null, // succès : { achievements, badges }
     trades: null, // échanges : { trades, pending_sent, max_pending, today, daily }
     email: null, // email du compte (null pour une session invité)
@@ -185,6 +189,12 @@ export const useCollectionStore = defineStore('collection', {
     achievementsReady: (state) => state.status?.achievements_ready ?? 0,
     /** Pronostics notés dont les gains attendent */
     predictionsReady: (state) => state.status?.predictions_ready ?? 0,
+    /** Récompenses de l'Écurie du week-end à récupérer */
+    fantasyReady: (state) => state.status?.fantasy_ready ?? 0,
+    /** Pastille du menu Pronostics : pronostics et écuries notés à récupérer */
+    raceRewardsReady() {
+      return this.predictionsReady + this.fantasyReady
+    },
     /** Quêtes terminées dont la récompense attend */
     questsReady: (state) => state.status?.quests_ready ?? 0,
     /** Pastille du menu : packs à ouvrir et récompenses de quêtes (pack de bienvenue et 3 packs offerts à un nouveau visiteur) */
@@ -306,6 +316,7 @@ export const useCollectionStore = defineStore('collection', {
       this.friends = null
       this.quests = null
       this.predictions = null
+      this.fantasy = null
       this.achievements = null
       this.trades = null
       this.email = null
@@ -460,6 +471,27 @@ export const useCollectionStore = defineStore('collection', {
       this.profile = profile
       this.setStatus(status)
       return coins
+    },
+
+    async loadFantasy() {
+      const { status, ...fantasy } = await fetchFantasy()
+      this.fantasy = fantasy
+      this.setStatus(status)
+      return fantasy
+    },
+
+    async saveLineup(season, round, lineup) {
+      const { status, ...fantasy } = await saveLineup(season, round, lineup)
+      this.fantasy = fantasy
+      this.setStatus(status)
+    },
+
+    /** Récupère la récompense d'une course ; renvoie { coins, packs } */
+    async claimFantasy(season, round) {
+      const { status, claimed, ...fantasy } = await claimFantasy(season, round)
+      this.fantasy = fantasy
+      this.setStatus(status)
+      return claimed
     },
 
     async loadPredictions() {

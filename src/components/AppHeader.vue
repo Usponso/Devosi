@@ -21,7 +21,7 @@
           </template>
           <template v-else>
             {{ item.label }}
-            <span v-if="item.badge === 'predictions' && col.predictionsReady" class="nav-dot" :aria-label="`${col.predictionsReady} pronostics à récupérer`"></span>
+            <span v-if="item.badge === 'predictions' && col.raceRewardsReady" class="nav-dot" :aria-label="`${col.raceRewardsReady} récompenses de pronostics ou d'écurie à récupérer`"></span>
           </template>
         </router-link>
       </nav>

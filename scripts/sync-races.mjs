@@ -34,7 +34,7 @@ if (!schedule.length) {
 }
 const year = schedule[0].season
 
-// Podium et pole de toutes les manches disputées, en 4 requêtes
+// Podium et pole de toutes les manches disputées, en 4 requêtes (+ les résultats complets)
 const [first, second, third, poles] = await Promise.all([
   races(`/${year}/results/1`),
   races(`/${year}/results/2`),
@@ -42,6 +42,35 @@ const [first, second, third, poles] = await Promise.all([
   races(`/${year}/qualifying/1`),
 ])
 const byRound = (list, key) => new Map(list.map((r) => [r.round, r[key]?.[0]?.Driver?.driverId ?? null]))
+/**
+ * Résultats complets de la saison (Écurie du week-end), paginés par ligne de résultat :
+ * Map(manche → [{ d: pilote, t: écurie, pos, pts, grid, fin }])
+ */
+async function allResults() {
+  const out = new Map()
+  for (let offset = 0; ; offset += 100) {
+    const data = (await get(`/${year}/results.json?limit=100&offset=${offset}`)).MRData
+    for (const race of data.RaceTable.Races) {
+      const rows = out.get(race.round) ?? []
+      for (const x of race.Results ?? []) {
+        rows.push({
+          d: x.Driver.driverId,
+          t: x.Constructor.constructorId,
+          pos: Number(x.position),
+          pts: Number(x.points),
+          grid: Number(x.grid),
+          // Classé à l'arrivée (« R », « D »… : abandon, disqualification)
+          fin: /^\d+$/.test(x.positionText),
+        })
+      }
+      out.set(race.round, rows)
+    }
+    if (offset + 100 >= Number(data.total)) break
+  }
+  return out
+}
+const results = await allResults()
+
 const p1 = byRound(first, 'Results')
 const p2 = byRound(second, 'Results')
 const p3 = byRound(third, 'Results')
@@ -65,6 +94,7 @@ const rows = schedule.map((r) => {
     p1: p1.get(r.round) ?? null,
     p2: p2.get(r.round) ?? null,
     p3: p3.get(r.round) ?? null,
+    results: results.get(r.round) ?? null,
   }
 })
 

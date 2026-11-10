@@ -311,6 +311,26 @@ export const fetchPredictionLeaderboard = (season = null, friends = false, offse
   rpc('prediction_leaderboard', { p_season: season, p_friends: friends, p_limit: limit, p_offset: offset })
 
 // ---------------------------------------------------------------------------
+// Écurie du week-end : { season, next, history, total, rank, players, status }
+// ---------------------------------------------------------------------------
+
+export async function fetchFantasy() {
+  await ensureSession()
+  return rpc('my_fantasy')
+}
+
+/** Mon écurie pour une course : 2 pilotes (dont le capitaine, 1 ou 2), 1 écurie, 1 Légende */
+export const saveLineup = (season, round, { driver1, driver2, captain, team, legend }) =>
+  rpc('save_lineup', { p_season: season, p_round: round, p_driver1: driver1, p_driver2: driver2, p_captain: captain, p_team: team, p_legend: legend })
+
+/** Même réponse que fetchFantasy, avec `claimed` ({ coins, packs }) */
+export const claimFantasy = (season, round) => rpc('claim_fantasy', { p_season: season, p_round: round })
+
+/** Classement d'une course (`round`) ou de la saison (round null), général ou entre amis */
+export const fetchFantasyLeaderboard = (season = null, round = null, friends = false, limit = 50) =>
+  rpc('fantasy_leaderboard', { p_season: season, p_round: round, p_friends: friends, p_limit: limit })
+
+// ---------------------------------------------------------------------------
 // Succès : { achievements: [{ id, family, tier, title, description, kind, param, progress,
 // target, coins, unlocked, claimed_at }], badges: [id], status }
 // ---------------------------------------------------------------------------

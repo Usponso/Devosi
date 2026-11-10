@@ -58,6 +58,9 @@ const ECONOMY_ERRORS = {
   PREDICTION_PENDING: 'Les résultats ne sont pas encore connus.',
   PREDICTION_CLAIMED: 'Gains déjà récupérés.',
   ALREADY_CLAIMED: 'Déjà récupéré aujourd’hui, reviens demain.',
+  LINEUP_CLOSED: 'Écurie verrouillée : les qualifications ont commencé.',
+  LINEUP_INVALID: 'Choisis 2 pilotes, 1 écurie et 1 Légende, toutes différentes.',
+  NOT_OWNED: 'Une de ces cartes n’est plus dans ta collection.',
 }
 
 /** Message lisible pour une erreur des fonctions de l'atelier (code = hint SQL) */

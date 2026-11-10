@@ -13,6 +13,7 @@ const routes = [
   { path: '/profil', component: () => import('@/views/ProfileView.vue') },
   { path: '/packs', component: () => import('@/views/PacksView.vue') },
   { path: '/pronostics', component: () => import('@/views/PredictionsView.vue') },
+  { path: '/pronostics/ecurie', component: () => import('@/views/FantasyView.vue') },
   { path: '/succes', component: () => import('@/views/AchievementsView.vue') },
   { path: '/echanges', component: () => import('@/views/TradesView.vue') },
   { path: '/quetes', component: () => import('@/views/QuestsView.vue') },
