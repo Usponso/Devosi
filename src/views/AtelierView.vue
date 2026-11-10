@@ -345,8 +345,8 @@ const prefs = usePrefsStore()
 
 const tradeUp = (rarity) =>
   run(async () => {
-    // Petit bruit de passage de vitesse, même réglage de son que l'ouverture des packs
-    if (prefs.soundOn) packSounds.shift()
+    // Les doublons fusionnent (même réglage de son que l'ouverture des packs)
+    if (prefs.soundOn) packSounds.merge()
     const [card] = await Promise.all([col.tradeUp(rarity), startMerge(rarity)])
     showReveal(card)
   })

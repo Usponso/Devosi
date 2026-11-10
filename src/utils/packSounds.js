@@ -5,7 +5,7 @@
  *
  * - Ouverture : déchirure nette d'un papier (centaines de micro-craquements de fibres)
  * - Carte retournée : souffle d'une page qui tourne, puis marimba feutrée selon la rareté
- * - Vitesse supérieure : le moteur monte dans les tours, puis le clac du passage de vitesse
+ * - Vitesse supérieure : les 5 doublons glissent l'un sur l'autre, puis un accord de marimba qui monte
  */
 
 let ctx = null
@@ -95,6 +95,34 @@ function pageTurn(t) {
   return duration
 }
 
+/** Carte qui glisse sur la pile : souffle court dont le filtre monte */
+function cardSwish(t) {
+  const duration = 0.14
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'bandpass'
+  filter.Q.value = 0.8
+  filter.frequency.setValueAtTime(500, t)
+  filter.frequency.exponentialRampToValueAtTime(2400, t + duration)
+  const gain = ctx.createGain()
+  gain.gain.setValueAtTime(0.0001, t)
+  gain.gain.exponentialRampToValueAtTime(0.14, t + duration * 0.4)
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + duration)
+  noiseSource(t, duration, filter, gain)
+}
+
+/** Carte posée sur la pile : petit clic de carton */
+function cardTap(t, freq) {
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'bandpass'
+  filter.frequency.value = freq
+  filter.Q.value = 1.5
+  const gain = ctx.createGain()
+  gain.gain.setValueAtTime(0, t)
+  gain.gain.linearRampToValueAtTime(0.3, t + 0.002)
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.04)
+  noiseSource(t, 0.04, filter, gain)
+}
+
 /** Note de marimba : fondamentale douce et attaque boisée (harmonique 4 très courte) */
 function marimba(t, freq, peak = 0.13) {
   tone(t, freq, 0.45, peak)
@@ -146,49 +174,17 @@ export const packSounds = {
   },
 
   /**
-   * Vitesse supérieure (pendant la fusion des doublons, ~1 s) : régime moteur qui monte,
-   * clac de la boîte au passage du rapport, puis le moteur repart un ton plus bas
+   * Vitesse supérieure (pendant la fusion des doublons, ~1 s) : les 5 cartes glissent l'une
+   * sur l'autre et se posent sur la pile, puis un accord de marimba qui monte
    */
-  shift() {
+  merge() {
     if (!audio()) return
     const t = ctx.currentTime + 0.02
-    const rev = 0.7
-
-    // Moteur : dent de scie filtrée dont la hauteur monte, avec une légère vibration
-    const engine = (start, from, to, duration, peak) => {
-      const osc = ctx.createOscillator()
-      osc.type = 'sawtooth'
-      osc.frequency.setValueAtTime(from, start)
-      osc.frequency.exponentialRampToValueAtTime(to, start + duration)
-      const wobble = ctx.createOscillator()
-      wobble.frequency.value = 28
-      const depth = ctx.createGain()
-      depth.gain.value = from * 0.04
-      wobble.connect(depth).connect(osc.frequency)
-      const filter = ctx.createBiquadFilter()
-      filter.type = 'lowpass'
-      filter.frequency.setValueAtTime(500, start)
-      filter.frequency.exponentialRampToValueAtTime(1800, start + duration)
-      const gain = ctx.createGain()
-      gain.gain.setValueAtTime(0.0001, start)
-      gain.gain.exponentialRampToValueAtTime(peak, start + 0.08)
-      gain.gain.setValueAtTime(peak, start + duration - 0.06)
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
-      osc.connect(filter).connect(gain).connect(master)
-      for (const o of [osc, wobble]) {
-        o.start(start)
-        o.stop(start + duration + 0.05)
-      }
+    for (let i = 0; i < 5; i++) {
+      cardSwish(t + i * 0.11)
+      cardTap(t + 0.1 + i * 0.11, rand(1500, 2200))
     }
-    engine(t, 90, 260, rev, 0.09)
-
-    // Passage du rapport : clic métallique et coup sourd
-    const clunk = t + rev + 0.03
-    grain(clunk, { freq: 3200, q: 2, length: 0.03, amp: 0.5 })
-    grain(clunk + 0.012, { freq: 900, q: 1.2, length: 0.06, amp: 0.45 })
-    tone(clunk, 70, 0.12, 0.3)
-
-    // Le moteur repart sur le rapport supérieur
-    engine(clunk + 0.08, 150, 210, 0.35, 0.06)
+    const chord = t + 0.7
+    ;[523.3, 659.3, 784, 1046.5].forEach((freq, i) => marimba(chord + i * 0.07, freq))
   },
 }
