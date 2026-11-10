@@ -31,8 +31,9 @@
             >
               <transition name="card-swap" mode="out-in">
                 <F1Card
-                  :key="card.id"
+                  :key="`${card.id}-${shownSerial ?? ''}`"
                   :card="card"
+                  :serial="shownSerial"
                   :finish="finish"
                   :interactive="false"
                   :zoomable="false"
@@ -49,6 +50,22 @@
             <button class="tool" @click="turn"><Icon name="swap" :size="16" /> Retourner</button>
             <button class="tool" :disabled="!rx && !ry" @click="recenter"><Icon name="rotate" :size="16" /> Recentrer</button>
             <span v-if="hasList" class="mono muted counter">{{ index + 1 }} / {{ viewer.state.list.length }}</span>
+          </div>
+          <!-- Vitrail possédé en plusieurs exemplaires : chacun avec son numéro -->
+          <div v-if="mySerials.length > 1" class="copies">
+            <span class="muted copies-label">Exemplaire {{ copy + 1 }} / {{ mySerials.length }}</span>
+            <div class="copy-chips">
+              <button
+                v-for="(n, i) in mySerials"
+                :key="n"
+                class="copy-chip mono"
+                :class="{ active: i === copy }"
+                :aria-pressed="i === copy"
+                @click="copy = i"
+              >
+                {{ String(n).padStart(String(card.printRun).length, '0') }}/{{ card.printRun }}
+              </button>
+            </div>
           </div>
           <p class="hint muted">Fais glisser la carte pour la faire pivoter</p>
         </div>
@@ -71,6 +88,22 @@
           <div class="rarity-line">
             <span class="rarity-pill">{{ RARITY_LABEL[card.rarity] }}</span>
             <span class="muted">{{ rarityOdds }}</span>
+          </div>
+
+          <!-- Vitrail numéroté : exemplaires distribués et numéros possédés -->
+          <div v-if="card.printRun" class="print-run">
+            <div class="pr-head">
+              <b>Tirage limité à {{ card.printRun }} exemplaires</b>
+              <span v-if="printGiven !== null" class="mono">{{ printGiven }} / {{ card.printRun }} distribués</span>
+            </div>
+            <div v-if="printGiven !== null" class="pr-bar"><span :style="{ width: `${(printGiven / card.printRun) * 100}%` }"></span></div>
+            <p v-if="mySerials.length" class="pr-mine">
+              {{ mySerials.length > 1 ? 'Tes exemplaires' : 'Ton exemplaire' }} :
+              <b class="mono">{{ mySerials.map((n) => `n° ${String(n).padStart(2, '0')}`).join(', ') }}</b>
+            </p>
+            <p class="muted pr-note">
+              Chaque exemplaire porte son propre numéro. Les vitraux sortent d'environ 1 pack sur 60 tant qu'il en reste, ne se fabriquent pas et ne se recyclent pas.
+            </p>
           </div>
 
           <div v-if="stats.length" class="stat-grid">
@@ -97,6 +130,8 @@
 
           <p v-if="card.type === 'masterpiece'" class="credit muted">Peinture originale de la collection Devosi</p>
           <p v-else-if="card.type === 'poster'" class="credit muted">Affiche originale de la collection Devosi</p>
+          <p v-else-if="card.type === 'stained_glass'" class="credit muted">Vitrail original de la collection Devosi</p>
+          <p v-else-if="card.type === 'playing_card'" class="credit muted">Carte à jouer originale de la collection Devosi</p>
           <p v-else-if="card.photo" class="credit muted">
             Photo : {{ card.photo.author }} ·
             <a :href="card.photo.source" target="_blank" rel="noopener">{{ card.photo.license }}</a>, via Wikimedia Commons
@@ -147,7 +182,21 @@ const yearsLabel = computed(() => {
   return a === b ? String(a) : `${a}–${b}`
 })
 
+/** Vitrail : exemplaires distribués (null tant que la jauge n'est pas chargée) et mes numéros */
+const printGiven = computed(() => col.serialCounts.get(card.value?.id)?.given ?? null)
+// Mes numéros seulement sur mes cartes (pas dans la vitrine d'un autre joueur)
+const mySerials = computed(() => (viewer.state.finishes ? [] : col.serials.get(card.value?.id) ?? []))
+/** Exemplaire affiché : celui qui vient d'être tiré, sinon le plus petit numéro */
+const copy = ref(0)
+watch(
+  () => card.value?.id,
+  () => (copy.value = Math.max(0, mySerials.value.indexOf(card.value?.serial))),
+  { immediate: true },
+)
+const shownSerial = computed(() => mySerials.value[copy.value])
+
 const rarityOdds = computed(() => {
+  if (card.value?.printRun) return 'numéroté'
   const r = RARITIES.find((x) => x.id === card.value?.rarity)
   if (!r) return ''
   const n = Math.round(100 / r.odds)
@@ -525,6 +574,64 @@ onUnmounted(() => {
 }
 
 .missing { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+
+.print-run {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid rgb(232 193 90 / 0.35);
+  border-radius: 10px;
+  background: rgb(232 193 90 / 0.06);
+  font-size: 13px;
+}
+
+.pr-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.pr-head b { color: #e8c15a; }
+
+.pr-bar {
+  height: 6px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.pr-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #a07414, #ffe9a0);
+}
+
+.pr-mine { margin: 0; }
+
+.copies {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.copies-label { font-size: 12px; }
+.copy-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+
+.copy-chip {
+  padding: 5px 10px;
+  border: 1px solid rgb(232 193 90 / 0.35);
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e8c15a;
+  background: rgb(232 193 90 / 0.06);
+  cursor: pointer;
+}
+
+.copy-chip.active {
+  color: #1a1206;
+  background: linear-gradient(110deg, #c8962c, #ffe9a0 50%, #c8962c);
+  border-color: transparent;
+}
+.pr-note { margin: 0; font-size: 12px; }
 
 .albums { display: flex; flex-direction: column; gap: 8px; }
 .album-chips { display: flex; flex-wrap: wrap; gap: 6px; }

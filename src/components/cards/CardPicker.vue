@@ -56,6 +56,8 @@ const TYPES = [
   { id: 'moment', label: 'Moments' },
   { id: 'masterpiece', label: "Chefs-d'œuvre" },
   { id: 'poster', label: 'Affiches' },
+  { id: 'stained_glass', label: 'Vitraux' },
+  { id: 'playing_card', label: 'Jeu de cartes' },
 ]
 
 const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()

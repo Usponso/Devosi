@@ -50,6 +50,7 @@ const ECONOMY_ERRORS = {
   BADGES_FULL: '3 badges maximum sur ton profil.',
   NO_WEEKEND: 'Le week-end de course est terminé.',
   POSTER_NOT_CRAFTABLE: "Les affiches ne se trouvent que dans le pack GP de leur week-end.",
+  NUMBERED_LOCKED: 'Les vitraux numérotés ne se trouvent que dans les packs, et ne se recyclent pas.',
   RACE_UNKNOWN: 'Course inconnue.',
   PREDICTION_CLOSED: 'Les pronostics sont fermés : les qualifications ont commencé.',
   PREDICTION_INVALID: 'Choisis les 3 pilotes du podium et le poleman.',
@@ -86,6 +87,8 @@ const ALBUM_TITLES = {
   'courses-mythiques': 'Conteur de légendes',
   moments: 'Gardien des légendes',
   'chefs-d-oeuvre': 'Conservateur du musée',
+  vitraux: 'Maître verrier',
+  'jeu-des-pilotes': 'Maître du jeu',
 }
 
 /** Titre affiché pour un album complété (repli sur le nom de l'album) */

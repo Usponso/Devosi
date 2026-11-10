@@ -306,7 +306,7 @@ const craftMatches = computed(() => {
   if (!craftSearching.value) return []
   const words = normalize(craftQuery.value).split(/\s+/).filter(Boolean)
   return col.cards.filter((card) => {
-    if (card.edition || card.type === 'poster') return false
+    if (card.edition || card.type === 'poster' || card.printRun) return false
     if (!craftShowOwned.value && col.owned.has(card.id)) return false
     if (craftRarity.value && card.rarity !== craftRarity.value) return false
     if (!words.length) return true

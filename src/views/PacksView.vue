@@ -208,6 +208,10 @@
               </tr>
             </tbody>
           </table>
+          <p class="muted odds-glass">
+            <b>Vitraux numérotés</b> : environ 1 pack sur {{ Math.round(1 / GLASS_ODDS) }} en contient un, à la place d'une carte,
+            tant qu'il en reste<template v-if="glassLeft !== null"> ({{ glassLeft }} exemplaire{{ glassLeft > 1 ? 's' : '' }} encore à distribuer)</template>.
+          </p>
         </div>
       </section>
 
@@ -295,12 +299,17 @@ import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import GpPack from '@/components/cards/GpPack.vue'
 import DailyPanel from '@/components/cards/DailyPanel.vue'
 import NotificationsInvite from '@/components/NotificationsInvite.vue'
-import { RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
+import { GLASS_ODDS, RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'
 import { packSounds } from '@/utils/packSounds'
 import { usePrefsStore } from '@/stores/prefsStore'
 
 const col = useCollectionStore()
+/** Vitraux numérotés encore à distribuer (null tant que la jauge n'est pas chargée) */
+const glassLeft = computed(() => {
+  if (!col.serialCounts.size) return null
+  return [...col.serialCounts.values()].reduce((n, s) => n + s.total - s.given, 0)
+})
 const prefs = usePrefsStore()
 
 /** Joue un son de l'ouverture, sauf si le joueur a coupé le son */
@@ -854,6 +863,8 @@ onUnmounted(() => {
 .source-tag.gp { color: #ff8a8a; background: rgb(225 6 0 / 0.16); }
 
 .odds-intro { font-size: 13px; margin: 4px 0 10px; }
+.odds-glass { font-size: 13px; margin: 12px 0 0; }
+.odds-glass b { color: #e8c15a; }
 
 .odds-table {
   width: 100%;

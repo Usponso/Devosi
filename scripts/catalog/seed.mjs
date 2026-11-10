@@ -1,6 +1,6 @@
 /**
  * Écrit supabase/seed.sql à partir du catalogue : la table `cards` (id, type, rareté,
- * écurie, année) utilisée pour tirer les packs et suivre les quêtes, les cartes liées à
+ * écurie, année, tirage des séries numérotées) utilisée pour tirer les packs et suivre les quêtes, les cartes liées à
  * chaque circuit (pack du week-end de course) et les albums.
  *
  * Appelé par scripts/build-catalog.mjs. Peut aussi être lancé seul pour régénérer le
@@ -48,15 +48,15 @@ function circuitLinks(cards) {
 export function writeSeed(root, cards, albums) {
   const teamOf = teamResolver(cards)
   const values = cards
-    .map((c) => `('${esc(c.id)}','${c.type}','${c.rarity}',${sqlText(teamOf(c))},${c.years?.[0] ?? 'null'})`)
+    .map((c) => `('${esc(c.id)}','${c.type}','${c.rarity}',${sqlText(teamOf(c))},${c.years?.[0] ?? 'null'},${c.printRun ?? 'null'})`)
     .join(',\n')
 
   mkdirSync(`${root}supabase`, { recursive: true })
   writeFileSync(
     `${root}supabase/seed.sql`,
     `-- Généré par scripts/build-catalog.mjs — ne pas modifier à la main\n` +
-      `insert into public.cards (id, type, rarity, team, year) values\n${values}\n` +
-      `on conflict (id) do update set type = excluded.type, rarity = excluded.rarity, team = excluded.team, year = excluded.year;\n\n` +
+      `insert into public.cards (id, type, rarity, team, year, print_run) values\n${values}\n` +
+      `on conflict (id) do update set type = excluded.type, rarity = excluded.rarity, team = excluded.team, year = excluded.year, print_run = excluded.print_run;\n\n` +
       `insert into public.albums (id, reward) values\n${albums.map((a) => `('${a.id}',${a.reward})`).join(',\n')}\n` +
       `on conflict (id) do update set reward = excluded.reward;\n` +
       `delete from public.albums where id not in (${albums.map((a) => `'${a.id}'`).join(',')});\n` +

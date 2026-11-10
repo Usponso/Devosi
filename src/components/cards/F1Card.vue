@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="f1card"
-    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked, edition: editionLabel, 'is-masterpiece': isMasterpiece, 'is-poster': isPoster }]"
+    :class="[locked ? 'locked' : `r-${card.rarity}`, { 'face-down': faceDown, tilt: interactive && !locked, zoomable: canZoom, [`finish-${finish}`]: finish && !locked, edition: editionLabel, 'is-masterpiece': isMasterpiece, 'is-poster': isPoster, 'is-fullart': isFullArt, 'is-playing': isFullArt && card.type === 'playing_card' }]"
     :style="locked ? null : { '--tc': card.color }"
     @pointermove="onMove"
     @pointerleave="onLeave"
@@ -39,6 +39,14 @@
           <span class="pt-tape t1"></span><span class="pt-tape t2"></span><span class="pt-tape t3"></span><span class="pt-tape t4"></span>
           <span class="pt-foot">Manche {{ card.poster.round }} · #{{ String(card.n).padStart(4, '0') }}</span>
           <span class="pt-rarity">{{ RARITY_LABEL[card.rarity] }}</span>
+        </div>
+        <!-- Vitrail et carte à jouer : l'illustration contient déjà son cadre et son titre -->
+        <div v-else-if="isFullArt" class="fullart" :class="`fa-${card.type}`">
+          <img class="fa-art" :src="card.photo.url" alt="" loading="lazy" draggable="false" />
+          <!-- Vitrail numéroté : numéro estampé à chaud, façon foil -->
+          <span v-if="card.printRun" class="serial" :class="{ myth: card.rarity === 'mythic' }">
+            <b>{{ serialLabel }}</b>
+          </span>
         </div>
         <div v-else class="frame">
           <div class="body">
@@ -83,12 +91,16 @@
         <div v-if="finish && !locked" class="sheen"></div>
         <span v-if="isNew" class="new">Nouveau</span>
         <!-- Exemplaires : dans le pied des cartes classiques, sur l'image pour les séries pleine carte -->
-        <span v-if="count > 1 && (isMasterpiece || isPoster)" class="count">×{{ count }}</span>
+        <span v-if="count > 1 && (isMasterpiece || isPoster || isFullArt)" class="count">×{{ count }}</span>
       </div>
 
       <!-- Verso -->
       <div class="face back">
-        <div class="back-body">
+        <!-- Vitraux et jeu de cartes : leur propre dos (visible avant le retournement d'un pack) -->
+        <div v-if="specialBack" class="back-art fullart" :class="`fa-${card.type}`">
+          <img class="fa-art" :src="specialBack" alt="" draggable="false" />
+        </div>
+        <div v-else class="back-body">
           <span class="back-logo"><span>D</span>EVOSI</span>
           <span class="back-sub">F1 COLLECTION</span>
         </div>
@@ -122,6 +134,8 @@ const props = defineProps({
   /** Cartes voisines dans la visionneuse (flèches) et finitions d'un autre joueur */
   zoomList: { type: Array, default: null },
   zoomFinishes: { type: Object, default: null },
+  /** Numéro de l'exemplaire (vitraux) : par défaut celui du tirage, sinon le plus petit possédé */
+  serial: { type: Number, default: undefined },
 })
 
 const viewer = useCardViewer()
@@ -143,6 +157,15 @@ const holo = computed(() => ['epic', 'legendary', 'mythic'].includes(props.card.
 
 const isMasterpiece = computed(() => !props.locked && props.card.type === 'masterpiece')
 const isPoster = computed(() => !props.locked && props.card.type === 'poster')
+const isFullArt = computed(() => !props.locked && ['stained_glass', 'playing_card'].includes(props.card.type))
+const BACKS = { stained_glass: '/cards/vitraux/dos.jpg', playing_card: '/cards/jeu/dos.jpg' }
+const specialBack = computed(() => (isFullArt.value ? BACKS[props.card.type] : null))
+/** Vitrail : « 07/25 » ; « /25 » quand le numéro n'est pas connu (carte d'un autre joueur) */
+const serialLabel = computed(() => {
+  const total = props.card.printRun
+  const n = props.serial ?? props.card.serial ?? col.serials.get(props.card.id)?.[0]
+  return n ? `${String(n).padStart(String(total).length, '0')}/${total}` : `/${total}`
+})
 /** Date de course façon affiche : « 1 · XI · 2026 » */
 const ROMAN_MONTHS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 const posterDate = computed(() => {
@@ -631,6 +654,83 @@ function onLeave() {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #b9a46a;
+}
+
+/* ---------- Vitrail et carte à jouer : illustration en pleine carte ---------- */
+/*
+ * Les illustrations sont en 2:3, un peu plus étroites que l'emplacement en 5:7 : la carte
+ * garde leur format (centrée) plutôt que d'ajouter des bandes sur les côtés
+ */
+.is-fullart .face {
+  inset: 0 3.33%;
+  border-radius: 2.4cqw;
+}
+
+.fullart {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Illustrations en 2:3 dans une carte en 5:7 : posées entières sur un fond assorti */
+.fullart img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fa-stained_glass { background: #0d0a07; }
+
+/*
+ * Carte à jouer : coins arrondis un peu plus que ceux de l'image (rayon d'environ 44 px
+ * sur 720, soit 5,7cqw) pour en masquer les angles blancs
+ */
+.is-playing .face { border-radius: 7cqw; }
+
+/* Dos des séries illustrées : l'image seule, sans la bordure du dos Devosi */
+.is-fullart .back {
+  border: none;
+  background: none;
+}
+
+.fullart .fa-art { object-fit: cover; }
+
+/* Numéro estampé à chaud, reflet qui balaie (Mythique : foil irisé) */
+.serial {
+  position: absolute;
+  top: 4.4cqw;
+  right: 4.4cqw;
+  z-index: 2;
+  padding: 1cqw 2.8cqw;
+  border-radius: 1.2cqw;
+  background: rgb(10 10 12 / 0.82);
+  border: 0.4cqw solid #e8c15a;
+  box-shadow: 0 0.8cqw 2cqw rgb(0 0 0 / 0.8);
+}
+
+.serial b {
+  display: block;
+  font: 900 6cqw/1 'Titillium Web', sans-serif;
+  letter-spacing: 0.04em;
+  color: transparent;
+  background: linear-gradient(110deg, #a07414, #ffe9a0 30%, #c8962c 45%, #fff3c4 60%, #a07414 80%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: serial-shine 3s linear infinite;
+}
+
+.serial.myth { border-color: #ff4fd8; }
+.serial.myth b { background-image: linear-gradient(110deg, #ff4fd8, #5ad1ff 25%, #ffe066 50%, #7dff9b 75%, #ff4fd8); }
+
+@keyframes serial-shine {
+  to { background-position: -250% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .serial b { animation: none; }
 }
 
 /* ---------- Affiche d'époque ---------- */

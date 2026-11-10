@@ -31,6 +31,8 @@ import {
   upgradeCard,
   resetSession,
   fetchMyCards,
+  fetchMySerials,
+  fetchSerialCounts,
   fetchMyProfile,
   fetchPackStatus,
   fetchFriends,
@@ -84,8 +86,21 @@ export const CARD_TYPES = [
   { id: 'moment', label: 'Moments' },
   { id: 'masterpiece', label: "Chefs-d'œuvre" },
   { id: 'poster', label: 'Affiches' },
+  { id: 'stained_glass', label: 'Vitraux' },
+  { id: 'playing_card', label: 'Jeu de cartes' },
 ]
-export const TYPE_LABEL = { driver: 'Pilote', team: 'Écurie', gp: 'Grand Prix', moment: 'Moment', masterpiece: "Chef-d'œuvre", poster: 'Affiche' }
+export const TYPE_LABEL = {
+  driver: 'Pilote',
+  team: 'Écurie',
+  gp: 'Grand Prix',
+  moment: 'Moment',
+  masterpiece: "Chef-d'œuvre",
+  poster: 'Affiche',
+  stained_glass: 'Vitrail',
+  playing_card: 'Carte à jouer',
+}
+/** Vitraux numérotés : chances par pack (public._gp_setting('glass_odds'), en pour mille) */
+export const GLASS_ODDS = 17 / 1000
 
 let catalogPromise = null
 
@@ -100,6 +115,8 @@ export const useCollectionStore = defineStore('collection', {
     owned: new Map(), // card_id → nombre d'exemplaires
     finishes: new Map(), // card_id → finition débloquée (1 Chrome, 2 Or)
     obtained: new Map(), // card_id → date de la première obtention (ms)
+    serials: new Map(), // carte numérotée → ses numéros d'exemplaire, du plus petit au plus grand
+    serialCounts: new Map(), // carte numérotée → { given, total } exemplaires distribués
     status: null, // réserve de packs (serveur)
     profile: null, // { username, showcase, avatar, title, team, permanent, requests }
     friends: null, // { friends, incoming, outgoing } (chargé à la demande)
@@ -181,7 +198,8 @@ export const useCollectionStore = defineStore('collection', {
       const byId = this.byId
       for (const [id, count] of state.owned) {
         const card = byId.get(id)
-        if (!card || count < 2) continue
+        // Les vitraux numérotés ne se recyclent pas
+        if (!card || count < 2 || card.printRun) continue
         out[card.rarity].copies += count - 1
         out[card.rarity].value += (count - 1) * RARITY_VALUE[card.rarity].recycle
       }
@@ -244,19 +262,22 @@ export const useCollectionStore = defineStore('collection', {
       this.loading = true
       this.error = null
       try {
-        const [, status, mine, profile, user, claimed] = await Promise.all([
+        const [, status, mine, profile, user, claimed, serials] = await Promise.all([
           this.loadCatalog(),
           fetchPackStatus(),
           fetchMyCards(),
           fetchMyProfile(),
           currentUser(),
           fetchMyAlbums(),
+          fetchMySerials(),
         ])
         this.claimedAlbums = claimed
         this.setStatus(status)
         this.owned = mine.owned
         this.finishes = mine.finishes
         this.obtained = mine.obtained
+        this.serials = serials
+        this.loadSerialCounts()
         this.profile = profile
         this.email = user?.is_anonymous ? null : user?.email ?? null
         this.ready = true
@@ -277,6 +298,7 @@ export const useCollectionStore = defineStore('collection', {
       this.owned = new Map()
       this.finishes = new Map()
       this.obtained = new Map()
+      this.serials = new Map()
       this.claimedAlbums = new Set()
       this.ready = false
       this.status = null
@@ -399,10 +421,11 @@ export const useCollectionStore = defineStore('collection', {
       if (error) throw Object.assign(new Error(error), { code: error })
       if (!accept) return []
       const before = new Set(this.owned.keys())
-      const [mine, profile] = await Promise.all([fetchMyCards(), fetchMyProfile()])
+      const [mine, profile, serials] = await Promise.all([fetchMyCards(), fetchMyProfile(), fetchMySerials()])
       this.owned = mine.owned
       this.finishes = mine.finishes
       this.obtained = mine.obtained
+      this.serials = serials
       this.profile = profile
       this.refreshQuests()
       return (received ?? []).map((cardId) => ({ ...this.byId.get(cardId), isNew: !before.has(cardId) }))
@@ -503,6 +526,15 @@ export const useCollectionStore = defineStore('collection', {
       return status
     },
 
+    /** Exemplaires distribués des cartes numérotées (jauge de la fiche), lisible sans compte */
+    async loadSerialCounts() {
+      try {
+        this.serialCounts = new Map((await fetchSerialCounts()).map((s) => [s.id, { given: s.given, total: s.total }]))
+      } catch {
+        // Jauge indisponible : la fiche affiche seulement le tirage
+      }
+    },
+
     /** Applique les nouveaux nombres d'exemplaires renvoyés par le serveur */
     applyCounts(cards = []) {
       const owned = new Map(this.owned)
@@ -599,9 +631,17 @@ export const useCollectionStore = defineStore('collection', {
       const owned = new Map(this.owned)
       const drawn = cards.map((c) => {
         owned.set(c.id, (owned.get(c.id) ?? 0) + 1)
-        return { ...this.byId.get(c.id), isNew: c.is_new, circuitCard: c.circuit }
+        return { ...this.byId.get(c.id), isNew: c.is_new, circuitCard: c.circuit, serial: c.serial ?? undefined }
       })
       this.owned = owned
+      // Vitrail numéroté : son numéro rejoint la collection, la jauge est relue
+      const numbered = cards.filter((c) => c.serial)
+      if (numbered.length) {
+        const serials = new Map(this.serials)
+        numbered.forEach((c) => serials.set(c.id, [...(serials.get(c.id) ?? []), c.serial].sort((a, b) => a - b)))
+        this.serials = serials
+        this.loadSerialCounts()
+      }
       this.markObtained(cards.filter((c) => c.is_new).map((c) => c.id))
       // Suspense : la carte la plus rare est révélée en dernier, l'édition vainqueur tout à la fin
       const rank = (c) => (c.edition ? 99 : RARITY_RANK[c.rarity])

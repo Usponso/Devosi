@@ -31,10 +31,10 @@
         <Icon :name="inShowcase ? 'check' : 'star'" :size="16" />
         {{ inShowcase ? 'Retirer de la vitrine' : 'Mettre en vitrine' }}
       </button>
-      <button v-if="copies > 1" class="btn btn-ghost" :disabled="busy" @click="recycle(1)">
+      <button v-if="copies > 1 && !numbered" class="btn btn-ghost" :disabled="busy" @click="recycle(1)">
         <Icon name="recycle" :size="16" /> Recycler 1 · +{{ value.recycle }}
       </button>
-      <button v-if="copies > 2" class="btn btn-ghost" :disabled="busy" @click="recycle(copies - 1)">
+      <button v-if="copies > 2 && !numbered" class="btn btn-ghost" :disabled="busy" @click="recycle(copies - 1)">
         <Icon name="recycle" :size="16" /> Recycler les {{ copies - 1 }} doublons · +{{ formatCoins(value.recycle * (copies - 1)) }}
       </button>
     </div>
@@ -60,7 +60,9 @@ const error = ref(false)
 
 const copies = computed(() => col.owned.get(props.card.id) ?? 0)
 const finish = computed(() => col.finishes.get(props.card.id) ?? 0)
-const nextFinish = computed(() => FINISHES[finish.value + 1] ?? null)
+/** Vitrail numéroté : ni finition ni recyclage */
+const numbered = computed(() => Boolean(props.card.printRun))
+const nextFinish = computed(() => (numbered.value ? null : FINISHES[finish.value + 1] ?? null))
 const value = computed(() => RARITY_VALUE[props.card.rarity] ?? RARITIES[0])
 const inShowcase = computed(() => col.showcase.includes(props.card.id))
 /** Points de la carte au classement avec une finition donnée */

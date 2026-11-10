@@ -18,6 +18,7 @@ import { writeSeed } from './catalog/seed.mjs'
 import { gpNameFr } from './catalog/gp-names.mjs'
 import { MASTERPIECE_ALBUM, masterpieceCards } from './catalog/masterpieces.mjs'
 import { posterCards } from './catalog/posters.mjs'
+import { seriesAlbums, seriesCards } from './catalog/series.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const CACHE_DIR = `${ROOT}scripts/catalog/.cache`
@@ -702,10 +703,12 @@ for (const card of cards) {
 cards.push(...masterpieceCards(ROOT, cards))
 // Affiches d'époque : une par Grand Prix (scripts/catalog/posters.mjs)
 cards.push(...posterCards(ROOT))
+// Vitraux numérotés et jeu de cartes (scripts/catalog/series.mjs)
+cards.push(...seriesCards())
 
 // Numérotation : moments, pilotes, écuries, Grands Prix, chacun par ordre chronologique,
-// puis les séries ajoutées après coup (Chefs-d'œuvre, Affiches) : les numéros existants ne bougent pas
-const TYPE_ORDER = { moment: 0, driver: 1, team: 2, gp: 3, masterpiece: 4, poster: 5 }
+// puis les séries ajoutées après coup (Chefs-d'œuvre, Affiches, Vitraux, Jeu) : les numéros existants ne bougent pas
+const TYPE_ORDER = { moment: 0, driver: 1, team: 2, gp: 3, masterpiece: 4, poster: 5, stained_glass: 6, playing_card: 7 }
 cards.sort((a, b) => TYPE_ORDER[a.type] - TYPE_ORDER[b.type] || (a.years?.[0] ?? 0) - (b.years?.[0] ?? 0) || a.id.localeCompare(b.id))
 cards.forEach((c, i) => (c.n = i + 1))
 
@@ -743,7 +746,7 @@ const ALBUMS = [
 ]
 
 const RARITY_ORDER = { mythic: 0, legendary: 1, epic: 2, rare: 3, common: 4 }
-const albums = ALBUMS.map(({ filter, ...album }) => {
+const albums = [...ALBUMS.map(({ filter, ...album }) => {
   const members = cards.filter(filter)
   // Couverture : la carte la plus rare et la plus titrée qui a une photo (Hamilton, Ferrari…)
   const prestige = (c) => (c.stats?.titles ?? 0) * 100 + (c.stats?.wins ?? 0)
@@ -751,7 +754,7 @@ const albums = ALBUMS.map(({ filter, ...album }) => {
     .filter((c) => c.photo)
     .sort((a, b) => RARITY_ORDER[a.rarity] - RARITY_ORDER[b.rarity] || prestige(b) - prestige(a) || b.years[0] - a.years[0])[0]
   return { ...album, cover: cover?.id ?? null, cards: members.map((c) => c.id) }
-})
+}), ...seriesAlbums(cards)]
 console.log('Albums :', albums.map((a) => `${a.id} (${a.cards.length})`).join(', '))
 
 // ---------------------------------------------------------------------------

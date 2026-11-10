@@ -44,7 +44,7 @@ const items = computed(() =>
     .map((r) => {
       const card = col.byId.get(r.card)
       if (!card) return null
-      const special = card.edition ? 'Édition' : card.type === 'poster' || card.type === 'masterpiece' ? TYPE_LABEL[card.type] : null
+      const special = card.edition ? 'Édition' : ['poster', 'masterpiece', 'stained_glass'].includes(card.type) ? TYPE_LABEL[card.type] : null
       return {
         ...r,
         card,

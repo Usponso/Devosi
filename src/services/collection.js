@@ -210,6 +210,24 @@ export async function fetchMyCards() {
   return { owned, finishes, obtained }
 }
 
+/** Numéros des vitraux possédés : Map(card_id → [numéros, du plus petit au plus grand]) */
+export async function fetchMySerials() {
+  await ensureSession()
+  const { data, error } = await supabase.from('card_serials').select('card_id, serial').order('serial')
+  if (error) throw error
+  const serials = new Map()
+  data.forEach((row) => serials.set(row.card_id, [...(serials.get(row.card_id) ?? []), row.serial]))
+  return serials
+}
+
+/** Exemplaires distribués de chaque carte numérotée : [{ id, given, total }] (lisible sans compte) */
+export async function fetchSerialCounts() {
+  if (!supabase) return []
+  const { data, error } = await supabase.rpc('serial_counts')
+  if (error) throw error
+  return data ?? []
+}
+
 // ---------------------------------------------------------------------------
 // Doublons : recyclage, boutique, atelier, vitesse supérieure, finitions.
 // Les réponses contiennent `cards: [{ id, count }]` (nouveaux nombres d'exemplaires) et `status`.
