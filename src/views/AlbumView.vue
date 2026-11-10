@@ -35,10 +35,11 @@
 
         <!-- Master set : paliers Chrome puis Or, une fois l'album complété -->
         <div v-if="master" class="tiers">
-          <div v-for="t in tiers" :key="t.tier" class="tier card" :class="[t.cls, { claimed: t.claimed }]">
+          <div v-for="t in tiers" :key="t.tier" class="tier card" :class="[t.cls, { claimed: t.claimed, locked: !unlocked }]">
             <div class="tier-top">
               <span class="tier-name">{{ t.name }}</span>
-              <span v-if="t.claimed" class="tier-state ok"><Icon name="check" :size="13" /> Récupéré</span>
+              <span v-if="!unlocked" class="tier-state"><Icon name="lock" :size="12" /> Album à compléter</span>
+              <span v-else-if="t.claimed" class="tier-state ok"><Icon name="check" :size="13" /> Récupéré</span>
               <span v-else-if="t.count === stats.total" class="tier-state ready">À récupérer</span>
               <span v-else class="tier-state">{{ stats.total - t.count }} à passer</span>
             </div>
@@ -48,7 +49,8 @@
               <span><Icon name="coin" :size="13" class="gold" /> {{ formatCoins(t.reward) }} Pièces</span>
               <span v-if="t.tier === 2" class="gold-tag">Titre en lettres d'or</span>
             </div>
-            <button v-if="!t.claimed && t.count === stats.total" class="btn claim" :disabled="busy" @click="claimTier(t.tier)">
+            <p v-if="!unlocked" class="muted small tier-hint">Se débloque une fois l'album complété : {{ t.hint }}</p>
+            <button v-if="unlocked && !t.claimed && t.count === stats.total" class="btn claim" :disabled="busy" @click="claimTier(t.tier)">
               <Icon name="coin" :size="16" /> Récupérer {{ formatCoins(t.reward) }} Pièces
             </button>
           </div>
@@ -137,13 +139,15 @@ const stats = computed(() => col.albumStats.get(album.value?.id) ?? { owned: 0, 
 const allCards = computed(() => (album.value?.cards ?? []).map((id) => col.byId.get(id)).filter(Boolean))
 
 // Master set
-const master = computed(() => (stats.value.claimed ? stats.value.master : null))
+// Paliers affichés dès le départ (objectif visible), récupérables une fois l'album complété
+const master = computed(() => stats.value.master ?? null)
+const unlocked = computed(() => Boolean(stats.value.claimed))
 const tiers = computed(() => {
   const m = master.value
   if (!m) return []
   return [
-    { tier: 1, name: 'Set Chrome', what: 'en Chrome ou mieux', cls: 'chrome', count: m.chrome, claimed: m.tier >= 1, reward: album.value.reward },
-    { tier: 2, name: 'Master set Or', what: 'en Or', cls: 'gold', count: m.gold, claimed: m.tier >= 2, reward: album.value.reward * 2 },
+    { tier: 1, name: 'Set Chrome', what: 'en Chrome ou mieux', cls: 'chrome', count: m.chrome, claimed: m.tier >= 1, reward: album.value.reward, hint: 'toutes ses cartes en Chrome ou mieux.' },
+    { tier: 2, name: 'Master set Or', what: 'en Or', cls: 'gold', count: m.gold, claimed: m.tier >= 2, reward: album.value.reward * 2, hint: 'toutes ses cartes en Or.' },
   ]
 })
 
@@ -317,6 +321,9 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .tier-reward > span:first-child { display: inline-flex; align-items: center; gap: 5px; }
 .gold-tag { padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 900; color: #1a1206; background: linear-gradient(110deg, #c8962c, #ffe9a0 50%, #c8962c); }
 .tier .claim { align-self: flex-start; }
+.tier.locked { opacity: 0.75; }
+.tier.locked .tier-state { display: inline-flex; align-items: center; gap: 4px; }
+.tier-hint { margin: 0; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 

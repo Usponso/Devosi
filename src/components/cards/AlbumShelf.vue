@@ -1,5 +1,35 @@
 <template>
   <div class="shelf">
+    <!-- Objectif Master set : les albums les plus proches de leur prochain palier -->
+    <section v-if="goals.length" class="shelf-section master">
+      <div class="master-head">
+        <h2 class="eyebrow section-title">Objectif Master set</h2>
+        <button v-if="allGoals.length > GOALS" class="link-arrow" @click="showAllGoals = !showAllGoals">
+          {{ showAllGoals ? 'Voir moins' : `Voir les ${allGoals.length} albums` }}
+        </button>
+      </div>
+      <p class="muted small master-intro">
+        Une fois un album complété, passe toutes ses cartes en Chrome, puis en Or : des Pièces et le titre de l'album en lettres d'or.
+      </p>
+      <div class="goals">
+        <router-link v-for="g in goals" :key="g.album.id" :to="`/collection/album/${g.album.id}`" class="goal" :class="[g.cls, { locked: g.locked }]">
+          <span class="goal-top">
+            <span class="goal-title">{{ g.album.title }}</span>
+            <span class="goal-tier">{{ g.label }}</span>
+          </span>
+          <span class="cover-progress tier" :class="g.cls">
+            <span class="meter"><span :style="{ width: `${(g.count / g.total) * 100}%` }"></span></span>
+            <span class="mono small">{{ g.count }}/{{ g.total }}</span>
+          </span>
+          <span class="muted small">
+            <template v-if="g.locked"><Icon name="lock" :size="12" /> Album à compléter d'abord</template>
+            <template v-else-if="g.count === g.total"><span class="gold"><Icon name="coin" :size="12" /> {{ formatCoins(g.reward) }} Pièces à récupérer !</span></template>
+            <template v-else>{{ g.total - g.count }} carte{{ g.total - g.count > 1 ? 's' : '' }} à passer · {{ formatCoins(g.reward) }} Pièces</template>
+          </span>
+        </router-link>
+      </div>
+    </section>
+
     <section v-for="section in sections" :key="section.title" class="shelf-section">
       <h2 class="eyebrow section-title">{{ section.title }}</h2>
       <div class="covers">
@@ -52,7 +82,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import Icon from '@/components/Icon.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'
@@ -71,6 +101,34 @@ const sections = computed(() => {
 })
 
 const coverCard = (album) => col.byId.get(album.cover)
+
+// Objectif Master set : pour chaque album avec finitions et pas encore en Or, son prochain
+// palier ; les albums complétés d'abord, du plus avancé au moins avancé
+const GOALS = 4
+const showAllGoals = ref(false)
+const allGoals = computed(() =>
+  col.albums
+    .map((album) => {
+      const stats = col.albumStats.get(album.id)
+      const m = stats?.master
+      if (!m || m.tier >= 2) return null
+      const tier = m.tier >= 1 ? 2 : 1
+      const locked = !stats.claimed
+      return {
+        album,
+        locked,
+        cls: tier === 2 ? 'gold' : 'chrome',
+        label: tier === 2 ? 'Master set Or' : 'Set Chrome',
+        // Album pas encore complété : on montre sa complétion
+        count: locked ? stats.owned : tier === 2 ? m.gold : m.chrome,
+        total: stats.total,
+        reward: album.reward * tier,
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.locked - b.locked || b.count / b.total - a.count / a.total),
+)
+const goals = computed(() => (showAllGoals.value ? allGoals.value : allGoals.value.slice(0, GOALS)))
 /** Palier Master set récupéré (0, 1 Chrome, 2 Or) */
 const tierOf = (album) => album.stats.master?.tier ?? 0
 /** Palier atteint mais pas encore récupéré (1 ou 2), sinon 0 */
@@ -136,6 +194,36 @@ function tierReady(album) {
 .tier-lbl { flex: 0 0 46px; font-size: 11px; font-weight: 700; color: var(--text-muted); }
 .cover-progress.tier.chrome .meter > span { background: linear-gradient(90deg, #8e98a3, #f4f7fa, #8e98a3); }
 .cover-progress.tier.gold .meter > span { background: linear-gradient(90deg, #a07414, #ffe9a0, #c8962c); }
+
+/* Objectif Master set */
+.master-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.master-head .section-title { margin-bottom: 4px; }
+.master-intro { margin: 0 0 12px; }
+.goals { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+
+.goal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.goal:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.goal.chrome { border-color: rgb(201 209 218 / 0.35); }
+.goal.gold { border-color: rgb(232 193 90 / 0.45); }
+.goal.locked { opacity: 0.8; }
+.goal.locked .meter > span { background: var(--accent) !important; }
+.goal-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.goal-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.goal-tier { flex: none; font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.goal.gold .goal-tier { color: #e8c15a; }
+.goal .small { display: inline-flex; align-items: center; gap: 4px; }
+.gold { display: inline-flex; align-items: center; gap: 4px; color: #e8c15a; font-weight: 700; }
 
 /* Couverture : photo de la carte phare, bandeau façon album Panini */
 .cover-art {
