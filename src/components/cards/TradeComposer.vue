@@ -64,11 +64,30 @@
       </div>
     </div>
 
+    <!-- Équilibre : même règle que le serveur (aucun côté ne vaut plus du double de l'autre) -->
+    <div v-if="give.length && take.length" class="balance" :class="{ bad: !balanced }">
+      <div class="balance-row">
+        <span>Tu donnes <b class="mono">{{ giveValue }}</b> pts</span>
+        <span class="balance-bar" aria-hidden="true">
+          <span class="side give" :style="{ width: `${(giveValue / (giveValue + takeValue)) * 100}%` }"></span>
+          <span class="side take"></span>
+        </span>
+        <span>Tu reçois <b class="mono">{{ takeValue }}</b> pts</span>
+      </div>
+      <p class="small">
+        <template v-if="balanced">Échange équilibré.</template>
+        <template v-else>
+          Trop déséquilibré : aucun côté ne peut valoir plus du double de l'autre.
+          {{ giveValue < takeValue ? `Ajoute au moins ${Math.ceil(takeValue / 2) - giveValue} pts de ton côté.` : `Demande au moins ${Math.ceil(giveValue / 2) - takeValue} pts de plus.` }}
+        </template>
+      </p>
+    </div>
+
     <div class="cp-foot">
       <span class="muted small">
         <template v-if="col.trades">{{ col.trades.pending_sent }} proposition{{ col.trades.pending_sent > 1 ? 's' : '' }} en attente sur {{ col.trades.max_pending }}</template>
       </span>
-      <button class="btn" :disabled="sending || !give.length || !take.length" @click="send">
+      <button class="btn" :disabled="sending || !give.length || !take.length || !balanced" @click="send">
         <Icon name="swap" :size="16" /> {{ sending ? 'Envoi…' : 'Envoyer la proposition' }}
       </button>
     </div>
@@ -81,7 +100,7 @@ import { computed, ref, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import CardPicker from '@/components/cards/CardPicker.vue'
-import { RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
+import { RARITY_RANK, RARITY_VALUE, useCollectionStore } from '@/stores/collectionStore'
 import { fetchFriendCards } from '@/services/collection'
 import { economyMessage } from '@/utils/cards'
 
@@ -97,6 +116,12 @@ const take = ref([])
 const giveCards = computed(() => give.value.map((id) => col.byId.get(id)).filter(Boolean))
 const takeCards = computed(() => take.value.map((id) => col.byId.get(id)).filter(Boolean))
 const lastCopies = computed(() => giveCards.value.filter((c) => col.owned.get(c.id) === 1))
+
+/** Valeur d'un côté de l'échange : points de rareté du classement (1, 3, 10, 25, 100) */
+const value = (cards) => cards.reduce((n, c) => n + (RARITY_VALUE[c.rarity]?.points ?? 0), 0)
+const giveValue = computed(() => value(giveCards.value))
+const takeValue = computed(() => value(takeCards.value))
+const balanced = computed(() => Math.max(giveValue.value, takeValue.value) <= 2 * Math.min(giveValue.value, takeValue.value))
 
 /** Ajoute ou retire une carte (`list` : le tableau give ou take, déjà déballé par le gabarit) */
 function toggle(list, id) {
@@ -176,6 +201,15 @@ async function send() {
 
 <style scoped>
 .composer { display: flex; flex-direction: column; gap: 16px; padding: 20px 22px; }
+
+.balance { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); }
+.balance.bad { border-color: color-mix(in srgb, var(--danger) 60%, transparent); }
+.balance p { margin: 0; color: var(--success); }
+.balance.bad p { color: var(--danger); }
+.balance-row { display: flex; align-items: center; gap: 12px; font-size: 14px; flex-wrap: wrap; }
+.balance-bar { flex: 1; min-width: 80px; display: flex; height: 8px; border-radius: 99px; overflow: hidden; background: var(--line); }
+.balance-bar .give { background: var(--accent); transition: width 0.3s var(--ease); }
+.balance-bar .take { flex: 1; background: #e8c15a; }
 
 .cp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .cp-who { display: flex; align-items: center; gap: 12px; }
