@@ -22,7 +22,7 @@
           <div class="preview-text">
             <div class="eyebrow">Mon profil</div>
             <h2 id="profile-title" class="title-md">{{ profile.username ? `@${profile.username}` : 'Ma collection' }}</h2>
-            <div v-if="currentTitle" class="title-badge">{{ currentTitle }}</div>
+            <div v-if="currentTitle" class="title-badge" :class="{ 'title-master': col.isMasterTitle(profile.title) }">{{ currentTitle }}</div>
           </div>
         </div>
 

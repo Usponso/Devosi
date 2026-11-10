@@ -39,7 +39,7 @@
                 <h1 class="title-xl name">{{ player.username }}</h1>
                 <!-- Mon profil : chaque élément se modifie sur place -->
                 <div v-if="self" class="tags">
-                  <button class="title-badge editable" :class="{ empty: !playerTitle }" @click="edit('title')">
+                  <button class="title-badge editable" :class="{ empty: !playerTitle, 'title-master': masterTitle }" @click="edit('title')">
                     <Icon :name="playerTitle ? 'trophy' : 'plus'" :size="13" /> {{ playerTitle ?? 'Choisir un titre' }}
                     <Icon v-if="playerTitle" name="edit" :size="12" class="pen" />
                   </button>
@@ -50,7 +50,7 @@
                   </button>
                 </div>
                 <div v-else class="tags">
-                  <span v-if="playerTitle" class="title-badge"><Icon name="trophy" :size="13" /> {{ playerTitle }}</span>
+                  <span v-if="playerTitle" class="title-badge" :class="{ 'title-master': masterTitle }"><Icon name="trophy" :size="13" /> {{ playerTitle }}</span>
                   <span v-if="team" class="team-tag"><span class="team-swatch"></span>{{ team.name }}</span>
                 </div>
 
@@ -130,8 +130,10 @@
         <section v-if="completedAlbums.length" class="card albums-done">
           <h2 class="title-md section-title">Albums complétés</h2>
           <div class="album-badges">
-            <span v-for="a in completedAlbums" :key="a.id" class="album-badge">
+            <span v-for="a in completedAlbums" :key="a.id" class="album-badge" :class="`tier-${albumTier(a.id)}`">
               <Icon name="album" :size="14" /> {{ a.title }}
+              <span v-if="albumTier(a.id) === 2" class="tier-tag gold">Master set</span>
+              <span v-else-if="albumTier(a.id) === 1" class="tier-tag chrome">Chrome</span>
             </span>
           </div>
         </section>
@@ -211,6 +213,10 @@ function closeEditor() {
   editing.value = null
   load(username.value, true)
 }
+
+/** Palier Master set d'un album du joueur (0, 1 Chrome, 2 Or) */
+const albumTier = (id) => player.value?.album_tiers?.[id] ?? 0
+const masterTitle = computed(() => Boolean(player.value?.title) && albumTier(player.value.title) >= 2)
 
 const completedAlbums = computed(() =>
   (player.value?.albums ?? []).map((id) => col.albums.find((a) => a.id === id)).filter(Boolean),
@@ -487,4 +493,18 @@ function rarityShare(rarity) {
 
 .showcase-slot:hover { color: var(--accent); border-color: var(--accent-line); }
 .showcase-slot .small { font-size: 12px; text-align: center; padding: 0 6px; }
+.tier-tag {
+  margin-left: 4px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #1a1206;
+}
+
+.tier-tag.gold { background: linear-gradient(110deg, #c8962c, #ffe9a0 50%, #c8962c); }
+.tier-tag.chrome { background: linear-gradient(110deg, #9aa3ad, #f4f7fa 50%, #9aa3ad); }
+.album-badge.tier-2 { border-color: #e8c15a; box-shadow: 0 0 10px rgb(232 193 90 / 0.3); }
 </style>

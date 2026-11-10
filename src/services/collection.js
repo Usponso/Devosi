@@ -375,3 +375,16 @@ export async function fetchMyAlbums() {
 
 /** { reward, status } — erreurs `ALBUM_INCOMPLETE`, `ALBUM_CLAIMED` */
 export const claimAlbum = (albumId) => rpc('claim_album', { p_album: albumId })
+
+/** Paliers d'album récupérés (Master set) : Map(album_id → palier le plus haut, 1 Chrome ou 2 Or) */
+export async function fetchMyAlbumTiers() {
+  await ensureSession()
+  const { data, error } = await supabase.from('user_album_tiers').select('album_id, tier')
+  if (error) throw error
+  const tiers = new Map()
+  data.forEach((row) => tiers.set(row.album_id, Math.max(tiers.get(row.album_id) ?? 0, row.tier)))
+  return tiers
+}
+
+/** Palier 1 (Chrome) ou 2 (Or) d'un album complété : { reward, status } — erreurs `MASTER_INCOMPLETE`, `ALBUM_CLAIMED` */
+export const claimAlbumTier = (albumId, tier) => rpc('claim_album_tier', { p_album: albumId, p_tier: tier })

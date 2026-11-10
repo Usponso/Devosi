@@ -58,6 +58,8 @@ const ECONOMY_ERRORS = {
   PREDICTION_PENDING: 'Les résultats ne sont pas encore connus.',
   PREDICTION_CLAIMED: 'Gains déjà récupérés.',
   ALREADY_CLAIMED: 'Déjà récupéré aujourd’hui, reviens demain.',
+  MASTER_INCOMPLETE: 'Toutes les cartes de l’album doivent avoir cette finition.',
+  MASTER_UNAVAILABLE: 'Cet album n’a pas de finitions.',
   LINEUP_CLOSED: 'Écurie verrouillée : les qualifications ont commencé.',
   LINEUP_INVALID: 'Choisis 2 pilotes, 1 écurie et 1 Légende, toutes différentes.',
   NOT_OWNED: 'Une de ces cartes n’est plus dans ta collection.',

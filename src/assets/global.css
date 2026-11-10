@@ -432,3 +432,21 @@ img {
     font-size: max(16px, 1em) !important;
   }
 }
+
+/* Titre d'un Master set Or : badge doré qui brille (comme les finitions Or) */
+.title-master {
+  color: #1a1206 !important;
+  background: linear-gradient(110deg, #a07414, #ffe9a0 30%, #c8962c 45%, #fff3c4 60%, #a07414 80%) !important;
+  background-size: 250% 100% !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 14px rgb(232 193 90 / 0.45);
+  animation: title-master-shine 4s linear infinite;
+}
+
+@keyframes title-master-shine {
+  to { background-position: -250% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-master { animation: none; }
+}

@@ -20,6 +20,8 @@ import {
   claimAlbum,
   claimQuest,
   fetchMyAlbums,
+  fetchMyAlbumTiers,
+  claimAlbumTier,
   fetchQuests,
   redeemCode,
   rerollQuest,
@@ -116,6 +118,7 @@ export const useCollectionStore = defineStore('collection', {
     cards: [], // catalogue complet
     albums: [], // classeur : [{ id, section, title, subtitle, reward, cover, cards: [id] }]
     claimedAlbums: new Set(), // albums dont la récompense a été récupérée
+    albumTiers: new Map(), // Master set : album → palier récupéré (1 Chrome, 2 Or)
     ready: false, // collection du joueur chargée (init terminé)
     owned: new Map(), // card_id → nombre d'exemplaires
     finishes: new Map(), // card_id → finition débloquée (1 Chrome, 2 Or)
@@ -156,15 +159,37 @@ export const useCollectionStore = defineStore('collection', {
     /** Demandes d'amis reçues en attente */
     friendRequests: (state) => state.friends?.incoming.length ?? state.profile?.requests ?? 0,
     coins: (state) => state.status?.coins ?? 0,
-    /** Progression des albums : Map(id → { owned, total, complete, claimed }) */
-    albumStats: (state) =>
-      new Map(
+    /**
+     * Progression des albums : Map(id → { owned, total, complete, claimed, master }).
+     * `master` (null pour un album sans finition, comme les Vitraux) : cartes en Chrome ou
+     * mieux, cartes en Or, et palier déjà récupéré (0, 1 Chrome, 2 Or)
+     */
+    albumStats(state) {
+      const byId = this.byId
+      return new Map(
         state.albums.map((album) => {
-          const owned = album.cards.reduce((n, id) => n + (state.owned.has(id) ? 1 : 0), 0)
+          let owned = 0
+          let chrome = 0
+          let gold = 0
+          for (const id of album.cards) {
+            if (!state.owned.has(id)) continue
+            owned++
+            const f = state.finishes.get(id) ?? 0
+            if (f >= 1) chrome++
+            if (f >= 2) gold++
+          }
           const total = album.cards.length
-          return [album.id, { owned, total, complete: owned === total, claimed: state.claimedAlbums.has(album.id) }]
+          const finishable = album.cards.every((id) => !byId.get(id)?.printRun)
+          return [album.id, {
+            owned,
+            total,
+            complete: owned === total,
+            claimed: state.claimedAlbums.has(album.id),
+            master: finishable ? { chrome, gold, tier: state.albumTiers.get(album.id) ?? 0 } : null,
+          }]
         }),
-      ),
+      )
+    },
     /** Albums complets dont la récompense attend d'être récupérée */
     albumsToClaim(state) {
       return state.albums.filter((a) => {
@@ -274,7 +299,7 @@ export const useCollectionStore = defineStore('collection', {
       this.loading = true
       this.error = null
       try {
-        const [, status, mine, profile, user, claimed, serials] = await Promise.all([
+        const [, status, mine, profile, user, claimed, serials, tiers] = await Promise.all([
           this.loadCatalog(),
           fetchPackStatus(),
           fetchMyCards(),
@@ -282,8 +307,10 @@ export const useCollectionStore = defineStore('collection', {
           currentUser(),
           fetchMyAlbums(),
           fetchMySerials(),
+          fetchMyAlbumTiers(),
         ])
         this.claimedAlbums = claimed
+        this.albumTiers = tiers
         this.setStatus(status)
         this.owned = mine.owned
         this.finishes = mine.finishes
@@ -312,6 +339,7 @@ export const useCollectionStore = defineStore('collection', {
       this.obtained = new Map()
       this.serials = new Map()
       this.claimedAlbums = new Set()
+      this.albumTiers = new Map()
       this.ready = false
       this.status = null
       this.profile = null
@@ -631,6 +659,21 @@ export const useCollectionStore = defineStore('collection', {
       this.refreshStatus().catch(() => {})
       this.refreshQuests()
       return res.finish
+    },
+
+    /** Palier Chrome (1) ou Or (2) d'un album complété ; renvoie les Pièces gagnées */
+    async claimAlbumTier(albumId, tier) {
+      const res = await claimAlbumTier(albumId, tier)
+      this.setStatus(res.status)
+      const tiers = new Map(this.albumTiers)
+      tiers.set(albumId, Math.max(tiers.get(albumId) ?? 0, tier))
+      this.albumTiers = tiers
+      return res.reward
+    },
+
+    /** Titre d'album affiché en lettres d'or : son Master set Or est récupéré */
+    isMasterTitle(albumId) {
+      return (this.albumTiers.get(albumId) ?? 0) >= 2
     },
 
     /** Récupère la récompense d'un album complet ; renvoie les Pièces gagnées */

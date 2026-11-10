@@ -36,7 +36,7 @@
             />
             <div class="menu-id">
               <div class="menu-name">@{{ col.profile.username }}</div>
-              <div v-if="title" class="menu-title">{{ title }}</div>
+              <div v-if="title" class="menu-title" :class="{ master: col.isMasterTitle(col.profile.title) }">{{ title }}</div>
               <div v-if="col.packsToOpen" class="menu-packs muted">
                 <Icon name="package" :size="13" /> {{ col.packsToOpen }} pack{{ col.packsToOpen > 1 ? 's' : '' }} à ouvrir
               </div>
@@ -279,6 +279,13 @@ onUnmounted(() => {
 .menu-id { min-width: 0; }
 .menu-name { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menu-title { font-size: 12px; font-weight: 700; color: #ffe08a; }
+/* Titre d'un Master set Or : lettres d'or brillantes */
+.menu-title.master {
+  color: transparent;
+  background: linear-gradient(110deg, #c8962c, #fff3c4 50%, #c8962c);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
 .menu-packs {
   display: flex;
