@@ -67,12 +67,12 @@
     <!-- Équilibre : même règle que le serveur (aucun côté ne vaut plus du double de l'autre) -->
     <div v-if="give.length && take.length" class="balance" :class="{ bad: !balanced }">
       <div class="balance-row">
-        <span>Tu donnes <b class="mono">{{ giveValue }}</b> pts</span>
+        <span>Tu donnes <b class="mono">{{ giveValue }}</b> {{ giveValue > 1 ? 'pts' : 'pt' }}</span>
         <span class="balance-bar" aria-hidden="true">
-          <span class="side give" :style="{ width: `${(giveValue / (giveValue + takeValue)) * 100}%` }"></span>
-          <span class="side take"></span>
+          <span class="bar-give" :style="{ width: `${(giveValue / (giveValue + takeValue)) * 100}%` }"></span>
+          <span class="bar-take"></span>
         </span>
-        <span>Tu reçois <b class="mono">{{ takeValue }}</b> pts</span>
+        <span>Tu reçois <b class="mono">{{ takeValue }}</b> {{ takeValue > 1 ? 'pts' : 'pt' }}</span>
       </div>
       <p class="small">
         <template v-if="balanced">Échange équilibré.</template>
@@ -208,8 +208,8 @@ async function send() {
 .balance.bad p { color: var(--danger); }
 .balance-row { display: flex; align-items: center; gap: 12px; font-size: 14px; flex-wrap: wrap; }
 .balance-bar { flex: 1; min-width: 80px; display: flex; height: 8px; border-radius: 99px; overflow: hidden; background: var(--line); }
-.balance-bar .give { background: var(--accent); transition: width 0.3s var(--ease); }
-.balance-bar .take { flex: 1; background: #e8c15a; }
+.bar-give { flex: none; height: 100%; background: var(--accent); transition: width 0.3s var(--ease); }
+.bar-take { flex: 1; height: 100%; background: #e8c15a; }
 
 .cp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .cp-who { display: flex; align-items: center; gap: 12px; }
