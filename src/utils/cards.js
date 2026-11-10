@@ -50,6 +50,7 @@ const ECONOMY_ERRORS = {
   BADGES_FULL: '3 badges maximum sur ton profil.',
   NO_WEEKEND: 'Le week-end de course est terminé.',
   POSTER_NOT_CRAFTABLE: "Les affiches ne se trouvent que dans le pack GP de leur week-end.",
+  PLAYING_CARD_NOT_CRAFTABLE: 'Les cartes à jouer ne se trouvent que dans les packs.',
   NUMBERED_LOCKED: 'Les vitraux numérotés ne se trouvent que dans les packs, et ne se recyclent pas.',
   RACE_UNKNOWN: 'Course inconnue.',
   PREDICTION_CLOSED: 'Les pronostics sont fermés : les qualifications ont commencé.',
