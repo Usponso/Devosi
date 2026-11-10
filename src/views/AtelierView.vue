@@ -205,6 +205,8 @@ import {
   useCollectionStore,
 } from '@/stores/collectionStore'
 import { economyMessage, formatCoins } from '@/utils/cards'
+import { packSounds } from '@/utils/packSounds'
+import { usePrefsStore } from '@/stores/prefsStore'
 
 const col = useCollectionStore()
 const viewer = useCardViewer()
@@ -339,8 +341,12 @@ const tradeUps = computed(() =>
   }),
 )
 
+const prefs = usePrefsStore()
+
 const tradeUp = (rarity) =>
   run(async () => {
+    // Petit bruit de passage de vitesse, même réglage de son que l'ouverture des packs
+    if (prefs.soundOn) packSounds.shift()
     const [card] = await Promise.all([col.tradeUp(rarity), startMerge(rarity)])
     showReveal(card)
   })

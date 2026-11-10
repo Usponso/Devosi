@@ -233,7 +233,8 @@ const stats = computed(() => {
 
 /** Inclinaison 3D et position du reflet holographique */
 function onMove(e) {
-  if (!props.interactive || props.faceDown) return
+  // Carte retirée de la page pendant le mouvement (transition, rechargement) : rien à incliner
+  if (!props.interactive || props.faceDown || !root.value) return
   const r = root.value.getBoundingClientRect()
   const x = (e.clientX - r.left) / r.width
   const y = (e.clientY - r.top) / r.height

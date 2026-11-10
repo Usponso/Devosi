@@ -5,6 +5,7 @@
  *
  * - Ouverture : déchirure nette d'un papier (centaines de micro-craquements de fibres)
  * - Carte retournée : souffle d'une page qui tourne, puis marimba feutrée selon la rareté
+ * - Vitesse supérieure : le moteur monte dans les tours, puis le clac du passage de vitesse
  */
 
 let ctx = null
@@ -142,5 +143,52 @@ export const packSounds = {
     }
     // Légendaire et Mythique : une note grave tenue sous l'arpège
     if (level >= 3) tone(start, 130.8, 0.8, 0.18)
+  },
+
+  /**
+   * Vitesse supérieure (pendant la fusion des doublons, ~1 s) : régime moteur qui monte,
+   * clac de la boîte au passage du rapport, puis le moteur repart un ton plus bas
+   */
+  shift() {
+    if (!audio()) return
+    const t = ctx.currentTime + 0.02
+    const rev = 0.7
+
+    // Moteur : dent de scie filtrée dont la hauteur monte, avec une légère vibration
+    const engine = (start, from, to, duration, peak) => {
+      const osc = ctx.createOscillator()
+      osc.type = 'sawtooth'
+      osc.frequency.setValueAtTime(from, start)
+      osc.frequency.exponentialRampToValueAtTime(to, start + duration)
+      const wobble = ctx.createOscillator()
+      wobble.frequency.value = 28
+      const depth = ctx.createGain()
+      depth.gain.value = from * 0.04
+      wobble.connect(depth).connect(osc.frequency)
+      const filter = ctx.createBiquadFilter()
+      filter.type = 'lowpass'
+      filter.frequency.setValueAtTime(500, start)
+      filter.frequency.exponentialRampToValueAtTime(1800, start + duration)
+      const gain = ctx.createGain()
+      gain.gain.setValueAtTime(0.0001, start)
+      gain.gain.exponentialRampToValueAtTime(peak, start + 0.08)
+      gain.gain.setValueAtTime(peak, start + duration - 0.06)
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
+      osc.connect(filter).connect(gain).connect(master)
+      for (const o of [osc, wobble]) {
+        o.start(start)
+        o.stop(start + duration + 0.05)
+      }
+    }
+    engine(t, 90, 260, rev, 0.09)
+
+    // Passage du rapport : clic métallique et coup sourd
+    const clunk = t + rev + 0.03
+    grain(clunk, { freq: 3200, q: 2, length: 0.03, amp: 0.5 })
+    grain(clunk + 0.012, { freq: 900, q: 1.2, length: 0.06, amp: 0.45 })
+    tone(clunk, 70, 0.12, 0.3)
+
+    // Le moteur repart sur le rapport supérieur
+    engine(clunk + 0.08, 150, 210, 0.35, 0.06)
   },
 }
