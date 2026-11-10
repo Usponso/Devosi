@@ -60,7 +60,7 @@
         <p v-if="theirLastCopies.length" class="warn small">
           <Icon name="star" :size="13" /> Son dernier exemplaire : {{ theirLastCopies.map((c) => c.name).join(', ') }}. Il risque de refuser.
         </p>
-        <p class="muted small">Les éditions vainqueur ne s'échangent pas.</p>
+        <p class="muted small">Les éditions vainqueur ne s'échangent pas. 3 échanges par semaine au maximum avec un même ami.</p>
       </div>
     </div>
 

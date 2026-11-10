@@ -44,6 +44,7 @@ const ECONOMY_ERRORS = {
   TRADE_PENDING_LIMIT: 'Tu as déjà 10 propositions en attente : attends une réponse ou annules-en une.',
   TRADE_INVALID: 'Une des cartes n’est plus disponible : l’échange a été annulé.',
   TRADE_DAILY_LIMIT: 'Limite de 5 échanges par jour atteinte (pour toi ou ton ami), réessaie demain.',
+  TRADE_PAIR_LIMIT: 'Limite atteinte : 3 échanges par semaine au maximum avec un même ami.',
   TRADE_UNBALANCED: 'Échange trop déséquilibré : aucun côté ne peut valoir plus du double de l’autre.',
   TRADE_UNKNOWN: 'Cette proposition n’existe plus ou a expiré.',
   PROFILE_INCOMPLETE: 'Complète d’abord ton profil.',
