@@ -221,7 +221,13 @@ const masterTitle = computed(() => Boolean(player.value?.title) && albumTier(pla
 const completedAlbums = computed(() =>
   (player.value?.albums ?? []).map((id) => col.albums.find((a) => a.id === id)).filter(Boolean),
 )
-const showcaseCards = computed(() => (player.value?.showcase ?? []).map((id) => col.byId.get(id)).filter(Boolean))
+// Vitrine : cartes du joueur, avec le numéro de ses vitraux (0 si inconnu : « /25 », jamais le mien)
+const showcaseCards = computed(() =>
+  (player.value?.showcase ?? [])
+    .map((id) => col.byId.get(id))
+    .filter(Boolean)
+    .map((card) => (card.printRun ? { ...card, serial: player.value.serials?.[card.id] ?? 0 } : card)),
+)
 const percent = computed(() => (player.value?.total ? Math.round((player.value.owned / player.value.total) * 1000) / 10 : 0))
 
 function rarityShare(rarity) {
