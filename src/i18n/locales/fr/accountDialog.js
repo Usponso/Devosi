@@ -24,6 +24,7 @@ export default {
   renamed: 'Pseudo changé : {user}',
   errors: {
     USERNAME_TAKEN: 'Ce pseudo est déjà pris.',
+    USERNAME_OFFENSIVE: 'Ce pseudo n’est pas autorisé : choisis-en un autre.',
     USERNAME_INVALID: 'Pseudo invalide : 3 à 20 lettres, chiffres ou _.',
     email_exists: 'Cet email a déjà un compte : utilise « J’ai déjà un compte ».',
     otp_expired: 'Code invalide ou expiré.',

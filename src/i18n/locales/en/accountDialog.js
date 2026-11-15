@@ -24,6 +24,7 @@ export default {
   renamed: 'Username changed: {user}',
   errors: {
     USERNAME_TAKEN: 'This username is already taken.',
+    USERNAME_OFFENSIVE: "This username isn't allowed: pick another one.",
     USERNAME_INVALID: 'Invalid username: 3 to 20 letters, numbers or _.',
     email_exists: 'This email already has an account: use “I already have an account”.',
     otp_expired: 'Invalid or expired code.',
