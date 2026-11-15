@@ -9,6 +9,7 @@
  * Usage : node scripts/build-catalog.mjs
  * Les réponses sont mises en cache dans scripts/catalog/.cache (relancer est quasi instantané).
  */
+import { writeEnglishCatalog } from './catalog/english.mjs'
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
@@ -762,6 +763,8 @@ console.log('Albums :', albums.map((a) => `${a.id} (${a.cards.length})`).join(',
 // ---------------------------------------------------------------------------
 const catalog = { version: 1, generatedAt: new Date().toISOString().slice(0, 10), cards, albums }
 writeFileSync(`${ROOT}src/data/catalog.json`, JSON.stringify(catalog))
+// Surcouche anglaise (noms des GP, textes des Moments, albums…)
+writeEnglishCatalog(ROOT)
 
 writeSeed(ROOT, cards, albums)
 

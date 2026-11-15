@@ -60,3 +60,10 @@ const GP_NAME_FR = {
 
 /** « Monaco Grand Prix » → « GP de Monaco » (nom d'origine si inconnu) */
 export const gpNameFr = (raceName) => GP_NAME_FR[raceName.replace(/ Grand Prix$/, '')] ?? raceName
+
+/** Nom anglais court à partir de la clé Jolpica : « Monaco » → « Monaco GP » */
+const enFromKey = (key) => (key === 'Indianapolis 500' ? key : key.includes(' Grand Prix') ? key.replace(' Grand Prix', ' GP') : `${key} GP`)
+const EN_BY_FR = new Map(Object.entries(GP_NAME_FR).map(([key, fr]) => [fr, enFromKey(key)]))
+
+/** « GP de Monaco » → « Monaco GP » (nom inchangé s'il n'est pas un nom français connu) */
+export const gpNameEn = (frName) => EN_BY_FR.get(frName) ?? frName

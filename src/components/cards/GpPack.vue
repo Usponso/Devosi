@@ -23,6 +23,7 @@
 import { computed } from 'vue'
 import Icon from '@/components/Icon.vue'
 import circuits from '@/data/circuits.json'
+import { gpShort } from '@/utils/cards'
 import { useF1Store } from '@/stores/f1Store'
 
 /**
@@ -41,7 +42,7 @@ const props = defineProps({
 const store = useF1Store()
 const shape = computed(() => circuits[props.circuitId] ?? null)
 // « GP de Mexico » → « MEXICO »
-const shortName = computed(() => props.name.replace(/^GP (de |du |des |d’|d')?/, '').toUpperCase())
+const shortName = computed(() => gpShort(props.name).toUpperCase())
 // Drapeau du pays : calendrier de la saison chargé par l'app
 const flag = computed(() => {
   const race = store.races.find((r) => r.round === props.round && (!props.season || r.season === props.season))

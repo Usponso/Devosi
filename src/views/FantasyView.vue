@@ -25,7 +25,7 @@
           <div class="next-head">
             <div>
               <div class="eyebrow">{{ $t('common.round', { n: next.round }) }}</div>
-              <h2 class="title-md">{{ next.name }}</h2>
+              <h2 class="title-md">{{ gpLabel(next.name) }}</h2>
               <p class="muted small">{{ $t('fantasy.entered', next.players) }}</p>
             </div>
             <div class="lock" :class="{ closed: !next.open }">
@@ -142,7 +142,7 @@
             <ol v-else class="races">
               <li v-for="race in data.history" :key="race.round" class="race" :class="{ ready: !race.mine.claimed }">
                 <div class="race-head">
-                  <span>{{ race.name }}</span>
+                  <span>{{ gpLabel(race.name) }}</span>
                   <span class="race-points mono">{{ $t('common.pts', { n: fmt(race.mine.points) }) }}</span>
                 </div>
                 <div class="muted small">{{ $t('predictions.rank', { rank: race.mine.rank, n: race.mine.players }) }} · {{ rewardLabel(race.mine.reward) }}</div>
@@ -169,7 +169,7 @@
               <h2 class="title-md">{{ $t('fantasy.ranking') }}</h2>
               <div class="tabs-row">
                 <div v-if="lastRace" class="tabs" role="tablist">
-                  <button role="tab" :aria-selected="scope === 'race'" :class="{ on: scope === 'race' }" @click="scope = 'race'">{{ lastRace.name.replace(/^GP (de |du |des |d’|d')?/, '') }}</button>
+                  <button role="tab" :aria-selected="scope === 'race'" :class="{ on: scope === 'race' }" @click="scope = 'race'">{{ gpShort(gpLabel(lastRace.name)) }}</button>
                   <button role="tab" :aria-selected="scope === 'season'" :class="{ on: scope === 'season' }" @click="scope = 'season'">{{ $t('fantasy.season') }}</button>
                 </div>
                 <div class="tabs" role="tablist">
@@ -208,7 +208,7 @@ import F1Card from '@/components/cards/F1Card.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
 import { RARITY_LABEL, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 import { fetchFantasyLeaderboard } from '@/services/collection'
-import { economyMessage } from '@/utils/cards'
+import { economyMessage, gpLabel, gpShort } from '@/utils/cards'
 
 const { t } = useI18n()
 const SLOTS = [

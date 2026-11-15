@@ -48,11 +48,11 @@
           <!-- Pack du week-end de course -->
           <article v-if="gp" class="item card gp-item">
             <div class="item-visual">
-              <GpPack :name="gp.name" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="96" />
+              <GpPack :name="gpLabel(gp.name)" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="96" />
             </div>
             <div class="item-body">
               <span class="gp-tag"><Icon name="flag" :size="12" /> {{ $t('packs.gpWeekend', { time: countdown(gp.ends_at) }) }}</span>
-              <h2 class="title-md">{{ $t('packs.gpTitle', { name: gp.name }) }}</h2>
+              <h2 class="title-md">{{ $t('packs.gpTitle', { name: gpLabel(gp.name) }) }}</h2>
               <p class="muted small">
                 {{ $t('shop.gpText') }}
               </p>
@@ -72,11 +72,11 @@
           <!-- Prochain pack GP : annoncé avant son week-end -->
           <article v-else-if="gpNext" class="item card gp-item upcoming">
             <div class="item-visual">
-              <GpPack :name="gpNext.name" :circuit-id="gpNext.circuit" :season="gpNext.season" :round="gpNext.round" :width="96" locked />
+              <GpPack :name="gpLabel(gpNext.name)" :circuit-id="gpNext.circuit" :season="gpNext.season" :round="gpNext.round" :width="96" locked />
             </div>
             <div class="item-body">
               <span class="gp-tag"><Icon name="clock" :size="12" /> {{ $t('shop.soon') }}</span>
-              <h2 class="title-md">{{ $t('packs.gpTitle', { name: gpNext.name }) }}</h2>
+              <h2 class="title-md">{{ $t('packs.gpTitle', { name: gpLabel(gpNext.name) }) }}</h2>
               <div class="arrives">
                 <span class="muted small">{{ $t('shop.arrivesIn') }}</span>
                 <span class="mono arrives-clock">{{ countdown(gpNext.starts_at, true) }}</span>
@@ -156,7 +156,7 @@ import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import GpPack from '@/components/cards/GpPack.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
-import { economyMessage, formatCoins } from '@/utils/cards'
+import { economyMessage, formatCoins, gpLabel } from '@/utils/cards'
 
 const col = useCollectionStore()
 const { t } = useI18n()

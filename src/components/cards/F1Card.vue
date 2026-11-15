@@ -114,7 +114,7 @@ import { computed, ref } from 'vue'
 import CircuitMap from '@/components/CircuitMap.vue'
 import { RARITY_LABEL, TYPE_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { t } from '@/i18n'
-import { driverTeamName } from '@/utils/cards'
+import { driverTeamName, gpLabel, gpShort } from '@/utils/cards'
 import { getNationalityLabel } from '@/data/nationalities'
 import circuits from '@/data/circuits.json'
 import { useCardViewer } from '@/composables/useCardViewer'
@@ -197,7 +197,7 @@ const monogram = computed(() =>
 /** Édition vainqueur : « GP de Monaco » 2026 → « Monaco 2026 » */
 const editionLabel = computed(() => {
   const e = !props.locked && props.card.edition
-  return e ? `${(e.name ?? 'GP').replace(/^GP (de |du |des |d’|d')?/, '')} ${e.season}` : ''
+  return e ? `${gpShort(gpLabel(e.name ?? 'GP'))} ${e.season}` : ''
 })
 
 const yearsLabel = computed(() => {

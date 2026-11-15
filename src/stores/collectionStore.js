@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { usePrefsStore } from '@/stores/prefsStore'
 // Libellés traduits au chargement du module : changer de langue recharge la page
-import { t } from '@/i18n'
+import { locale, t } from '@/i18n'
 import {
   cancelTrade,
   fetchTrades,
@@ -103,6 +103,21 @@ export const GLASS_ODDS = 2 / 1000
 export const GLASS_PACKS = Math.round(1 / GLASS_ODDS / 10) * 10
 
 let catalogPromise = null
+
+/**
+ * Catalogue des cartes ; en anglais, la surcouche catalog.en.json remplace les textes français
+ * (noms des GP, Moments, vitraux, cartes à jouer, affiches, albums)
+ */
+async function importCatalog() {
+  const catalog = (await import('@/data/catalog.json')).default
+  if (locale() !== 'en') return catalog
+  const en = (await import('@/data/catalog.en.json')).default
+  return {
+    ...catalog,
+    cards: catalog.cards.map((c) => (en.cards[c.id] ? { ...c, ...en.cards[c.id] } : c)),
+    albums: catalog.albums.map((a) => (en.albums[a.id] ? { ...a, ...en.albums[a.id] } : a)),
+  }
+}
 
 export const useCollectionStore = defineStore('collection', {
   state: () => ({
@@ -243,7 +258,7 @@ export const useCollectionStore = defineStore('collection', {
   actions: {
     async loadCatalog() {
       if (this.cards.length) return
-      catalogPromise ??= import('@/data/catalog.json').then((m) => m.default)
+      catalogPromise ??= importCatalog()
       const [catalog, editions] = await Promise.all([catalogPromise, fetchEditionCards().catch(() => [])])
       this.albums = catalog.albums ?? []
       this.cards = [...catalog.cards, ...this.toEditionCards(editions, catalog.cards)]

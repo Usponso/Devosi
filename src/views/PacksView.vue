@@ -128,10 +128,10 @@
 
         <!-- Week-end de course : pack GP (1 offert par jour, 3 en boutique) -->
         <div v-if="gp" class="gp-block">
-          <GpPack :name="gp.name" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="76" />
+          <GpPack :name="gpLabel(gp.name)" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="76" />
           <div class="gp-info">
             <span class="gp-tag"><Icon name="flag" :size="12" /> {{ $t('packs.gpWeekend', { time: gpEndsIn }) }}</span>
-            <div class="gp-title">{{ $t('packs.gpTitle', { name: gp.name }) }}</div>
+            <div class="gp-title">{{ $t('packs.gpTitle', { name: gpLabel(gp.name) }) }}</div>
             <p class="muted small">{{ $t('packs.gpText') }}</p>
             <p v-if="gpPoster" class="small gp-poster">
               <Icon name="star" :size="13" />
@@ -152,9 +152,9 @@
         <!-- Édition vainqueur en jeu -->
         <div v-if="edition" class="edition-line" :class="{ owned: editionOwned }">
           <Icon name="star" :size="16" />
-          <span v-if="editionOwned">{{ $t('packs.editionOwned', { name: edition.name }) }}</span>
+          <span v-if="editionOwned">{{ $t('packs.editionOwned', { name: gpLabel(edition.name) }) }}</span>
           <span v-else>
-            <b>{{ $t('packs.editionTitle', { driver: editionDriver, name: edition.name }) }}</b>{{ $t('packs.editionText', { until: editionUntil }) }}
+            <b>{{ $t('packs.editionTitle', { driver: editionDriver, name: gpLabel(edition.name) }) }}</b>{{ $t('packs.editionText', { until: editionUntil }) }}
             <router-link to="/pronostics" class="link-arrow">{{ $t('packs.predictionsLink') }}</router-link>
           </span>
         </div>
@@ -299,7 +299,7 @@ import GpPack from '@/components/cards/GpPack.vue'
 import DailyPanel from '@/components/cards/DailyPanel.vue'
 import NotificationsInvite from '@/components/NotificationsInvite.vue'
 import { GLASS_PACKS, RARITIES, RARITY_LABEL, RARITY_RANK, packChance, useCollectionStore } from '@/stores/collectionStore'
-import { formatCoins } from '@/utils/cards'
+import { formatCoins, gpLabel } from '@/utils/cards'
 import { packSounds } from '@/utils/packSounds'
 import { usePrefsStore } from '@/stores/prefsStore'
 

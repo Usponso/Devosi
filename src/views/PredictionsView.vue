@@ -25,7 +25,7 @@
           <div class="next-head">
             <div class="next-title">
               <div class="eyebrow">{{ $t('common.round', { n: next.round }) }} · {{ next.open ? $t('predictions.open') : $t('predictions.closed') }}</div>
-              <h2 class="title-md">{{ next.name }}</h2>
+              <h2 class="title-md">{{ gpLabel(next.name) }}</h2>
               <p class="muted small">
                 {{ $t('predictions.when', { quali: formatDate(next.quali_at), race: formatDate(next.race_at) }) }}
               </p>
@@ -129,7 +129,7 @@
             <ul v-else class="races">
               <li v-for="race in played" :key="race.round" class="race" :class="{ ready: race.mine.points != null && !race.mine.claimed }">
                 <div class="race-head">
-                  <span class="race-name">{{ race.name }}</span>
+                  <span class="race-name">{{ gpLabel(race.name) }}</span>
                   <span class="race-points mono">{{ $t('common.pts', { n: race.mine.points }) }}</span>
                 </div>
                 <ul class="lines compact">
@@ -193,7 +193,7 @@ import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { fetchPredictionLeaderboard } from '@/services/collection'
 import { fetchDriverStandings, fetchSeasonDrivers } from '@/services/jolpica'
-import { economyMessage, formatCoins } from '@/utils/cards'
+import { economyMessage, formatCoins, gpLabel } from '@/utils/cards'
 
 const PODIUM = ['p1', 'p2', 'p3']
 

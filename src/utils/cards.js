@@ -1,5 +1,6 @@
 import { getNationalityLabel } from '@/data/nationalities'
-import { i18n, t, intlLocale } from '@/i18n'
+import { i18n, t, intlLocale, locale } from '@/i18n'
+import { gpNameEn } from '../../scripts/catalog/gp-names.mjs'
 
 /**
  * Écurie d'une carte pilote : celle où il a disputé le plus de courses (c'est elle qui
@@ -7,6 +8,12 @@ import { i18n, t, intlLocale } from '@/i18n'
  */
 export const driverTeamName = (card, byId) =>
   card?.type === 'driver' && card.teamId ? byId.get(`t-${card.teamId}`)?.name ?? null : null
+
+/** Nom d'un Grand Prix venu du serveur (en français : « GP de Monaco ») dans la langue de l'app */
+export const gpLabel = (name) => (name && locale() === 'en' ? gpNameEn(name) : name ?? '')
+
+/** Nom court d'un Grand Prix : « GP de Monaco » → « Monaco », « Monaco GP » → « Monaco » */
+export const gpShort = (name) => (name ?? '').replace(/^GP (de |du |des |d’|d')?/, '').replace(/ GP$/, '')
 
 /** 1 234 Pièces */
 export const formatCoins = (n) => (n ?? 0).toLocaleString(intlLocale())
