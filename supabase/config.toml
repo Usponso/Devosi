@@ -192,15 +192,15 @@ otp_expiry = 3600
 
 # Uncomment to customize email template
 [auth.email.template.magic_link]
-subject = "Ton code de connexion Devosi"
+subject = "Ton code de connexion Devosi · Your Devosi login code"
 content_path = "./supabase/templates/login.html"
 
 [auth.email.template.confirmation]
-subject = "Confirme ton email Devosi"
+subject = "Confirme ton email Devosi · Confirm your Devosi email"
 content_path = "./supabase/templates/confirm.html"
 
 [auth.email.template.email_change]
-subject = "Sauvegarde ta collection Devosi"
+subject = "Sauvegarde ta collection Devosi · Save your Devosi collection"
 content_path = "./supabase/templates/save.html"
 
 # [auth.email.template.invite]

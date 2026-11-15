@@ -56,6 +56,7 @@ import {
   peekPackStatus,
   saveShowcase,
   saveUsername,
+  saveLanguage,
 } from '@/services/collection'
 
 /**
@@ -328,6 +329,8 @@ export const useCollectionStore = defineStore('collection', {
         this.profile = profile
         this.email = user?.is_anonymous ? null : user?.email ?? null
         this.ready = true
+        // Langue de l'app enregistrée sur le compte (notifications et emails dans cette langue)
+        if (user && user.user_metadata?.lang !== locale()) saveLanguage(locale()).catch((err) => console.warn('[Langue]', err))
         // Profil public sans écurie : on reprend l'écurie favorite choisie dans l'app
         const favorite = usePrefsStore().favoriteTeamId
         if (this.isPlayer && !profile.team && favorite) this.setTeam(favorite).catch(() => {})

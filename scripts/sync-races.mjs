@@ -6,7 +6,7 @@
  * Usage : node scripts/sync-races.mjs [saison] > races.sql
  *         psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f races.sql
  */
-import { gpNameFr } from './catalog/gp-names.mjs'
+import { gpNameEn, gpNameFr } from './catalog/gp-names.mjs'
 
 const JOLPICA = 'https://api.jolpi.ca/ergast/f1'
 const UA = 'Devosi/1.0 (synchro des pronostics ; https://github.com/Usponso/Devosi)'
@@ -85,6 +85,8 @@ const rows = schedule.map((r) => {
     season: Number(r.season),
     round: Number(r.round),
     name: gpNameFr(r.raceName),
+    // Notifications des joueurs en anglais
+    name_en: gpNameEn(gpNameFr(r.raceName)),
     circuit_id: r.Circuit.circuitId,
     weekend_start: (firstSession.date ? weekendStart : new Date(Date.parse(raceAt) - 2 * DAY)).toISOString(),
     // Sans horaire de qualifs connu : la veille de la course

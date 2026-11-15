@@ -122,6 +122,16 @@ export async function verifyLoginCode(email, token) {
   if (error) throw toError(error)
 }
 
+/**
+ * Langue du joueur côté serveur : notifications push (profiles.lang) et emails de connexion
+ * (métadonnée `lang` du compte, lue par les modèles d'email Supabase)
+ */
+export async function saveLanguage(lang) {
+  await rpc('set_lang', { p_lang: lang })
+  const { error } = await supabase.auth.updateUser({ data: { lang } })
+  if (error) throw toError(error)
+}
+
 export async function signOut() {
   await supabase.auth.signOut()
 }

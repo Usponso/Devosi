@@ -5,6 +5,9 @@
  * Usage : node scripts/email-templates.mjs
  * Ensuite, coller chaque fichier dans le dashboard Supabase (Authentication > Emails).
  *
+ * Bilingue : le texte suit la langue du compte (métadonnée `lang`, enregistrée par l'app),
+ * français par défaut. Les objets des emails, sans condition possible, sont dans les deux langues.
+ *
  * HTML d'email : tableaux et styles en ligne (Gmail, Outlook), police Titillium Web quand
  * la messagerie la charge (Apple Mail, iPhone), Arial sinon.
  */
@@ -15,38 +18,57 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
 const TEMPLATES = {
   login: {
-    kicker: 'Code de connexion',
-    title: 'Retrouve ta collection',
-    text: "Entre ce code dans l'appli pour te connecter et retrouver tes cartes sur cet appareil. Il est valable une heure.",
+    kicker: ['Code de connexion', 'Login code'],
+    title: ['Retrouve ta collection', 'Get your collection back'],
+    text: [
+      "Entre ce code dans l'appli pour te connecter et retrouver tes cartes sur cet appareil. Il est valable une heure.",
+      'Enter this code in the app to log in and get your cards back on this device. It is valid for one hour.',
+    ],
   },
   save: {
-    kicker: 'Sauvegarde',
-    title: 'Sauvegarde ta collection',
-    text: "Entre ce code dans l'appli pour relier ta collection à ton email : tu la retrouveras sur tous tes appareils. Il est valable une heure.",
+    kicker: ['Sauvegarde', 'Save'],
+    title: ['Sauvegarde ta collection', 'Save your collection'],
+    text: [
+      "Entre ce code dans l'appli pour relier ta collection à ton email : tu la retrouveras sur tous tes appareils. Il est valable une heure.",
+      'Enter this code in the app to link your collection to your email: you will find it on all your devices. It is valid for one hour.',
+    ],
   },
   confirm: {
-    kicker: 'Confirmation',
-    title: 'Confirme ton email',
-    text: "Entre ce code dans l'appli pour confirmer ton adresse email. Il est valable une heure.",
+    kicker: ['Confirmation', 'Confirmation'],
+    title: ['Confirme ton email', 'Confirm your email'],
+    text: [
+      "Entre ce code dans l'appli pour confirmer ton adresse email. Il est valable une heure.",
+      'Enter this code in the app to confirm your email address. It is valid for one hour.',
+    ],
   },
 }
+
+/** Texte selon la langue du compte (Go template de Supabase) : [français, anglais] */
+const tr = ([fr, en]) => `{{ if and .Data.lang (eq .Data.lang "en") }}${en}{{ else }}${fr}{{ end }}`
+
+const SECURITY = [
+  "Tu n'as rien demandé ? Ignore cet email : personne ne peut accéder à ton compte sans ce code.",
+  "Didn't ask for anything? Ignore this email: nobody can access your account without this code.",
+]
+const TAGLINE = ['Classements, pronostics et cartes F1', 'F1 standings, predictions and cards']
+const PREVIEW = ['Ton code Devosi', 'Your Devosi code']
 
 const FONT = "'Titillium Web', Arial, Helvetica, sans-serif"
 const MONO = "'JetBrains Mono', Menlo, Consolas, 'Courier New', monospace"
 
 const page = ({ kicker, title, text }) => `<!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ if and .Data.lang (eq .Data.lang "en") }}en{{ else }}fr{{ end }}">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="dark" />
 <meta name="supported-color-schemes" content="dark" />
-<title>${title}</title>
+<title>${tr(title)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
 </head>
 <body style="margin:0;padding:0;background-color:#050608;">
 <!-- Aperçu affiché dans la liste des emails -->
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Ton code Devosi : {{ .Token }}</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${tr(PREVIEW)} : {{ .Token }}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#050608" style="background-color:#050608;">
   <tr>
     <td align="center" style="padding:32px 12px;">
@@ -67,9 +89,9 @@ const page = ({ kicker, title, text }) => `<!DOCTYPE html>
         <!-- Titre -->
         <tr>
           <td style="padding:28px 32px 8px;">
-            <div style="font-family:${FONT};font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E10600;">${kicker}</div>
-            <div style="font-family:${FONT};font-size:26px;font-weight:900;line-height:30px;margin:8px 0 10px;color:#FFFFFF;">${title}</div>
-            <div style="font-family:${FONT};font-size:15px;line-height:23px;color:#B4B9C2;">${text}</div>
+            <div style="font-family:${FONT};font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E10600;">${tr(kicker)}</div>
+            <div style="font-family:${FONT};font-size:26px;font-weight:900;line-height:30px;margin:8px 0 10px;color:#FFFFFF;">${tr(title)}</div>
+            <div style="font-family:${FONT};font-size:15px;line-height:23px;color:#B4B9C2;">${tr(text)}</div>
           </td>
         </tr>
         <!-- Code -->
@@ -85,13 +107,13 @@ const page = ({ kicker, title, text }) => `<!DOCTYPE html>
         <!-- Sécurité -->
         <tr>
           <td style="padding:0 32px 26px;font-family:${FONT};font-size:13px;line-height:20px;color:#7D838E;">
-            Tu n'as rien demandé ? Ignore cet email : personne ne peut accéder à ton compte sans ce code.
+            ${tr(SECURITY)}
           </td>
         </tr>
         <!-- Pied -->
         <tr>
           <td style="padding:16px 32px;border-top:1px solid #1F2229;font-family:${FONT};font-size:12px;line-height:18px;color:#5B616C;">
-            Devosi · Classements, pronostics et cartes F1 · <a href="https://devosi.app" style="color:#5B616C;text-decoration:underline;">devosi.app</a>
+            Devosi · ${tr(TAGLINE)} · <a href="https://devosi.app" style="color:#5B616C;text-decoration:underline;">devosi.app</a>
           </td>
         </tr>
       </table>
