@@ -23,8 +23,8 @@
           </span>
           <span class="muted small">
             <template v-if="g.locked"><Icon name="lock" :size="12" /> {{ $t('album.completeFirst') }}</template>
-            <template v-else-if="g.count === g.total"><span class="gold"><Icon name="coin" :size="12" /> {{ $t('album.coinsToClaim', { n: formatCoins(g.reward) }) }}</span></template>
-            <template v-else>{{ $t('album.toUpgrade', { n: g.total - g.count, coins: formatCoins(g.reward) }, g.total - g.count) }}</template>
+            <template v-else-if="g.count === g.total"><span class="gold"><Icon name="coin" :size="12" /> {{ $t('album.tierToClaim', { reward: rewardText(g) }) }}</span></template>
+            <template v-else>{{ $t('album.toUpgrade', { n: g.total - g.count, reward: rewardText(g) }, g.total - g.count) }}</template>
           </span>
         </router-link>
       </div>
@@ -104,6 +104,9 @@ const sections = computed(() => {
 
 const coverCard = (album) => col.byId.get(album.cover)
 
+/** « 2 250 Pièces + 1 pack spécial » */
+const rewardText = (g) => t('album.rewardLabel', { coins: formatCoins(g.reward), packs: t('album.specialPacks', g.packs) })
+
 // Objectif Master set : pour chaque album avec finitions et pas encore en Or, son prochain
 // palier ; les albums complétés d'abord, du plus avancé au moins avancé
 const GOALS = 4
@@ -124,7 +127,8 @@ const allGoals = computed(() =>
         // Album pas encore complété : on montre sa complétion
         count: locked ? stats.owned : tier === 2 ? m.gold : m.chrome,
         total: stats.total,
-        reward: album.reward * tier,
+        reward: col.tierReward(album.id, tier).coins,
+        packs: tier === 2 ? 3 : 1,
       }
     })
     .filter(Boolean)

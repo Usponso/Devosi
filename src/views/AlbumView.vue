@@ -45,13 +45,14 @@
             <div class="progress-num"><span class="mono big">{{ t.count }}</span><span class="muted">/ {{ stats.total }} {{ t.what }}</span></div>
             <span class="meter"><span :style="{ width: `${(t.count / stats.total) * 100}%` }"></span></span>
             <div class="tier-reward">
-              <span><Icon name="coin" :size="13" class="gold" /> {{ $t('common.coins', { n: formatCoins(t.reward) }, t.reward) }}</span>
+              <span><Icon name="coin" :size="13" class="gold" /> {{ $t('common.coins', { n: formatCoins(t.reward.coins) }, t.reward.coins) }}</span>
+              <span class="packs-tag"><Icon name="package" :size="13" /> {{ $t('album.specialPacks', t.reward.packs) }}</span>
               <span v-if="t.tier === 2" class="gold-tag">{{ $t('album.goldTitle') }}</span>
               <span v-else class="chrome-tag">{{ $t('album.chromeTitle') }}</span>
             </div>
             <p v-if="!unlocked" class="muted small tier-hint">{{ $t('album.unlockHint', { hint: t.hint }) }}</p>
             <button v-if="unlocked && !t.claimed && t.count === stats.total" class="btn claim" :disabled="busy" @click="claimTier(t.tier)">
-              <Icon name="coin" :size="16" /> {{ $t('daily.claimCoins', { n: formatCoins(t.reward) }) }}
+              <Icon name="coin" :size="16" /> {{ $t('album.claimTier', { reward: rewardText(t.reward) }) }}
             </button>
           </div>
         </div>
@@ -148,10 +149,13 @@ const tiers = computed(() => {
   const m = master.value
   if (!m) return []
   return [
-    { tier: 1, name: t('album.setChrome'), what: t('album.inChrome'), cls: 'chrome', count: m.chrome, claimed: m.tier >= 1, reward: album.value.reward, hint: t('album.hintChrome') },
-    { tier: 2, name: t('album.masterGold'), what: t('album.inGold'), cls: 'gold', count: m.gold, claimed: m.tier >= 2, reward: album.value.reward * 2, hint: t('album.hintGold') },
+    { tier: 1, name: t('album.setChrome'), what: t('album.inChrome'), cls: 'chrome', count: m.chrome, claimed: m.tier >= 1, reward: col.tierReward(album.value.id, 1), hint: t('album.hintChrome') },
+    { tier: 2, name: t('album.masterGold'), what: t('album.inGold'), cls: 'gold', count: m.gold, claimed: m.tier >= 2, reward: col.tierReward(album.value.id, 2), hint: t('album.hintGold') },
   ]
 })
+
+/** « 2 250 Pièces + 1 pack spécial » */
+const rewardText = (r) => t('album.rewardLabel', { coins: formatCoins(r.coins), packs: t('album.specialPacks', r.packs) })
 
 const FILTERS = [
   { id: 'all', label: t('album.filterAll') },
@@ -195,10 +199,10 @@ async function claimTier(tier) {
   busy.value = true
   messageError.value = false
   try {
-    const reward = await col.claimAlbumTier(album.value.id, tier)
+    const { coins, packs } = await col.claimAlbumTier(album.value.id, tier)
     message.value = tier === 2
-      ? t('album.goldDone', { n: formatCoins(reward) })
-      : t('album.chromeDone', { n: formatCoins(reward) })
+      ? t('album.goldDone', { n: formatCoins(coins), packs })
+      : t('album.chromeDone', { n: formatCoins(coins), packs })
   } catch (err) {
     messageError.value = true
     message.value = economyMessage(err)
@@ -321,6 +325,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 .tier-reward { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
 .tier-reward > span:first-child { display: inline-flex; align-items: center; gap: 5px; }
+.packs-tag { display: inline-flex; align-items: center; gap: 5px; color: var(--text-dim); }
 .gold-tag { padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 900; color: #1a1206; background: linear-gradient(110deg, #c8962c, #ffe9a0 50%, #c8962c); }
 .chrome-tag { padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 900; color: #1d2329; background: linear-gradient(110deg, #9aa3ad, #f4f7fa 50%, #9aa3ad); }
 .tier .claim { align-self: flex-start; }

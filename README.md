@@ -71,6 +71,8 @@ Guide complet (tester un pseudo, renommer un joueur) : `docs/pseudos-offensants.
 
 **Classeur** (`/collection`) : 21 albums thématiques façon Panini (champions, vainqueurs, Français, écuries, grille de la saison, Grands Prix par décennie, Monaco, Monza, Silverstone, Spa, courses mythiques, moments). Une carte peut figurer dans plusieurs albums ; un album complet rapporte une fois sa récompense en Pièces (250 à 800) et apparaît sur le profil public. Les albums sont définis dans `scripts/build-catalog.mjs` (`ALBUMS`).
 
+**Master set** : une fois un album complété, deux paliers de plus. Le **Set Chrome** (toutes ses cartes en Chrome ou mieux) rapporte des Pièces et 1 pack spécial, et rend son titre argenté ; le **Master set Or** (toutes en Or) rapporte des Pièces et 3 packs spéciaux, et passe son titre en lettres d'or. Les Pièces suivent l'effort : 15 % de la valeur de recyclage des doublons mis de côté (4 par carte en Chrome, 5 de plus en Or), arrondies à 50, avec un minimum de 2 fois (Chrome) ou 4 fois (Or) la récompense de l'album (`public._album_tier_reward`, même calcul dans `collectionStore.tierReward`). Le joueur choisit ensuite le style de son titre parmi ceux débloqués. Les albums sans finitions (Vitraux, Jeu des pilotes) n'ont pas de paliers.
+
 **Atelier** (`/atelier`), pour faire quelque chose des doublons (le dernier exemplaire d'une carte n'est jamais consommé) :
 
 - **Recycler** un doublon rapporte des Pièces : Commune 5, Rare 20, Épique 100, Légendaire 400, Mythique 2 000.

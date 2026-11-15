@@ -680,13 +680,28 @@ export const useCollectionStore = defineStore('collection', {
     },
 
     /** Palier Chrome (1) ou Or (2) d'un album complété ; renvoie les Pièces gagnées */
+    /** Récupère un palier Master set ; renvoie { coins, packs } (packs spéciaux) */
     async claimAlbumTier(albumId, tier) {
       const res = await claimAlbumTier(albumId, tier)
       this.setStatus(res.status)
       const tiers = new Map(this.albumTiers)
       tiers.set(albumId, Math.max(tiers.get(albumId) ?? 0, tier))
       this.albumTiers = tiers
-      return res.reward
+      return { coins: res.reward, packs: res.packs ?? 0 }
+    },
+
+    /**
+     * Récompense d'un palier Master set (même calcul que public._album_tier_reward) :
+     * 15 % de la valeur de recyclage des doublons mis de côté (4 par carte en Chrome, 5 de
+     * plus en Or), arrondie à 50, au moins 2 × (Chrome) ou 4 × (Or) la récompense de l'album ;
+     * plus 1 (Chrome) ou 3 (Or) packs spéciaux
+     */
+    tierReward(albumId, tier) {
+      const album = this.albums.find((a) => a.id === albumId)
+      if (!album) return { coins: 0, packs: 0 }
+      const value = album.cards.reduce((n, id) => n + (RARITY_VALUE[this.byId.get(id)?.rarity]?.recycle ?? 0), 0)
+      const coins = Math.max(album.reward * 2 * tier, Math.round((0.15 * (tier === 1 ? 4 : 5) * value) / 50) * 50)
+      return { coins, packs: tier === 1 ? 1 : 3 }
     },
 
     /** Titre d'album affiché en lettres d'or : son Master set Or est récupéré */
