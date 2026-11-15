@@ -13,12 +13,14 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   target: { type: Date, required: true },
 })
 
 const emit = defineEmits(['elapsed'])
+const { t } = useI18n()
 
 const now = ref(Date.now())
 let timer = null
@@ -38,10 +40,10 @@ const pad = (n) => String(n).padStart(2, '0')
 const units = computed(() => {
   const s = remaining.value
   return [
-    { label: 'Jours', value: pad(Math.floor(s / 86400)) },
-    { label: 'Heures', value: pad(Math.floor((s % 86400) / 3600)) },
-    { label: 'Min', value: pad(Math.floor((s % 3600) / 60)) },
-    { label: 'Sec', value: pad(s % 60) },
+    { label: t('hero.days'), value: pad(Math.floor(s / 86400)) },
+    { label: t('hero.hours'), value: pad(Math.floor((s % 86400) / 3600)) },
+    { label: t('hero.min'), value: pad(Math.floor((s % 3600) / 60)) },
+    { label: t('hero.sec'), value: pad(s % 60) },
   ]
 })
 

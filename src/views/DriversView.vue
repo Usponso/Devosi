@@ -1,8 +1,8 @@
 <template>
   <div class="page drivers">
     <header class="container page-head">
-      <div class="eyebrow">Saison {{ store.seasonYear }} · {{ store.drivers.length }} pilotes</div>
-      <h1 class="title-lg">Pilotes</h1>
+      <div class="eyebrow">{{ $t('drivers.eyebrow', { year: store.seasonYear, n: store.drivers.length }) }}</div>
+      <h1 class="title-lg">{{ $t('nav.drivers') }}</h1>
     </header>
 
     <div class="container driver-grid">
@@ -28,10 +28,10 @@
           <span>{{ d.team }}</span>
         </div>
         <div class="dc-stats">
-          <div><span class="mono">{{ d.points }}</span><small>pts</small></div>
-          <div><span class="mono">{{ d.wins }}</span><small>vic.</small></div>
-          <div><span class="mono">{{ d.podiums }}</span><small>pod.</small></div>
-          <div><span class="mono">{{ d.poles }}</span><small>poles</small></div>
+          <div><span class="mono">{{ d.points }}</span><small>{{ $t('common.ptsUnit') }}</small></div>
+          <div><span class="mono">{{ d.wins }}</span><small>{{ $t('drivers.wins') }}</small></div>
+          <div><span class="mono">{{ d.podiums }}</span><small>{{ $t('drivers.podiums') }}</small></div>
+          <div><span class="mono">{{ d.poles }}</span><small>{{ $t('drivers.poles') }}</small></div>
         </div>
         <FormStrip :items="recentForm(d.id, store.races, 5)" class="dc-form" />
       </router-link>

@@ -1,15 +1,15 @@
 <template>
   <div class="page packs">
     <header class="container page-head">
-      <div class="eyebrow">Collection · {{ col.ownedCount }} / {{ col.collectionCards.length || '…' }} cartes</div>
+      <div class="eyebrow">{{ $t('packs.eyebrow', { owned: col.ownedCount, total: col.collectionCards.length || '…' }) }}</div>
       <div class="head-row">
-        <h1 class="title-lg">Packs</h1>
+        <h1 class="title-lg">{{ $t('packs.title') }}</h1>
         <div class="head-links">
           <button
             class="btn btn-ghost sound-toggle"
             :aria-pressed="!prefs.soundOn"
-            :aria-label="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
-            :title="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
+            :aria-label="prefs.soundOn ? $t('packs.mute') : $t('packs.unmute')"
+            :title="prefs.soundOn ? $t('packs.mute') : $t('packs.unmute')"
             @click="prefs.toggleSound()"
           >
             <Icon :name="prefs.soundOn ? 'volume' : 'volume-off'" :size="16" />
@@ -23,55 +23,55 @@
       <DailyPanel v-if="col.ready && stage === 'idle' && !col.welcomeAvailable" />
 
       <p v-if="!col.configured" class="card empty">
-        La collection n'est pas encore configurée (Supabase). Renseigne <code>.env.local</code> pour l'activer.
+        {{ $t('common.notConfigured') }}
       </p>
 
       <p v-else-if="col.error && !col.status" class="card empty">
-        Impossible de charger ta collection pour le moment. <button class="link-arrow" @click="col.init()">Réessayer</button>
+        {{ $t('packs.loadError') }} <button class="link-arrow" @click="col.init()">{{ $t('common.retry') }}</button>
       </p>
 
       <!-- Bienvenue (1re visite) : pack doré à ouvrir -->
       <section v-else-if="stage === 'idle' && col.welcomeAvailable" class="welcome card">
-        <div class="eyebrow">Étape 1 / 2</div>
-        <h1 class="title-lg">Bienvenue dans ta collection</h1>
-        <p class="dim">{{ col.cards.length.toLocaleString('fr-FR') }} cartes de pilotes, écuries, Grands Prix et moments de légende depuis 1950. Ton premier pack t'attend.</p>
-        <button class="welcome-pack" :disabled="busy" aria-label="Ouvrir mon pack de bienvenue" @click="openWelcome">
+        <div class="eyebrow">{{ $t('packs.step', { n: 1 }) }}</div>
+        <h1 class="title-lg">{{ $t('packs.welcomeTitle') }}</h1>
+        <p class="dim">{{ $t('packs.welcomeText', { n: formatCoins(col.cards.length) }) }}</p>
+        <button class="welcome-pack" :disabled="busy" :aria-label="$t('packs.openWelcome')" @click="openWelcome">
           <span class="pack-brand">DEVOSI</span>
-          <span class="pack-title">BIENVENUE</span>
-          <span class="pack-sub">Pack doré</span>
+          <span class="pack-title">{{ $t('packs.welcomePack') }}</span>
+          <span class="pack-sub">{{ $t('packs.goldPack') }}</span>
         </button>
         <p class="muted small">
-          Une Épique garantie<template v-if="prefs.favoriteTeam"> et une carte {{ prefs.favoriteTeam.name }}, ton écurie</template>.
+          {{ prefs.favoriteTeam ? $t('packs.welcomeOddsTeam', { team: prefs.favoriteTeam.name }) : $t('packs.welcomeOdds') }}
         </p>
         <button class="btn" :disabled="busy" @click="openWelcome">
-          <Icon name="gift" :size="16" /> {{ busy ? 'Ouverture…' : 'Ouvrir mon pack de bienvenue' }}
+          <Icon name="gift" :size="16" /> {{ busy ? $t('packs.opening') : $t('packs.openWelcome') }}
         </button>
         <p v-if="message" class="message">{{ message }}</p>
       </section>
 
       <!-- Bienvenue, étape 2 : comment continuer -->
       <section v-else-if="stage === 'tips'" class="welcome card">
-        <div class="eyebrow">Étape 2 / 2</div>
-        <h2 class="title-lg">Pour aller plus loin</h2>
+        <div class="eyebrow">{{ $t('packs.step', { n: 2 }) }}</div>
+        <h2 class="title-lg">{{ $t('packs.tipsTitle') }}</h2>
         <ul class="tips">
           <li>
             <Icon name="package" :size="22" />
-            <span><b>Un pack toutes les 30 min</b><span class="muted">{{ available }} pack{{ available > 1 ? 's' : '' }} t'attende{{ available > 1 ? 'nt' : '' }} déjà dans ta réserve.</span></span>
+            <span><b>{{ $t('packs.tip1') }}</b><span class="muted">{{ $t('packs.tip1Text', available) }}</span></span>
           </li>
           <li>
             <Icon name="trophy" :size="22" />
-            <span><b>4 quêtes par jour</b><span class="muted">Des Pièces, des packs bonus et une série à tenir.</span></span>
+            <span><b>{{ $t('packs.tip2') }}</b><span class="muted">{{ $t('packs.tip2Text') }}</span></span>
           </li>
           <li>
             <Icon name="flag" :size="22" />
-            <span><b>Pronostique chaque Grand Prix</b><span class="muted">Trouve le vainqueur et gagne sa carte en édition limitée.</span></span>
+            <span><b>{{ $t('packs.tip3') }}</b><span class="muted">{{ $t('packs.tip3Text') }}</span></span>
           </li>
           <li>
             <Icon name="user" :size="22" />
-            <span><b>Crée ton profil</b><span class="muted">Avatar, vitrine et badges, visibles par tes amis.</span></span>
+            <span><b>{{ $t('packs.tip4') }}</b><span class="muted">{{ $t('packs.tip4Text') }}</span></span>
           </li>
         </ul>
-        <button class="btn" @click="stage = 'idle'">C'est parti <Icon name="arrow-right" :size="16" /></button>
+        <button class="btn" @click="stage = 'idle'">{{ $t('packs.go') }} <Icon name="arrow-right" :size="16" /></button>
       </section>
 
       <!-- Réserve de packs -->
@@ -80,18 +80,18 @@
           class="stack"
           :class="{ empty: !total, special: special > 0 }"
           :disabled="!total || busy"
-          aria-label="Ouvrir un pack"
+          :aria-label="$t('packs.openOne')"
           @click="openPack"
         >
           <span v-for="i in Math.min(3, Math.max(total, 1))" :key="i" class="pack" :style="{ '--i': i - 1 }">
             <span class="pack-brand">DEVOSI</span>
             <span class="pack-title">F1 PACK</span>
-            <span class="pack-sub">5 cartes</span>
+            <span class="pack-sub">{{ $t('packs.fiveCards') }}</span>
           </span>
         </button>
 
         <div class="reserve-info">
-          <div class="eyebrow">Réserve · 1 pack toutes les 30 min</div>
+          <div class="eyebrow">{{ $t('packs.reserve') }}</div>
           <div class="count-row">
             <span class="count mono">{{ available }}</span>
             <span class="muted">/ {{ max }}</span>
@@ -100,27 +100,27 @@
             </div>
           </div>
           <p class="dim timer">
-            <template v-if="available >= max">Réserve pleine : ouvre un pack pour relancer le compteur.</template>
-            <template v-else>Prochain pack dans <span class="mono">{{ countdown }}</span></template>
+            <template v-if="available >= max">{{ $t('packs.full') }}</template>
+            <template v-else>{{ $t('packs.nextIn') }} <span class="mono">{{ countdown }}</span></template>
           </p>
 
           <!-- Packs gagnés : réserve bonus sans plafond, packs spéciaux de la série -->
           <div v-if="bonus || special" class="extra-reserves">
             <span v-if="special" class="reserve-chip special">
-              <Icon name="star" :size="14" /> {{ special }} pack{{ special > 1 ? 's' : '' }} spécia{{ special > 1 ? 'ux' : 'l' }} · Épique garantie
+              <Icon name="star" :size="14" /> {{ $t('packs.special', special) }}
             </span>
             <span v-if="bonus" class="reserve-chip bonus">
-              <Icon name="gift" :size="14" /> Réserve bonus : <b class="mono">{{ bonus }}</b> pack{{ bonus > 1 ? 's' : '' }}
+              <Icon name="gift" :size="14" /> <i18n-t keypath="packs.bonus" :plural="bonus" scope="global"><template #n><b class="mono">{{ bonus }}</b></template></i18n-t>
             </span>
           </div>
 
           <div class="actions">
             <button class="btn" :disabled="!total || busy" @click="openPack">
               <Icon name="package" :size="16" />
-              {{ busy ? 'Ouverture…' : special ? 'Ouvrir le pack spécial' : total > 1 ? `Ouvrir un pack (${total})` : 'Ouvrir un pack' }}
+              {{ busy ? $t('packs.opening') : special ? $t('packs.openSpecial') : total > 1 ? $t('packs.openCount', { n: total }) : $t('packs.openOne') }}
             </button>
             <span v-if="col.status" class="muted pity">
-              Légendaire garantie dans <b>{{ col.status.pity_left }}</b> pack{{ col.status.pity_left > 1 ? 's' : '' }}
+              <i18n-t keypath="packs.pity" :plural="col.status.pity_left" scope="global"><template #n><b>{{ col.status.pity_left }}</b></template></i18n-t>
             </span>
           </div>
           <p v-if="message" class="message">{{ message }}</p>
@@ -130,21 +130,21 @@
         <div v-if="gp" class="gp-block">
           <GpPack :name="gp.name" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="76" />
           <div class="gp-info">
-            <span class="gp-tag"><Icon name="flag" :size="12" /> Week-end de course · encore {{ gpEndsIn }}</span>
-            <div class="gp-title">Pack {{ gp.name }}</div>
-            <p class="muted small">5 cartes dont 2 liées au circuit : Grands Prix disputés là-bas, pilotes et écuries qui y ont gagné.</p>
+            <span class="gp-tag"><Icon name="flag" :size="12" /> {{ $t('packs.gpWeekend', { time: gpEndsIn }) }}</span>
+            <div class="gp-title">{{ $t('packs.gpTitle', { name: gp.name }) }}</div>
+            <p class="muted small">{{ $t('packs.gpText') }}</p>
             <p v-if="gpPoster" class="small gp-poster">
               <Icon name="star" :size="13" />
-              {{ col.owned.has(gpPoster.id) ? 'Affiche du week-end obtenue !' : "Affiche d'époque du week-end : 1 chance sur 4 par pack GP, introuvable ensuite." }}
+              {{ col.owned.has(gpPoster.id) ? $t('packs.posterOwned') : $t('packs.posterOdds') }}
             </p>
           </div>
           <div class="gp-actions">
             <button class="btn" :disabled="!col.gpPacksToOpen || busy" @click="openPack(true)">
               <Icon name="package" :size="16" />
-              {{ gp.free ? 'Ouvrir le pack du jour (offert)' : gp.packs ? `Ouvrir un pack GP (${gp.packs})` : 'Pack du jour ouvert' }}
+              {{ gp.free ? $t('packs.gpFree') : gp.packs ? $t('packs.gpOpen', { n: gp.packs }) : $t('packs.gpDone') }}
             </button>
             <router-link to="/boutique" class="muted small gp-shop">
-              En boutique : {{ formatCoins(gp.price) }} Pièces
+              {{ $t('packs.inShop', { price: formatCoins(gp.price) }) }}
             </router-link>
           </div>
         </div>
@@ -152,12 +152,10 @@
         <!-- Édition vainqueur en jeu -->
         <div v-if="edition" class="edition-line" :class="{ owned: editionOwned }">
           <Icon name="star" :size="16" />
-          <span v-if="editionOwned">Édition vainqueur du {{ edition.name }} obtenue !</span>
+          <span v-if="editionOwned">{{ $t('packs.editionOwned', { name: edition.name }) }}</span>
           <span v-else>
-            <b>Carte limitée : {{ editionDriver }}, vainqueur du {{ edition.name }}</b>, avec un tampon doré « Vainqueur ».
-            À trouver dans les packs jusqu'au {{ editionUntil }} (0,5 % de chances par pack, 1,5 % dans un pack GP).
-            Au prochain GP, pronostique le bon vainqueur pour recevoir sa carte à coup sûr.
-            <router-link to="/pronostics" class="link-arrow">Pronostics →</router-link>
+            <b>{{ $t('packs.editionTitle', { driver: editionDriver, name: edition.name }) }}</b>{{ $t('packs.editionText', { until: editionUntil }) }}
+            <router-link to="/pronostics" class="link-arrow">{{ $t('packs.predictionsLink') }}</router-link>
           </span>
         </div>
 
@@ -167,7 +165,7 @@
         <!-- Rappel : profil à compléter -->
         <router-link v-if="profileLeft" to="/profil" class="profile-line">
           <Icon name="user-check" :size="16" />
-          <span>Ton profil est complété à <b>{{ profileLeft.percent }} %</b> : termine-le pour gagner {{ profileLeft.reward }} Pièces.</span>
+          <span><i18n-t keypath="packs.profileLine" scope="global"><template #pct><b>{{ profileLeft.percent }} %</b></template><template #n>{{ profileLeft.reward }}</template></i18n-t></span>
           <Icon name="chevron-right" :size="16" class="sc-arrow" />
         </router-link>
 
@@ -176,7 +174,7 @@
           <router-link to="/quetes" class="shortcut" :class="{ ready: col.questsReady }">
             <Icon name="trophy" :size="20" />
             <span class="sc-text">
-              <span class="sc-title">Quêtes du jour</span>
+              <span class="sc-title">{{ $t('quests.title') }}</span>
               <span class="muted small">{{ questsSummary }}</span>
             </span>
             <span v-if="col.questsReady" class="sc-badge mono">{{ col.questsReady }}</span>
@@ -185,19 +183,19 @@
           <router-link to="/boutique" class="shortcut">
             <Icon name="cart" :size="20" />
             <span class="sc-text">
-              <span class="sc-title">Boutique</span>
-              <span class="muted small">1 pack pour {{ formatCoins(shop.price) }} Pièces, sans limite</span>
+              <span class="sc-title">{{ $t('shop.title') }}</span>
+              <span class="muted small">{{ $t('packs.shopLine', { price: formatCoins(shop.price) }) }}</span>
             </span>
             <Icon name="chevron-right" :size="16" class="sc-arrow" />
           </router-link>
         </div>
 
         <div class="odds">
-          <div class="eyebrow">Chances par pack</div>
-          <p class="muted odds-intro">Probabilité qu'un pack de 5 cartes contienne au moins une carte de chaque rareté.</p>
+          <div class="eyebrow">{{ $t('packs.odds') }}</div>
+          <p class="muted odds-intro">{{ $t('packs.oddsIntro') }}</p>
           <table class="odds-table">
             <thead>
-              <tr><th>Rareté</th><th class="num">Par carte</th><th class="num">Par pack</th><th class="num">Soit environ</th></tr>
+              <tr><th>{{ $t('packs.rarity') }}</th><th class="num">{{ $t('packs.perCard') }}</th><th class="num">{{ $t('packs.perPack') }}</th><th class="num">{{ $t('packs.about') }}</th></tr>
             </thead>
             <tbody>
               <tr v-for="r in RARITIES" :key="r.id" :class="`r-${r.id}`">
@@ -209,8 +207,7 @@
             </tbody>
           </table>
           <p class="muted odds-glass">
-            <b>Vitraux numérotés</b> : environ 1 pack sur {{ GLASS_PACKS }} en contient un, à la place d'une carte,
-            tant qu'il en reste<template v-if="glassLeft !== null"> ({{ glassLeft }} exemplaire{{ glassLeft > 1 ? 's' : '' }} encore à distribuer)</template>.
+            <b>{{ $t('packs.glassTitle') }}</b>{{ $t('packs.glassText', { n: GLASS_PACKS }) }}<template v-if="glassLeft !== null"> {{ $t('packs.glassLeft', glassLeft) }}</template>.
           </p>
         </div>
       </section>
@@ -219,22 +216,22 @@
       <section v-else-if="stage === 'reveal'" class="opening">
         <div class="reveal-head">
           <span class="eyebrow">
-            Carte {{ index + 1 }} / {{ drawn.length }}
-            <span v-if="drawn.source === 'special'" class="source-tag special">Pack spécial</span>
-            <span v-else-if="drawn.source?.startsWith('gp')" class="source-tag gp">Pack GP</span>
-            <span v-else-if="drawn.source === 'welcome'" class="source-tag">Pack de bienvenue</span>
-            <span v-else-if="drawn.source === 'bonus'" class="source-tag">Pack bonus</span>
+            {{ $t('packs.cardOf', { n: index + 1, total: drawn.length }) }}
+            <span v-if="drawn.source === 'special'" class="source-tag special">{{ $t('packs.sourceSpecial') }}</span>
+            <span v-else-if="drawn.source?.startsWith('gp')" class="source-tag gp">{{ $t('packs.sourceGp') }}</span>
+            <span v-else-if="drawn.source === 'welcome'" class="source-tag">{{ $t('packs.sourceWelcome') }}</span>
+            <span v-else-if="drawn.source === 'bonus'" class="source-tag">{{ $t('packs.sourceBonus') }}</span>
           </span>
           <div class="reveal-actions">
             <button
               class="sound-toggle quiet"
-              :aria-label="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
-              :title="prefs.soundOn ? 'Couper le son' : 'Activer le son'"
+              :aria-label="prefs.soundOn ? $t('packs.mute') : $t('packs.unmute')"
+              :title="prefs.soundOn ? $t('packs.mute') : $t('packs.unmute')"
               @click="prefs.toggleSound()"
             >
               <Icon :name="prefs.soundOn ? 'volume' : 'volume-off'" :size="18" />
             </button>
-            <button class="link-arrow" @click="skipToSummary">Tout révéler</button>
+            <button class="link-arrow" @click="skipToSummary">{{ $t('packs.revealAll') }}</button>
           </div>
         </div>
 
@@ -248,7 +245,7 @@
         </div>
 
         <p class="hint muted">
-          {{ flipped ? (index + 1 < drawn.length ? 'Touche pour la carte suivante' : 'Touche pour voir le récapitulatif') : 'Touche la carte pour la retourner' }}
+          {{ flipped ? (index + 1 < drawn.length ? $t('packs.tapNext') : $t('packs.tapSummary')) : $t('packs.tapFlip') }}
         </p>
 
         <div class="tray">
@@ -261,25 +258,25 @@
       <!-- Récapitulatif -->
       <section v-else class="summary">
         <div class="summary-head">
-          <h2 class="title-md">{{ newCount ? `${newCount} nouvelle${newCount > 1 ? 's' : ''} carte${newCount > 1 ? 's' : ''} !` : 'Pack ouvert' }}</h2>
+          <h2 class="title-md">{{ newCount ? $t('packs.newCards', newCount) : $t('packs.opened') }}</h2>
           <div class="actions">
-            <button v-if="drawn.source === 'welcome'" class="btn" @click="stage = 'tips'">Continuer <Icon name="arrow-right" :size="16" /></button>
-            <button v-else-if="lastWasGp && col.gpPacksToOpen" class="btn" @click="openPack(true)">Ouvrir un autre pack GP ({{ col.gpPacksToOpen }})</button>
-            <button v-else-if="total" class="btn" @click="openPack()">Ouvrir un autre pack ({{ total }})</button>
-            <button v-if="drawn.source !== 'welcome'" class="btn btn-ghost" @click="stage = 'idle'">Retour aux packs</button>
+            <button v-if="drawn.source === 'welcome'" class="btn" @click="stage = 'tips'">{{ $t('packs.continue') }} <Icon name="arrow-right" :size="16" /></button>
+            <button v-else-if="lastWasGp && col.gpPacksToOpen" class="btn" @click="openPack(true)">{{ $t('packs.anotherGp', { n: col.gpPacksToOpen }) }}</button>
+            <button v-else-if="total" class="btn" @click="openPack()">{{ $t('packs.another', { n: total }) }}</button>
+            <button v-if="drawn.source !== 'welcome'" class="btn btn-ghost" @click="stage = 'idle'">{{ $t('packs.back') }}</button>
           </div>
         </div>
         <!-- Rappel : une belle carte mérite la vitrine -->
         <div v-if="highlight && !showcaseDone" class="reminder">
           <Icon name="cards" :size="18" />
           <span>
-            Tu viens d'obtenir <b>{{ highlight.name }}</b> ({{ highlight.edition ? 'édition vainqueur' : RARITY_LABEL[highlight.rarity] }}) :
-            {{ col.showcase.length < 5 ? 'ajoute-la à ta vitrine ?' : 'elle mérite ta vitrine !' }}
+            <i18n-t keypath="packs.highlight" scope="global"><template #name><b>{{ highlight.name }}</b></template><template #kind>{{ highlight.edition ? $t('packs.winnerEdition') : RARITY_LABEL[highlight.rarity] }}</template></i18n-t>
+            {{ col.showcase.length < 5 ? $t('packs.addShowcase') : $t('packs.deservesShowcase') }}
           </span>
-          <button v-if="col.showcase.length < 5" class="btn btn-ghost" :disabled="showcaseBusy" @click="addToShowcase">Ajouter</button>
-          <button v-else class="btn btn-ghost" @click="showcaseEditor = true">Remplacer une carte</button>
+          <button v-if="col.showcase.length < 5" class="btn btn-ghost" :disabled="showcaseBusy" @click="addToShowcase">{{ $t('packs.add') }}</button>
+          <button v-else class="btn btn-ghost" @click="showcaseEditor = true">{{ $t('packs.replace') }}</button>
         </div>
-        <p v-else-if="showcaseDone" class="reminder done"><Icon name="check" :size="16" /> Ajoutée à ta vitrine.</p>
+        <p v-else-if="showcaseDone" class="reminder done"><Icon name="check" :size="16" /> {{ $t('packs.added') }}</p>
 
         <div class="summary-grid">
           <F1Card v-for="(c, i) in drawn" :key="i" :card="c" :is-new="c.isNew" :zoom-list="drawn" class="summary-card" :style="{ animationDelay: `${i * 80}ms` }" />
@@ -293,6 +290,8 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { intlLocale } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import ProfileEditor from '@/components/cards/ProfileEditor.vue'
@@ -305,6 +304,7 @@ import { packSounds } from '@/utils/packSounds'
 import { usePrefsStore } from '@/stores/prefsStore'
 
 const col = useCollectionStore()
+const { t } = useI18n()
 /** Vitraux numérotés encore à distribuer (null tant que la jauge n'est pas chargée) */
 const glassLeft = computed(() => {
   if (!col.serialCounts.size) return null
@@ -369,7 +369,7 @@ const gp = computed(() => col.gpWeekend)
 const gpEndsIn = computed(() => {
   if (!gp.value) return ''
   const min = Math.max(0, Math.round((new Date(gp.value.ends_at).getTime() - (now.value + col.clockOffset)) / 60000))
-  return min >= 1440 ? `${Math.floor(min / 1440)} j ${Math.floor((min % 1440) / 60)} h` : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, '0')}`
+  return min >= 1440 ? t('packs.daysHours', { d: Math.floor(min / 1440), h: Math.floor((min % 1440) / 60) }) : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, '0')}`
 })
 /** Affiche d'époque de ce week-end, si elle existe (uniquement dans le pack GP) */
 const gpPoster = computed(() => (gp.value ? col.byId.get(`a-${gp.value.season}-${gp.value.round}`) ?? null : null))
@@ -377,19 +377,19 @@ const edition = computed(() => col.status?.edition ?? null)
 const editionOwned = computed(() =>
   col.owned.has(edition.value?.card),
 )
-const editionDriver = computed(() => col.byId.get(edition.value?.card)?.name ?? 'le vainqueur')
+const editionDriver = computed(() => col.byId.get(edition.value?.card)?.name ?? t('packs.theWinner'))
 const editionUntil = computed(() =>
-  edition.value ? new Date(edition.value.until).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) : '',
+  edition.value ? new Date(edition.value.until).toLocaleDateString(intlLocale(), { weekday: 'long', day: 'numeric', month: 'long' }) : '',
 )
 
 // Raccourcis : boutique et avancement des quêtes du jour
 const shop = computed(() => col.status?.shop ?? { price: 150, daily: 3, left: 0 })
 const questsSummary = computed(() => {
   const quests = col.quests?.quests
-  if (!quests) return '4 quêtes par jour : Pièces et packs bonus'
+  if (!quests) return t('packs.questsNone')
   const done = quests.filter((q) => q.claimed).length
-  if (col.questsReady) return `${col.questsReady} récompense${col.questsReady > 1 ? 's' : ''} à récupérer`
-  return done === 4 ? 'Toutes terminées, reviens demain' : `${done} / 4 terminées`
+  if (col.questsReady) return t('achievementsPage.ready', col.questsReady)
+  return done === 4 ? t('packs.questsAll') : t('packs.questsDone', { n: done })
 })
 
 // Compte à rebours vers le prochain pack (heure du serveur)
@@ -428,7 +428,7 @@ async function openPack(gp = false) {
     stage.value = 'reveal'
     play('rip')
   } catch (err) {
-    message.value = err.code === 'NO_PACK' ? 'Plus de pack disponible pour le moment.' : "L'ouverture a échoué, réessaie."
+    message.value = err.code === 'NO_PACK' ? t('packs.noPack') : t('packs.openFailed')
     await col.refreshStatus().catch(() => {})
   } finally {
     busy.value = false
@@ -448,7 +448,7 @@ async function openWelcome() {
     stage.value = 'reveal'
     play('rip')
   } catch {
-    message.value = "L'ouverture a échoué, réessaie."
+    message.value = t('packs.openFailed')
     await col.refreshStatus().catch(() => {})
   } finally {
     busy.value = false
@@ -472,18 +472,18 @@ function advance() {
 
 /** 0.0499 → « 5 % », 0.00099 → « 0,1 % », au-delà de 99,9 % → « > 99,9 % » */
 function formatPercent(x) {
-  if (x > 0.999) return '> 99,9 %'
+  if (x > 0.999) return `> ${(99.9).toLocaleString(intlLocale())} %`
   const pct = x * 100
   const digits = pct >= 10 ? 0 : pct >= 1 ? 1 : 2
-  return `${pct.toLocaleString('fr-FR', { maximumFractionDigits: digits })} %`
+  return `${pct.toLocaleString(intlLocale(), { maximumFractionDigits: digits })} %`
 }
 
 /** « 1 pack sur N » (ou presque tous les packs) */
 function packFrequency(rarity) {
   const p = packChance(rarity)
-  if (p > 0.9) return 'presque tous les packs'
+  if (p > 0.9) return t('packs.almostAll')
   const n = 1 / p
-  return `1 pack sur ${n.toLocaleString('fr-FR', { maximumFractionDigits: n < 10 ? 1 : 0 })}`
+  return t('packs.oneIn', { n: n.toLocaleString(intlLocale(), { maximumFractionDigits: n < 10 ? 1 : 0 }) })
 }
 
 function skipToSummary() {

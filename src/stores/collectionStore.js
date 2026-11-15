@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { usePrefsStore } from '@/stores/prefsStore'
+// Libellés traduits au chargement du module : changer de langue recharge la page
+import { t } from '@/i18n'
 import {
   cancelTrade,
   fetchTrades,
@@ -62,20 +64,20 @@ import {
  */
 // points : poids de la carte dans le score du classement (_rarity_points côté serveur)
 export const RARITIES = [
-  { id: 'common', label: 'Commune', odds: 88.94, recycle: 5, craft: 20, points: 1 },
-  { id: 'rare', label: 'Rare', odds: 9.7, recycle: 20, craft: 80, points: 3 },
-  { id: 'epic', label: 'Épique', odds: 1.02, recycle: 100, craft: 400, points: 10 },
-  { id: 'legendary', label: 'Légendaire', odds: 0.32, recycle: 400, craft: 1600, points: 25 },
-  { id: 'mythic', label: 'Mythique', odds: 0.02, recycle: 2000, craft: 8000, points: 100 },
+  { id: 'common', label: t('rarity.common'), odds: 88.94, recycle: 5, craft: 20, points: 1 },
+  { id: 'rare', label: t('rarity.rare'), odds: 9.7, recycle: 20, craft: 80, points: 3 },
+  { id: 'epic', label: t('rarity.epic'), odds: 1.02, recycle: 100, craft: 400, points: 10 },
+  { id: 'legendary', label: t('rarity.legendary'), odds: 0.32, recycle: 400, craft: 1600, points: 25 },
+  { id: 'mythic', label: t('rarity.mythic'), odds: 0.02, recycle: 2000, craft: 8000, points: 100 },
 ]
 export const CARDS_PER_PACK = 5
 /** Vitesse supérieure : doublons consommés pour une carte de la rareté supérieure */
 export const TRADE_UP_COST = 5
 /** Finitions : exemplaires nécessaires (tous consommés sauf un) et multiplicateur de points au classement */
 export const FINISHES = [
-  { id: 0, label: 'Standard', multiplier: 1 },
-  { id: 1, label: 'Chrome', copies: 5, multiplier: 2 },
-  { id: 2, label: 'Or', copies: 10, multiplier: 3 },
+  { id: 0, label: t('finish.0'), multiplier: 1 },
+  { id: 1, label: t('finish.1'), copies: 5, multiplier: 2 },
+  { id: 2, label: t('finish.2'), copies: 10, multiplier: 3 },
 ]
 export const RARITY_VALUE = Object.fromEntries(RARITIES.map((r) => [r.id, r]))
 
@@ -85,25 +87,16 @@ export const RARITY_RANK = Object.fromEntries(RARITIES.map((r, i) => [r.id, i]))
 export const RARITY_LABEL = Object.fromEntries(RARITIES.map((r) => [r.id, r.label]))
 
 export const CARD_TYPES = [
-  { id: 'driver', label: 'Pilotes' },
-  { id: 'team', label: 'Écuries' },
-  { id: 'gp', label: 'Grands Prix' },
-  { id: 'moment', label: 'Moments' },
-  { id: 'masterpiece', label: "Chefs-d'œuvre" },
-  { id: 'poster', label: 'Affiches' },
-  { id: 'stained_glass', label: 'Vitraux' },
-  { id: 'playing_card', label: 'Jeu de cartes' },
-]
-export const TYPE_LABEL = {
-  driver: 'Pilote',
-  team: 'Écurie',
-  gp: 'Grand Prix',
-  moment: 'Moment',
-  masterpiece: "Chef-d'œuvre",
-  poster: 'Affiche',
-  stained_glass: 'Vitrail',
-  playing_card: 'Carte à jouer',
-}
+  'driver',
+  'team',
+  'gp',
+  'moment',
+  'masterpiece',
+  'poster',
+  'stained_glass',
+  'playing_card',
+].map((id) => ({ id, label: t(`cardTypes.${id}`) }))
+export const TYPE_LABEL = Object.fromEntries(CARD_TYPES.map(({ id }) => [id, t(`cardType.${id}`)]))
 /** Vitraux numérotés : chances par pack (public._gp_setting('glass_odds'), en pour mille) */
 export const GLASS_ODDS = 2 / 1000
 /** « 1 pack sur N », arrondi à la dizaine */
@@ -674,6 +667,12 @@ export const useCollectionStore = defineStore('collection', {
     /** Titre d'album affiché en lettres d'or : son Master set Or est récupéré */
     isMasterTitle(albumId) {
       return (this.albumTiers.get(albumId) ?? 0) >= 2
+    },
+
+    /** Classe du badge de titre : argenté (Master set Chrome) ou doré (Master set Or) */
+    titleClass(albumId) {
+      const tier = this.albumTiers.get(albumId) ?? 0
+      return tier >= 2 ? 'title-master' : tier === 1 ? 'title-chrome' : null
     },
 
     /** Récupère la récompense d'un album complet ; renvoie les Pièces gagnées */

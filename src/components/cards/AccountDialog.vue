@@ -2,53 +2,53 @@
   <transition name="fade">
     <div v-if="open" class="backdrop" @click.self="close">
       <div class="dialog card" role="dialog" aria-modal="true" aria-labelledby="account-title">
-        <button class="close" aria-label="Fermer" @click="close"><Icon name="x" /></button>
+        <button class="close" :aria-label="$t('common.close')" @click="close"><Icon name="x" /></button>
 
         <!-- Compte relié à un email -->
         <template v-if="!col.isGuest">
-          <div class="eyebrow">Mon compte</div>
-          <h2 id="account-title" class="title-md">{{ col.profile?.username ?? 'Choisis ton pseudo' }}</h2>
+          <div class="eyebrow">{{ $t('account.account') }}</div>
+          <h2 id="account-title" class="title-md">{{ col.profile?.username ?? $t('accountDialog.pickUsername') }}</h2>
           <p class="muted small">{{ col.email }}</p>
 
           <form class="form" @submit.prevent="submitUsername">
-            <label class="label" for="username">Pseudo public</label>
+            <label class="label" for="username">{{ $t('accountDialog.username') }}</label>
             <div class="row">
-              <input id="username" v-model.trim="username" class="input" maxlength="20" placeholder="Ton pseudo" autocomplete="nickname" />
-              <button class="btn" :disabled="busy || !username || username === col.profile?.username">Enregistrer</button>
+              <input id="username" v-model.trim="username" class="input" maxlength="20" :placeholder="$t('accountDialog.usernamePlaceholder')" autocomplete="nickname" />
+              <button class="btn" :disabled="busy || !username || username === col.profile?.username">{{ $t('common.save') }}</button>
             </div>
-            <p class="hint muted">3 à 20 caractères : lettres, chiffres ou _. Il apparaît dans le classement et sur ta vitrine.</p>
+            <p class="hint muted">{{ $t('accountDialog.usernameHint') }}</p>
           </form>
 
           <div class="links">
             <router-link v-if="col.profile?.username" :to="`/joueurs/${col.profile.username}`" class="link-arrow" @click="close">
-              Mon profil public : avatar, titre, amis →
+              {{ $t('accountDialog.publicProfile') }}
             </router-link>
-            <button class="link-quiet" :disabled="busy" @click="logout">Se déconnecter</button>
+            <button class="link-quiet" :disabled="busy" @click="logout">{{ $t('account.logout') }}</button>
           </div>
         </template>
 
         <!-- Session invité : sauvegarder ou se connecter -->
         <template v-else>
-          <div class="eyebrow">Collection invité</div>
-          <h2 id="account-title" class="title-md">{{ mode === 'login' ? 'Se connecter' : 'Sauvegarde ta collection' }}</h2>
+          <div class="eyebrow">{{ $t('accountDialog.guest') }}</div>
+          <h2 id="account-title" class="title-md">{{ mode === 'login' ? $t('account.login') : $t('accountDialog.saveTitle') }}</h2>
           <p class="dim small">
-            <template v-if="mode === 'login'">Retrouve ta collection sur cet appareil avec le code reçu par email.</template>
-            <template v-else>Relie tes {{ col.ownedCount }} cartes à ton email pour les retrouver sur tous tes appareils et apparaître dans le classement. Aucun mot de passe : un code te sera envoyé.</template>
+            <template v-if="mode === 'login'">{{ $t('accountDialog.loginText') }}</template>
+            <template v-else>{{ $t('accountDialog.saveText', { n: col.ownedCount }) }}</template>
           </p>
 
           <form v-if="step === 'email'" class="form" @submit.prevent="sendCode">
-            <label class="label" for="email">Email</label>
+            <label class="label" for="email">{{ $t('accountDialog.email') }}</label>
             <div class="row">
-              <input id="email" v-model.trim="email" class="input" type="email" required placeholder="nom@exemple.fr" autocomplete="email" />
-              <button class="btn" :disabled="busy || !email">Recevoir le code</button>
+              <input id="email" v-model.trim="email" class="input" type="email" required :placeholder="$t('accountDialog.emailPlaceholder')" autocomplete="email" />
+              <button class="btn" :disabled="busy || !email">{{ $t('accountDialog.sendCode') }}</button>
             </div>
             <p v-if="mode === 'login' && col.ownedCount" class="warning small">
-              Les {{ col.ownedCount }} cartes de cette session invité ne seront pas transférées sur ton compte.
+              {{ $t('accountDialog.guestLost', { n: col.ownedCount }) }}
             </p>
           </form>
 
           <form v-else class="form" @submit.prevent="verifyCode">
-            <label class="label" for="code">Code reçu à {{ email }}</label>
+            <label class="label" for="code">{{ $t('accountDialog.codeFor', { email }) }}</label>
             <div class="row">
               <input
                 id="code"
@@ -60,13 +60,13 @@
                 placeholder="123456"
                 required
               />
-              <button class="btn" :disabled="busy || code.length !== 6">Valider</button>
+              <button class="btn" :disabled="busy || code.length !== 6">{{ $t('common.validate') }}</button>
             </div>
-            <button type="button" class="link-quiet" @click="step = 'email'">Changer d'email</button>
+            <button type="button" class="link-quiet" @click="step = 'email'">{{ $t('accountDialog.changeEmail') }}</button>
           </form>
 
           <button class="link-quiet switch" @click="switchMode">
-            {{ mode === 'login' ? 'Pas encore de compte ? Sauvegarder cette collection' : "J'ai déjà un compte" }}
+            {{ mode === 'login' ? $t('accountDialog.noAccount') : $t('accountDialog.haveAccount') }}
           </button>
         </template>
 
@@ -79,6 +79,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { linkEmail, sendLoginCode, signOut, verifyLinkCode, verifyLoginCode } from '@/services/collection'
@@ -92,6 +93,7 @@ const props = defineProps({
 const emit = defineEmits(['close', 'done'])
 
 const col = useCollectionStore()
+const { t, te } = useI18n()
 
 const mode = ref('link') // link : relier la session invité ; login : compte existant
 const step = ref('email')
@@ -115,17 +117,10 @@ watch(
   },
 )
 
-const MESSAGES = {
-  USERNAME_TAKEN: 'Ce pseudo est déjà pris.',
-  USERNAME_INVALID: 'Pseudo invalide : 3 à 20 lettres, chiffres ou _.',
-  email_exists: 'Cet email a déjà un compte : utilise « J’ai déjà un compte ».',
-  otp_expired: 'Code invalide ou expiré.',
-  otp_disabled: 'Aucun compte avec cet email : sauvegarde d’abord une collection.',
-  over_email_send_rate_limit: 'Trop de demandes, réessaie dans quelques minutes.',
-}
-
+// Messages des erreurs connues (pseudo, codes Supabase Auth) : accountDialog.errors.<code>
 function fail(err) {
-  error.value = MESSAGES[err.code] ?? err.message
+  const key = `accountDialog.errors.${err.code}`
+  error.value = err.code && te(key) ? t(key) : err.message
 }
 
 async function run(task) {
@@ -151,7 +146,7 @@ const sendCode = () =>
   run(async () => {
     await (mode.value === 'login' ? sendLoginCode(email.value) : linkEmail(email.value))
     step.value = 'code'
-    info.value = 'Code envoyé, vérifie ta boîte mail.'
+    info.value = t('accountDialog.codeSent')
   })
 
 const verifyCode = () =>
@@ -160,15 +155,15 @@ const verifyCode = () =>
     await col.reload()
     username.value = col.profile?.username ?? ''
     // Compte qui a déjà un pseudo : plus rien à faire ici
-    if (col.profile?.username) return finish(`Connecté en tant que @${col.profile.username} : ta collection est chargée.`)
-    info.value = mode.value === 'login' ? 'Connecté ! Choisis maintenant ton pseudo.' : 'Collection sauvegardée ! Choisis maintenant ton pseudo.'
+    if (col.profile?.username) return finish(t('accountDialog.loggedIn', { user: `@${col.profile.username}` }))
+    info.value = mode.value === 'login' ? t('accountDialog.loggedInPick') : t('accountDialog.savedPick')
   })
 
 const submitUsername = () =>
   run(async () => {
     const first = !col.profile?.username
     await col.setUsername(username.value)
-    finish(first ? `Bienvenue @${username.value} ! Tu apparais maintenant dans le classement.` : `Pseudo changé : @${username.value}`)
+    finish(first ? t('accountDialog.welcome', { user: `@${username.value}` }) : t('accountDialog.renamed', { user: `@${username.value}` }))
   })
 
 const logout = () =>

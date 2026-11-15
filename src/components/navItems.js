@@ -1,16 +1,17 @@
 /** Pages de la section Cartes (barre d'onglets commune, lien « Cartes » actif) */
 export const CARDS_PATHS = ['/profil', '/packs', '/quetes', '/succes', '/echanges', '/boutique', '/collection', '/atelier', '/joueurs']
 
+// `label` et `short` : clés de traduction (i18n/locales/*/nav.js)
 export const NAV_ITEMS = [
-  { to: '/', label: 'Accueil', icon: 'home', exact: true },
-  { to: '/standings', label: 'Classements', icon: 'trophy' },
-  { to: '/season', label: 'Calendrier', icon: 'calendar' },
+  { to: '/', label: 'nav.home', icon: 'home', exact: true },
+  { to: '/standings', label: 'nav.standings', icon: 'trophy' },
+  { to: '/season', label: 'nav.calendar', icon: 'calendar' },
   // Pastille : gains de pronostics à récupérer ; `short` : libellé de la barre mobile
-  { to: '/pronostics', label: 'Pronostics', short: 'Pronos', icon: 'flag', badge: 'predictions' },
-  { to: '/drivers', label: 'Pilotes', icon: 'helmet' },
-  { to: '/teams', label: 'Écuries', icon: 'shield' },
+  { to: '/pronostics', label: 'nav.predictions', short: 'nav.predictionsShort', icon: 'flag', badge: 'predictions' },
+  { to: '/drivers', label: 'nav.drivers', icon: 'helmet' },
+  { to: '/teams', label: 'nav.teams', icon: 'shield' },
   // Mis en avant dans les menus (reflet holographique, badge des packs à ouvrir)
-  { to: '/packs', label: 'Cartes', icon: 'cards', featured: true, match: CARDS_PATHS },
+  { to: '/packs', label: 'nav.cards', icon: 'cards', featured: true, match: CARDS_PATHS },
 ]
 
 /** Onglet actif pour un chemin donné */

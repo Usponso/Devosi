@@ -25,6 +25,7 @@ const props = defineProps({
 
 // Pictogrammes au trait (style Tabler, grille 24×24)
 const ICONS = {
+  globe: ['M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0', 'M3.6 9h16.8', 'M3.6 15h16.8', 'M11.5 3a17 17 0 0 0 0 18', 'M12.5 3a17 17 0 0 1 0 18'],
   home: ['M5 12H3l9-9 9 9h-2', 'M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7', 'M9 21v-6h6v6'],
   trophy: ['M8 21h8', 'M12 17v4', 'M7 4h10v5a5 5 0 0 1-10 0z', 'M17 5h2a2 2 0 0 1 0 4h-2', 'M7 5H5a2 2 0 0 0 0 4h2'],
   calendar: ['M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z', 'M16 3v4', 'M8 3v4', 'M4 11h16'],

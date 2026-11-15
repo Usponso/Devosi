@@ -1,8 +1,8 @@
 <template>
   <div class="page standings">
     <header class="container page-head">
-      <div class="eyebrow">Saison {{ store.seasonYear }} · après {{ store.completedRaces.length }} GP</div>
-      <h1 class="title-lg">Classements</h1>
+      <div class="eyebrow">{{ $t('standings.eyebrow', { year: store.seasonYear, n: store.completedRaces.length }) }}</div>
+      <h1 class="title-lg">{{ $t('nav.standings') }}</h1>
       <div class="tabs page-tabs" role="tablist">
         <button
           v-for="t in TABS"
@@ -20,13 +20,13 @@
       <!-- Tableau -->
       <section class="card table-card">
         <div class="table-head" :class="tab">
-          <span>Pos</span>
-          <span>{{ tab === 'drivers' ? 'Pilote' : 'Écurie' }}</span>
-          <span class="col-form">{{ tab === 'drivers' ? 'Forme' : 'Pilotes' }}</span>
-          <span class="col-num">Vic.</span>
-          <span class="col-num">Pod.</span>
-          <span class="col-gap">Écart</span>
-          <span class="col-pts">Pts</span>
+          <span>{{ $t('results.pos') }}</span>
+          <span>{{ tab === 'drivers' ? $t('cardType.driver') : $t('cardType.team') }}</span>
+          <span class="col-form">{{ tab === 'drivers' ? $t('standings.form') : $t('nav.drivers') }}</span>
+          <span class="col-num">{{ $t('standings.wins') }}</span>
+          <span class="col-num">{{ $t('standings.podiums') }}</span>
+          <span class="col-gap">{{ $t('results.gap') }}</span>
+          <span class="col-pts">{{ $t('standings.pts') }}</span>
         </div>
 
         <transition-group tag="ol" name="list" class="table-body">
@@ -61,7 +61,7 @@
       <!-- Évolution -->
       <section class="card chart-card">
         <div class="card-head">
-          <h2 class="title-md">Évolution des points</h2>
+          <h2 class="title-md">{{ $t('standings.chart') }}</h2>
           <div class="tabs chart-filter">
             <button
               v-for="f in FILTERS"
@@ -80,16 +80,18 @@
           :x-labels="chartLabels"
           :tooltip-title="(i) => progression.rounds[i]?.name"
           :height="chartHeight"
-          aria-label="Évolution des points manche par manche"
+          :aria-label="$t('standings.chartLabel')"
         />
-        <p v-else class="empty">Le graphe apparaît après deux Grands Prix.</p>
+        <p v-else class="empty">{{ $t('standings.chartEmpty') }}</p>
 
         <div v-if="contention && tab === 'drivers'" class="contention">
           <Icon name="trophy" :size="16" class="accent" />
-          <span v-if="contention.decided"><strong>{{ contention.contenders[0].name }}</strong> est champion du monde {{ store.seasonYear }}.</span>
+          <span v-if="contention.decided"><i18n-t keypath="standings.champion" scope="global"><template #name><strong>{{ contention.contenders[0].name }}</strong></template><template #year>{{ store.seasonYear }}</template></i18n-t></span>
           <span v-else>
-            <strong>{{ contention.contenders.length }}</strong> pilotes peuvent encore être titrés ·
-            <span class="mono">{{ contention.maxRemaining }}</span> pts en jeu
+            <i18n-t keypath="standings.contenders" scope="global">
+              <template #n><strong>{{ contention.contenders.length }}</strong></template>
+              <template #pts><span class="mono">{{ contention.maxRemaining }}</span></template>
+            </i18n-t>
           </span>
         </div>
       </section>
@@ -100,6 +102,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import Flag from '@/components/Flag.vue'
 import FormStrip from '@/components/charts/FormStrip.vue'
@@ -108,15 +111,17 @@ import { useF1Store } from '@/stores/f1Store'
 import { usePrefsStore } from '@/stores/prefsStore'
 import { pointsProgression, recentForm, titleContention } from '@/utils/stats'
 
+const { t } = useI18n()
+
 const TABS = [
-  { id: 'drivers', label: 'Pilotes' },
-  { id: 'teams', label: 'Constructeurs' },
+  { id: 'drivers', label: t('nav.drivers') },
+  { id: 'teams', label: t('home.constructors') },
 ]
 
 const FILTERS = [
-  { id: 'all', label: 'Tous' },
-  { id: 'top', label: 'Top 5' },
-  { id: 'fav', label: 'Mon écurie' },
+  { id: 'all', label: t('standings.all') },
+  { id: 'top', label: t('standings.top5') },
+  { id: 'fav', label: t('nav.myTeam') },
 ]
 
 const store = useF1Store()
@@ -172,7 +177,7 @@ const rows = computed(() => {
 })
 
 const progression = computed(() => pointsProgression(store.races, tab.value === 'drivers' ? 'driver' : 'team'))
-const chartLabels = computed(() => progression.value.rounds.map((r) => `M${r.round}`))
+const chartLabels = computed(() => progression.value.rounds.map((r) => t('common.roundShort', { n: r.round })))
 
 const chartSeries = computed(() => {
   const entities =

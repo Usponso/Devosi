@@ -1,20 +1,20 @@
 <template>
   <div class="page player">
-    <div v-if="loading" class="container empty">Chargement…</div>
+    <div v-if="loading" class="container empty">{{ $t('common.loading') }}</div>
 
     <div v-else-if="!player" class="container empty">
-      Aucun joueur public avec ce pseudo.
-      <router-link to="/joueurs" class="link-arrow">Voir tous les joueurs →</router-link>
+      {{ $t('player.notFound') }}
+      <router-link to="/joueurs" class="link-arrow">{{ $t('player.seeAll') }}</router-link>
     </div>
 
     <template v-else>
       <header class="hero" :style="teamColor ? { '--tc': teamColor } : null">
         <div class="hero-glow" aria-hidden="true"></div>
         <div class="container hero-inner">
-          <router-link v-if="!self" to="/joueurs" class="back muted">← Joueurs</router-link>
+          <router-link v-if="!self" to="/joueurs" class="back muted">{{ $t('player.back') }}</router-link>
           <div class="hero-row">
             <div class="identity">
-              <button v-if="self" class="avatar-edit" aria-label="Changer mon avatar" @click="edit('avatar')">
+              <button v-if="self" class="avatar-edit" :aria-label="$t('player.changeAvatar')" @click="edit('avatar')">
                 <PlayerAvatar
                   :card-id="player.avatar"
                   :finish="player.avatar_finish"
@@ -35,34 +35,34 @@
                 class="hero-avatar"
               />
               <div class="identity-text">
-                <div class="eyebrow">Rang {{ player.rank }} sur {{ player.players }} · membre depuis {{ formatDate(player.member_since, { month: 'long', year: 'numeric' }) }}</div>
+                <div class="eyebrow">{{ $t('player.rankSince', { rank: player.rank, players: player.players, since: formatDate(player.member_since, { month: 'long', year: 'numeric' }) }) }}</div>
                 <h1 class="title-xl name">{{ player.username }}</h1>
                 <!-- Mon profil : chaque élément se modifie sur place -->
                 <div v-if="self" class="tags">
-                  <button class="title-badge editable" :class="{ empty: !playerTitle, 'title-master': masterTitle }" @click="edit('title')">
-                    <Icon :name="playerTitle ? 'trophy' : 'plus'" :size="13" /> {{ playerTitle ?? 'Choisir un titre' }}
+                  <button class="title-badge editable" :class="[{ empty: !playerTitle }, titleClass]" @click="edit('title')">
+                    <Icon :name="playerTitle ? 'trophy' : 'plus'" :size="13" /> {{ playerTitle ?? $t('player.pickTitle') }}
                     <Icon v-if="playerTitle" name="edit" :size="12" class="pen" />
                   </button>
                   <button class="team-tag editable" :class="{ empty: !team }" @click="edit('team')">
                     <span v-if="team" class="team-swatch"></span><Icon v-else name="plus" :size="13" />
-                    {{ team?.name ?? 'Choisir une écurie' }}
+                    {{ team?.name ?? $t('player.pickTeam') }}
                     <Icon v-if="team" name="edit" :size="12" class="pen" />
                   </button>
                 </div>
                 <div v-else class="tags">
-                  <span v-if="playerTitle" class="title-badge" :class="{ 'title-master': masterTitle }"><Icon name="trophy" :size="13" /> {{ playerTitle }}</span>
+                  <span v-if="playerTitle" class="title-badge" :class="titleClass"><Icon name="trophy" :size="13" /> {{ playerTitle }}</span>
                   <span v-if="team" class="team-tag"><span class="team-swatch"></span>{{ team.name }}</span>
                 </div>
 
                 <div v-if="self" class="badges">
                   <template v-for="i in 3" :key="i">
-                    <button v-if="player.badges?.[i - 1]" class="badge-btn" :aria-label="`Changer mes badges (${player.badges[i - 1].title})`" @click="edit('badges')">
+                    <button v-if="player.badges?.[i - 1]" class="badge-btn" :aria-label="$t('player.changeBadges', { title: achievementTitle(player.badges[i - 1]) })" @click="edit('badges')">
                       <AchievementBadge :achievement="player.badges[i - 1]" :size="34" />
                     </button>
-                    <button v-else class="badge-slot" aria-label="Choisir un badge" @click="edit('badges')"><Icon name="plus" :size="14" /></button>
+                    <button v-else class="badge-slot" :aria-label="$t('player.pickBadge')" @click="edit('badges')"><Icon name="plus" :size="14" /></button>
                   </template>
-                  <span v-if="(player.badges?.length ?? 0) < 3" class="muted small">Choisis 3 badges parmi tes succès</span>
-                  <router-link to="/succes" class="link-arrow small">Mes succès →</router-link>
+                  <span v-if="(player.badges?.length ?? 0) < 3" class="muted small">{{ $t('player.badgesHint') }}</span>
+                  <router-link to="/succes" class="link-arrow small">{{ $t('player.myAchievements') }}</router-link>
                 </div>
                 <div v-else-if="player.badges?.length" class="badges">
                   <AchievementBadge v-for="b in player.badges" :key="b.id" :achievement="b" :size="34" />
@@ -71,14 +71,14 @@
                 <div v-if="!self" class="hero-actions">
                   <FriendButton v-model:status="player.friendship" :username="player.username" />
                   <router-link v-if="player.friendship === 'friends'" :to="`/echanges?avec=${player.username}`" class="btn btn-ghost">
-                    <Icon name="swap" :size="16" /> Proposer un échange
+                    <Icon name="swap" :size="16" /> {{ $t('player.proposeTrade') }}
                   </router-link>
                 </div>
               </div>
             </div>
             <div class="score">
               <div class="mono score-num" v-countup="Number(player.score)"></div>
-              <div class="eyebrow">Score de collection</div>
+              <div class="eyebrow">{{ $t('player.score') }}</div>
             </div>
           </div>
         </div>
@@ -90,9 +90,9 @@
         <!-- Vitrine -->
         <section>
           <div class="section-row">
-            <h2 class="title-md section-title">Vitrine</h2>
+            <h2 class="title-md section-title">{{ $t('profileEditor.tabs.showcase') }}</h2>
             <button v-if="self" class="btn btn-ghost" @click="edit('showcase')">
-              <Icon name="edit" :size="16" /> Modifier ma vitrine
+              <Icon name="edit" :size="16" /> {{ $t('player.editShowcase') }}
             </button>
           </div>
           <!-- Ma vitrine : emplacements libres à remplir -->
@@ -104,7 +104,7 @@
               </div>
               <button v-else class="showcase-slot" @click="edit('showcase')">
                 <Icon name="plus" :size="20" />
-                <span class="muted small">Ajouter une carte</span>
+                <span class="muted small">{{ $t('player.addCard') }}</span>
               </button>
             </template>
           </div>
@@ -116,30 +116,30 @@
               </div>
             </div>
           </div>
-          <p v-else class="muted">{{ player.username }} n'a pas encore choisi de cartes pour sa vitrine.</p>
+          <p v-else class="muted">{{ $t('player.emptyShowcase', { user: player.username }) }}</p>
         </section>
 
         <!-- Statistiques -->
         <section class="stats-grid">
-          <StatTile label="Cartes" :value="Number(player.owned)" :sub="`${percent} % de la collection`" />
-          <StatTile label="Packs ouverts" :value="Number(player.packs_opened)" />
-          <StatTile label="Rang" :value="`#${player.rank}`" :sub="`sur ${player.players} joueurs`" />
-          <StatTile label="Amis" :value="Number(player.friends ?? 0)" />
+          <StatTile :label="$t('nav.cards')" :value="Number(player.owned)" :sub="$t('player.percent', { n: percent })" />
+          <StatTile :label="$t('player.packsOpened')" :value="Number(player.packs_opened)" />
+          <StatTile :label="$t('player.rank')" :value="`#${player.rank}`" :sub="$t('player.ofPlayers', { n: player.players })" />
+          <StatTile :label="$t('account.friends')" :value="Number(player.friends ?? 0)" />
         </section>
 
         <section v-if="completedAlbums.length" class="card albums-done">
-          <h2 class="title-md section-title">Albums complétés</h2>
+          <h2 class="title-md section-title">{{ $t('player.albumsDone') }}</h2>
           <div class="album-badges">
             <span v-for="a in completedAlbums" :key="a.id" class="album-badge" :class="`tier-${albumTier(a.id)}`">
               <Icon name="album" :size="14" /> {{ a.title }}
-              <span v-if="albumTier(a.id) === 2" class="tier-tag gold">Master set</span>
-              <span v-else-if="albumTier(a.id) === 1" class="tier-tag chrome">Chrome</span>
+              <span v-if="albumTier(a.id) === 2" class="tier-tag gold">{{ $t('player.masterSet') }}</span>
+              <span v-else-if="albumTier(a.id) === 1" class="tier-tag chrome">{{ $t('finish.1') }}</span>
             </span>
           </div>
         </section>
 
         <section class="card rarities">
-          <h2 class="title-md section-title">Par rareté</h2>
+          <h2 class="title-md section-title">{{ $t('player.byRarity') }}</h2>
           <div v-for="r in RARITIES" :key="r.id" class="rarity-row" :class="`r-${r.id}`">
             <span class="r-label">{{ r.label }}</span>
             <span class="r-bar"><span :style="{ width: `${rarityShare(r.id)}%` }"></span></span>
@@ -166,6 +166,7 @@ import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import ProfileCompletion from '@/components/cards/ProfileCompletion.vue'
 import { PICKABLE_TEAMS, getTeamColor } from '@/data/teams'
 import { albumTitle } from '@/utils/cards'
+import { achievementTitle } from '@/utils/achievements'
 import { RARITIES, RARITY_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { fetchPlayer } from '@/services/collection'
 import { formatDate } from '@/utils/race'
@@ -216,7 +217,10 @@ function closeEditor() {
 
 /** Palier Master set d'un album du joueur (0, 1 Chrome, 2 Or) */
 const albumTier = (id) => player.value?.album_tiers?.[id] ?? 0
-const masterTitle = computed(() => Boolean(player.value?.title) && albumTier(player.value.title) >= 2)
+const titleClass = computed(() => {
+  const tier = player.value?.title ? albumTier(player.value.title) : 0
+  return tier >= 2 ? 'title-master' : tier === 1 ? 'title-chrome' : null
+})
 
 const completedAlbums = computed(() =>
   (player.value?.albums ?? []).map((id) => col.albums.find((a) => a.id === id)).filter(Boolean),

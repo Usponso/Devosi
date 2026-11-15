@@ -3,25 +3,26 @@
  * Les prévisions ne sont disponibles que ~16 jours à l'avance.
  */
 import { getJSON, TTL } from './http'
+import { t } from '@/i18n'
 
 const BASE_URL = 'https://api.open-meteo.com/v1/forecast'
 const FORECAST_DAYS = 16
 
-/** Codes météo WMO → libellé FR + icône Tabler */
+/** Codes météo WMO → libellé (weather.<clé>) + icône Tabler */
 const WMO = [
-  [[0], 'Ensoleillé', 'sun'],
-  [[1, 2], 'Éclaircies', 'cloud-sun'],
-  [[3], 'Couvert', 'cloud'],
-  [[45, 48], 'Brouillard', 'mist'],
-  [[51, 53, 55, 56, 57], 'Bruine', 'cloud-drizzle'],
-  [[61, 63, 65, 66, 67, 80, 81, 82], 'Pluie', 'cloud-rain'],
-  [[71, 73, 75, 77, 85, 86], 'Neige', 'snowflake'],
-  [[95, 96, 99], 'Orage', 'cloud-storm'],
+  [[0], 'sunny', 'sun'],
+  [[1, 2], 'partly', 'cloud-sun'],
+  [[3], 'overcast', 'cloud'],
+  [[45, 48], 'fog', 'mist'],
+  [[51, 53, 55, 56, 57], 'drizzle', 'cloud-drizzle'],
+  [[61, 63, 65, 66, 67, 80, 81, 82], 'rain', 'cloud-rain'],
+  [[71, 73, 75, 77, 85, 86], 'snow', 'snowflake'],
+  [[95, 96, 99], 'storm', 'cloud-storm'],
 ]
 
 function describe(code) {
   const entry = WMO.find(([codes]) => codes.includes(code))
-  return entry ? { label: entry[1], icon: entry[2] } : { label: '—', icon: 'cloud' }
+  return entry ? { label: t(`weather.${entry[1]}`), icon: entry[2] } : { label: '—', icon: 'cloud' }
 }
 
 /**

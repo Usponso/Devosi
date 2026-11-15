@@ -1,37 +1,37 @@
 <template>
   <div class="page fantasy-page">
     <header class="container page-head">
-      <nav class="subnav" aria-label="Jeux du week-end">
-        <router-link to="/pronostics" class="subnav-link">Pronostics</router-link>
+      <nav class="subnav" :aria-label="$t('predictions.subnav')">
+        <router-link to="/pronostics" class="subnav-link">{{ $t('nav.predictions') }}</router-link>
         <router-link to="/pronostics/ecurie" class="subnav-link">
-          Écurie du week-end <span v-if="col.fantasyReady" class="subnav-dot" aria-label="Récompense à récupérer"></span>
+          {{ $t('predictions.fantasy') }} <span v-if="col.fantasyReady" class="subnav-dot" :aria-label="$t('predictions.rewardReady')"></span>
         </router-link>
       </nav>
-      <div class="eyebrow">Saison {{ data?.season ?? '' }}</div>
-      <h1 class="title-lg">Écurie du week-end</h1>
-      <p class="dim">Avant chaque Grand Prix, aligne 4 cartes de ta collection. Elles marquent des points selon les vrais résultats de la course.</p>
+      <div class="eyebrow">{{ $t('home.season', { year: data?.season ?? '' }) }}</div>
+      <h1 class="title-lg">{{ $t('predictions.fantasy') }}</h1>
+      <p class="dim">{{ $t('fantasy.intro') }}</p>
     </header>
 
     <div class="container body">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
       <p v-else-if="error && !data" class="card empty">
-        Impossible de charger l'écurie. <button class="link-arrow" @click="load">Réessayer</button>
+        {{ $t('fantasy.loadError') }} <button class="link-arrow" @click="load">{{ $t('common.retry') }}</button>
       </p>
-      <p v-else-if="!data" class="card empty muted">Chargement…</p>
+      <p v-else-if="!data" class="card empty muted">{{ $t('common.loading') }}</p>
 
       <template v-else>
         <!-- Prochaine course : composition -->
         <section v-if="next" class="card next">
           <div class="next-head">
             <div>
-              <div class="eyebrow">Manche {{ next.round }}</div>
+              <div class="eyebrow">{{ $t('common.round', { n: next.round }) }}</div>
               <h2 class="title-md">{{ next.name }}</h2>
-              <p class="muted small">{{ next.players }} écurie{{ next.players > 1 ? 's' : '' }} engagée{{ next.players > 1 ? 's' : '' }}</p>
+              <p class="muted small">{{ $t('fantasy.entered', next.players) }}</p>
             </div>
             <div class="lock" :class="{ closed: !next.open }">
               <Icon :name="next.open ? 'clock' : 'lock'" :size="16" />
-              <span v-if="next.open">Verrouillage dans <b class="mono">{{ closesIn }}</b></span>
-              <span v-else>Verrouillée · résultats après la course</span>
+              <span v-if="next.open"><i18n-t keypath="fantasy.locksIn" scope="global"><template #time><b class="mono">{{ closesIn }}</b></template></i18n-t></span>
+              <span v-else>{{ $t('fantasy.locked') }}</span>
             </div>
           </div>
 
@@ -39,12 +39,12 @@
             <div v-for="slot in SLOTS" :key="slot.key" class="slot" :class="{ active: picking === slot.key }">
               <div class="slot-label">
                 <span>{{ slot.label }}</span>
-                <span v-if="slot.captain && form.captain === slot.captain" class="captain-tag">Capitaine ×2</span>
+                <span v-if="slot.captain && form.captain === slot.captain" class="captain-tag">{{ $t('fantasy.captainX2') }}</span>
               </div>
               <button
                 class="slot-body"
                 :disabled="!next.open"
-                :aria-label="form[slot.key] ? `Changer : ${col.byId.get(form[slot.key])?.name}` : `Choisir : ${slot.label}`"
+                :aria-label="form[slot.key] ? $t('fantasy.change', { name: col.byId.get(form[slot.key])?.name }) : $t('fantasy.choose', { slot: slot.label })"
                 @click="togglePicker(slot.key)"
               >
                 <F1Card
@@ -55,7 +55,7 @@
                   :zoomable="false"
                 />
                 <span v-else class="slot-empty"><Icon name="plus" :size="22" />{{ slot.hint }}</span>
-                <span v-if="form[slot.key] && !col.owned.has(form[slot.key])" class="slot-warn">Plus dans ta collection</span>
+                <span v-if="form[slot.key] && !col.owned.has(form[slot.key])" class="slot-warn">{{ $t('fantasy.notOwned') }}</span>
               </button>
               <button
                 v-if="slot.captain"
@@ -64,7 +64,7 @@
                 :disabled="!next.open"
                 @click="form.captain = slot.captain"
               >
-                <Icon name="star" :size="13" /> {{ form.captain === slot.captain ? 'Capitaine' : 'Nommer capitaine' }}
+                <Icon name="star" :size="13" /> {{ form.captain === slot.captain ? $t('fantasy.captain') : $t('fantasy.makeCaptain') }}
               </button>
               <p v-else class="slot-note muted">{{ slot.note }}</p>
             </div>
@@ -75,11 +75,11 @@
             <div v-if="picking && next.open" ref="pickerEl" class="picker">
               <div class="picker-head">
                 <b>{{ SLOTS.find((s) => s.key === picking).pickTitle }}</b>
-                <input v-model="query" class="search" type="search" placeholder="Rechercher…" aria-label="Rechercher une carte" />
-                <button class="link-arrow" @click="picking = null">Fermer</button>
+                <input v-model="query" class="search" type="search" :placeholder="$t('fantasy.searchPlaceholder')" :aria-label="$t('common.searchCard')" />
+                <button class="link-arrow" @click="picking = null">{{ $t('common.close') }}</button>
               </div>
               <p v-if="!choices.length" class="muted small">
-                {{ query ? 'Aucune carte ne correspond.' : picking === 'team' ? 'Aucune écurie de la grille actuelle dans ta collection.' : 'Aucune carte disponible pour cet emplacement.' }}
+                {{ query ? $t('atelier.noMatch') : picking === 'team' ? $t('fantasy.noTeam') : $t('fantasy.noCard') }}
               </p>
               <div v-else class="picker-grid">
                 <button v-for="c in choices.slice(0, PICK_LIMIT)" :key="c.id" class="pick" :class="{ sel: form[picking] === c.id }" @click="choose(c.id)">
@@ -91,43 +91,43 @@
                   </span>
                 </button>
               </div>
-              <p v-if="choices.length > PICK_LIMIT" class="muted small">… et {{ choices.length - PICK_LIMIT }} autres : affine la recherche.</p>
+              <p v-if="choices.length > PICK_LIMIT" class="muted small">{{ $t('atelier.more', { n: choices.length - PICK_LIMIT }) }}</p>
             </div>
           </transition>
 
           <div v-if="next.open" class="actions">
             <p class="muted small">
-              <template v-if="next.mine">Écurie enregistrée, modifiable jusqu'au verrouillage.</template>
-              <template v-else>Seuls les pilotes et écuries de la grille actuelle marquent des points de course.</template>
+              <template v-if="next.mine">{{ $t('fantasy.saved') }}</template>
+              <template v-else>{{ $t('fantasy.gridOnly') }}</template>
             </p>
             <div class="actions-btns">
-              <button v-if="previous && !next.mine" class="btn btn-ghost" :disabled="saving" @click="reusePrevious">Reprendre l'écurie précédente</button>
+              <button v-if="previous && !next.mine" class="btn btn-ghost" :disabled="saving" @click="reusePrevious">{{ $t('fantasy.reuse') }}</button>
               <button class="btn" :disabled="!complete || !dirty || saving" @click="save">
-                {{ next.mine ? 'Mettre à jour' : 'Valider mon écurie' }}
+                {{ next.mine ? $t('fantasy.update') : $t('fantasy.submit') }}
               </button>
             </div>
           </div>
           <p v-if="message" class="small" :class="messageError ? 'error' : 'success'">{{ message }}</p>
         </section>
-        <section v-else class="card empty muted">La saison est terminée : l'Écurie du week-end revient avec la prochaine saison.</section>
+        <section v-else class="card empty muted">{{ $t('fantasy.seasonOver') }}</section>
 
         <!-- Barème -->
         <section class="card rules">
-          <h2 class="title-md">Barème</h2>
+          <h2 class="title-md">{{ $t('fantasy.scale') }}</h2>
           <div class="rules-grid">
-            <div class="rule"><b>Pilotes</b>Points de la course (25, 18, 15…), <b class="hl">+5</b> pour la pole, <b class="hl">+1</b> par place gagnée (10 max). Le capitaine compte <b class="hl">double</b>.</div>
-            <div class="rule"><b>Écurie</b>La moitié des points de course de ses pilotes, <b class="hl">+5</b> si les deux sont dans les points.</div>
-            <div class="rule"><b>Légende</b>N'importe quelle autre carte : <b class="hl">3 · 5 · 8 · 12 · 20</b> points de Commune à Mythique, <b class="hl">+5</b> pour un vitrail numéroté.</div>
-            <div class="rule"><b>Finitions</b>Une carte Chrome rapporte <b class="hl">×1,25</b>, une carte Or <b class="hl">×1,5</b>. Une carte qui a quitté ta collection avant la course ne marque rien.</div>
+            <div class="rule"><b>{{ $t('nav.drivers') }}</b>{{ $t('fantasy.ruleDrivers') }}</div>
+            <div class="rule"><b>{{ $t('cardType.team') }}</b>{{ $t('fantasy.ruleTeam') }}</div>
+            <div class="rule"><b>{{ $t('fantasy.legend') }}</b>{{ $t('fantasy.ruleLegend') }}</div>
+            <div class="rule"><b>{{ $t('fantasy.finishes') }}</b>{{ $t('fantasy.ruleFinishes') }}</div>
           </div>
-          <p class="muted small rewards"><Icon name="gift" :size="14" /> Par Grand Prix : 50 Pièces, 1 pack pour le top 25 %, 2 packs pour le top 5 %, 3 packs pour le premier.</p>
+          <p class="muted small rewards"><Icon name="gift" :size="14" /> {{ $t('fantasy.rewards') }}</p>
         </section>
 
         <!-- Récompense récupérée -->
         <transition name="pop">
           <section v-if="claimed" class="card claimed">
             <Icon name="gift" :size="22" class="coin" />
-            <div class="title-md">+{{ claimed.coins }} Pièces<template v-if="claimed.packs"> et +{{ claimed.packs }} pack{{ claimed.packs > 1 ? 's' : '' }} bonus</template></div>
+            <div class="title-md">+{{ $t('common.coins', claimed.coins) }}<template v-if="claimed.packs"> {{ $t('fantasy.andPacks', claimed.packs) }}</template></div>
           </section>
         </transition>
 
@@ -135,17 +135,17 @@
           <!-- Mes résultats -->
           <section class="card history">
             <div class="section-head">
-              <h2 class="title-md">Mes résultats {{ data.season }}</h2>
-              <span class="total"><b class="mono">{{ fmt(data.total) }}</b> pts<template v-if="data.rank"> · {{ data.rank }}<sup>e</sup> / {{ data.players }}</template></span>
+              <h2 class="title-md">{{ $t('predictions.myResults', { year: data.season }) }}</h2>
+              <span class="total"><b class="mono">{{ fmt(data.total) }}</b> {{ $t('common.ptsUnit') }}<template v-if="data.rank"> · {{ $t('predictions.rank', { rank: data.rank, n: data.players }) }}</template></span>
             </div>
-            <p v-if="!data.history.length" class="muted small">Ton écurie sera notée après la course, dès que les résultats sont connus.</p>
+            <p v-if="!data.history.length" class="muted small">{{ $t('fantasy.noneYet') }}</p>
             <ol v-else class="races">
               <li v-for="race in data.history" :key="race.round" class="race" :class="{ ready: !race.mine.claimed }">
                 <div class="race-head">
                   <span>{{ race.name }}</span>
-                  <span class="race-points mono">{{ fmt(race.mine.points) }} pts</span>
+                  <span class="race-points mono">{{ $t('common.pts', { n: fmt(race.mine.points) }) }}</span>
                 </div>
-                <div class="muted small">{{ race.mine.rank }}<sup>e</sup> / {{ race.mine.players }} · {{ rewardLabel(race.mine.reward) }}</div>
+                <div class="muted small">{{ $t('predictions.rank', { rank: race.mine.rank, n: race.mine.players }) }} · {{ rewardLabel(race.mine.reward) }}</div>
                 <ul class="lines">
                   <li v-for="line in race.mine.breakdown" :key="line.card" class="line">
                     <span class="line-name">
@@ -157,7 +157,7 @@
                   </li>
                 </ul>
                 <button v-if="!race.mine.claimed" class="btn claim" :disabled="busy" @click="claim(race)">
-                  <Icon name="gift" :size="15" /> Récupérer · {{ rewardLabel(race.mine.reward) }}
+                  <Icon name="gift" :size="15" /> {{ $t('common.claim') }} · {{ rewardLabel(race.mine.reward) }}
                 </button>
               </li>
             </ol>
@@ -166,21 +166,21 @@
           <!-- Classement -->
           <section class="card ranking">
             <div class="section-head">
-              <h2 class="title-md">Classement</h2>
+              <h2 class="title-md">{{ $t('fantasy.ranking') }}</h2>
               <div class="tabs-row">
                 <div v-if="lastRace" class="tabs" role="tablist">
                   <button role="tab" :aria-selected="scope === 'race'" :class="{ on: scope === 'race' }" @click="scope = 'race'">{{ lastRace.name.replace(/^GP (de |du |des |d’|d')?/, '') }}</button>
-                  <button role="tab" :aria-selected="scope === 'season'" :class="{ on: scope === 'season' }" @click="scope = 'season'">Saison</button>
+                  <button role="tab" :aria-selected="scope === 'season'" :class="{ on: scope === 'season' }" @click="scope = 'season'">{{ $t('fantasy.season') }}</button>
                 </div>
                 <div class="tabs" role="tablist">
-                  <button role="tab" :aria-selected="!friendsTab" :class="{ on: !friendsTab }" @click="friendsTab = false">Général</button>
-                  <button role="tab" :aria-selected="friendsTab" :class="{ on: friendsTab }" @click="friendsTab = true">Amis</button>
+                  <button role="tab" :aria-selected="!friendsTab" :class="{ on: !friendsTab }" @click="friendsTab = false">{{ $t('predictions.general') }}</button>
+                  <button role="tab" :aria-selected="friendsTab" :class="{ on: friendsTab }" @click="friendsTab = true">{{ $t('account.friends') }}</button>
                 </div>
               </div>
             </div>
-            <p v-if="!col.isPlayer" class="muted small hint">Sauvegarde ta collection et choisis un pseudo pour apparaître au classement.</p>
-            <p v-if="rankingLoading && !ranking.length" class="muted small">Chargement…</p>
-            <p v-else-if="!ranking.length" class="muted small">Aucune écurie notée pour l'instant.</p>
+            <p v-if="!col.isPlayer" class="muted small hint">{{ $t('predictions.needProfile') }}</p>
+            <p v-if="rankingLoading && !ranking.length" class="muted small">{{ $t('common.loading') }}</p>
+            <p v-else-if="!ranking.length" class="muted small">{{ $t('fantasy.noRanking') }}</p>
             <ol v-else class="rows">
               <li v-for="p in ranking" :key="p.username" class="row" :class="{ me: p.is_me }">
                 <span class="rank mono">{{ p.rank }}</span>
@@ -201,6 +201,8 @@
 
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { intlLocale } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
@@ -208,13 +210,14 @@ import { RARITY_LABEL, RARITY_RANK, useCollectionStore } from '@/stores/collecti
 import { fetchFantasyLeaderboard } from '@/services/collection'
 import { economyMessage } from '@/utils/cards'
 
+const { t } = useI18n()
 const SLOTS = [
-  { key: 'driver1', label: 'Pilote', captain: 1, hint: 'Choisis un pilote', pickTitle: 'Pilote de la grille' },
-  { key: 'driver2', label: 'Pilote', captain: 2, hint: 'Choisis un pilote', pickTitle: 'Pilote de la grille' },
-  { key: 'team', label: 'Écurie', hint: 'Choisis une écurie', note: 'La moitié des points de ses pilotes.', pickTitle: 'Écurie de la grille' },
-  { key: 'legend', label: 'Légende', hint: 'Choisis une carte', note: 'Points fixes selon la rareté.', pickTitle: 'N’importe quelle carte' },
+  { key: 'driver1', label: t('cardType.driver'), captain: 1, hint: t('fantasy.pickDriver'), pickTitle: t('fantasy.gridDriver') },
+  { key: 'driver2', label: t('cardType.driver'), captain: 2, hint: t('fantasy.pickDriver'), pickTitle: t('fantasy.gridDriver') },
+  { key: 'team', label: t('cardType.team'), hint: t('fantasy.pickTeam'), note: t('fantasy.teamNote'), pickTitle: t('fantasy.gridTeam') },
+  { key: 'legend', label: t('fantasy.legend'), hint: t('fantasy.pickCard'), note: t('fantasy.legendNote'), pickTitle: t('fantasy.anyCard') },
 ]
-const FINISH_LABEL = { 1: 'Chrome ×1,25', 2: 'Or ×1,5' }
+const FINISH_LABEL = { 1: t('fantasy.chromeMult'), 2: t('fantasy.goldMult') }
 const LEGEND_POINTS = { common: 3, rare: 5, epic: 8, legendary: 12, mythic: 20 }
 const PICK_LIMIT = 48
 
@@ -225,26 +228,26 @@ const lastRace = computed(() => data.value?.history?.[0] ?? null)
 const previous = computed(() => lastRace.value?.mine ?? null)
 const error = ref(false)
 
-const fmt = (n) => Number(n ?? 0).toLocaleString('fr-FR', { maximumFractionDigits: 1 })
+const fmt = (n) => Number(n ?? 0).toLocaleString(intlLocale(), { maximumFractionDigits: 1 })
 const legendBase = (card) => LEGEND_POINTS[card.rarity] + (card.printRun ? 5 : 0)
-const rewardLabel = (r) => (r ? `${r.coins} Pièces${r.packs ? ` + ${r.packs} pack${r.packs > 1 ? 's' : ''}` : ''}` : '')
+const rewardLabel = (r) => (r ? `${t('common.coins', r.coins)}${r.packs ? ` + ${t('fantasy.packs', r.packs)}` : ''}` : '')
 
 /** Détail d'une ligne de score (même barème que public._fantasy_score) */
 function lineDetail(line) {
-  const MULT = { 1.25: '× 1,25 Chrome', 1.5: '× 1,5 Or' }
-  const mult = Number(line.mult) === 0 ? 'carte plus possédée' : MULT[Number(line.mult)] ?? ''
+  const MULT = { 1.25: t('fantasy.multChrome'), 1.5: t('fantasy.multGold') }
+  const mult = Number(line.mult) === 0 ? t('fantasy.noLonger') : MULT[Number(line.mult)] ?? ''
   let base = ''
   if (line.slot === 'driver') {
     const d = line.detail
-    const parts = [d.pos ? `P${d.pos} (${fmt(d.race)})` : 'pas classé']
-    if (d.pole) parts.push('pole (5)')
-    if (d.gained) parts.push(`${d.gained} place${d.gained > 1 ? 's' : ''} gagnée${d.gained > 1 ? 's' : ''}`)
+    const parts = [d.pos ? `P${d.pos} (${fmt(d.race)})` : t('fantasy.unclassified')]
+    if (d.pole) parts.push(t('fantasy.pole'))
+    if (d.gained) parts.push(t('fantasy.gained', d.gained))
     base = parts.join(' + ')
-    if (line.captain) base += ' × 2 capitaine'
+    if (line.captain) base += t('fantasy.captainBonus')
   } else if (line.slot === 'team') {
-    base = `${fmt(line.base)} pts${line.detail.scorers >= 2 ? ', deux pilotes dans les points' : ''}`
+    base = `${t('common.pts', { n: fmt(line.base) })}${line.detail.scorers >= 2 ? t('fantasy.bothScored') : ''}`
   } else {
-    base = `${RARITY_LABEL[line.detail.rarity]}${line.detail.numbered ? ' numérotée' : ''} (${fmt(line.base)})`
+    base = `${RARITY_LABEL[line.detail.rarity]}${line.detail.numbered ? t('fantasy.numbered') : ''} (${fmt(line.base)})`
   }
   return [base, mult].filter(Boolean).join(' ')
 }
@@ -323,7 +326,7 @@ async function save() {
   messageError.value = false
   try {
     await col.saveLineup(next.value.season, next.value.round, { ...form })
-    message.value = 'Écurie enregistrée !'
+    message.value = t('fantasy.savedMsg')
   } catch (err) {
     messageError.value = true
     message.value = economyMessage(err)
@@ -340,7 +343,7 @@ const closesIn = computed(() => {
   const min = Math.max(0, Math.ceil((new Date(next.value.quali_at).getTime() - (now.value + col.clockOffset)) / 60000))
   const d = Math.floor(min / 1440)
   const h = Math.floor((min % 1440) / 60)
-  return d ? `${d} j ${String(h).padStart(2, '0')} h` : `${h} h ${String(min % 60).padStart(2, '0')}`
+  return d ? t('packs.daysHours', { d, h: String(h).padStart(2, '0') }) : `${h} h ${String(min % 60).padStart(2, '0')}`
 })
 
 // Récompenses

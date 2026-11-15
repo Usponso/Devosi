@@ -1,8 +1,6 @@
 import { getNationalityLabel } from '@/data/nationalities'
+import { i18n, t, intlLocale } from '@/i18n'
 
-const plural = (n, word) => `${n} ${word}${n > 1 ? 's' : ''}`
-
-/** 1 234 Pièces */
 /**
  * Écurie d'une carte pilote : celle où il a disputé le plus de courses (c'est elle qui
  * compte pour les quêtes « carte de l'écurie X »). `byId` : catalogue indexé par id.
@@ -10,98 +8,21 @@ const plural = (n, word) => `${n} ${word}${n > 1 ? 's' : ''}`
 export const driverTeamName = (card, byId) =>
   card?.type === 'driver' && card.teamId ? byId.get(`t-${card.teamId}`)?.name ?? null : null
 
-export const formatCoins = (n) => (n ?? 0).toLocaleString('fr-FR')
-
-const ECONOMY_ERRORS = {
-  NOT_ENOUGH_COINS: 'Pas assez de Pièces.',
-  NOT_ENOUGH_DUPLICATES: 'Pas assez de doublons.',
-  NOT_ENOUGH_COPIES: "Pas assez d'exemplaires pour cette finition.",
-  MAX_FINISH: 'Cette carte a déjà la finition Or.',
-  SHOP_LIMIT: "Limite d'achats atteinte pour aujourd'hui, reviens demain.",
-  BANK_FULL: "Ta réserve de packs est pleine : ouvre-en avant d'en acheter.",
-  ALREADY_OWNED: 'Tu possèdes déjà cette carte.',
-  CARD_UNKNOWN: 'Carte inconnue.',
-  ALBUM_INCOMPLETE: "L'album n'est pas encore complet.",
-  ALBUM_CLAIMED: 'Récompense déjà récupérée.',
-  ALBUM_UNKNOWN: 'Album inconnu.',
-  AVATAR_NOT_OWNED: 'Tu ne possèdes pas cette carte.',
-  TITLE_LOCKED: 'Complète cet album pour débloquer son titre.',
-  TEAM_INVALID: 'Écurie inconnue.',
-  PROFILE_REQUIRED: 'Sauvegarde ta collection et choisis un pseudo pour ajouter des amis.',
-  PLAYER_UNKNOWN: 'Aucun joueur avec ce pseudo.',
-  FRIEND_SELF: 'Tu ne peux pas t’ajouter toi-même.',
-  FRIEND_LIMIT: 'Limite de demandes ou d’amis atteinte.',
-  REQUEST_UNKNOWN: 'Cette demande n’existe plus.',
-  CODE_INVALID: 'Ce code n’existe pas.',
-  CODE_ALREADY_USED: 'Tu as déjà utilisé ce code.',
-  CODE_EXPIRED: 'Ce code a expiré.',
-  CODE_NOT_STARTED: 'Ce code n’est pas encore actif.',
-  CODE_USED_UP: 'Ce code a déjà été utilisé le nombre maximum de fois.',
-  CODE_RATE_LIMIT: 'Trop de codes invalides, réessaie dans une heure.',
-  ACHIEVEMENT_LOCKED: 'Ce succès n’est pas encore débloqué.',
-  ACHIEVEMENT_CLAIMED: 'Récompense déjà récupérée.',
-  TRADE_FRIENDS_ONLY: 'Les échanges se font entre amis.',
-  TRADE_PENDING_LIMIT: 'Tu as déjà 10 propositions en attente : attends une réponse ou annules-en une.',
-  TRADE_INVALID: 'Une des cartes n’est plus disponible : l’échange a été annulé.',
-  TRADE_DAILY_LIMIT: 'Limite de 5 échanges par jour atteinte (pour toi ou ton ami), réessaie demain.',
-  TRADE_PAIR_LIMIT: 'Limite atteinte : 3 échanges par semaine au maximum avec un même ami.',
-  TRADE_UNBALANCED: 'Échange trop déséquilibré : aucun côté ne peut valoir plus du double de l’autre.',
-  TRADE_UNKNOWN: 'Cette proposition n’existe plus ou a expiré.',
-  PROFILE_INCOMPLETE: 'Complète d’abord ton profil.',
-  PROFILE_REWARDED: 'Récompense déjà récupérée.',
-  BADGES_FULL: '3 badges maximum sur ton profil.',
-  NO_WEEKEND: 'Le week-end de course est terminé.',
-  POSTER_NOT_CRAFTABLE: "Les affiches ne se trouvent que dans le pack GP de leur week-end.",
-  PLAYING_CARD_NOT_CRAFTABLE: 'Les cartes à jouer ne se trouvent que dans les packs.',
-  NUMBERED_LOCKED: 'Les vitraux numérotés ne se trouvent que dans les packs, et ne se recyclent pas.',
-  RACE_UNKNOWN: 'Course inconnue.',
-  PREDICTION_CLOSED: 'Les pronostics sont fermés : les qualifications ont commencé.',
-  PREDICTION_INVALID: 'Choisis les 3 pilotes du podium et le poleman.',
-  PREDICTION_DUPLICATE: 'Un pilote ne peut être qu’une fois sur le podium.',
-  PREDICTION_PENDING: 'Les résultats ne sont pas encore connus.',
-  PREDICTION_CLAIMED: 'Gains déjà récupérés.',
-  ALREADY_CLAIMED: 'Déjà récupéré aujourd’hui, reviens demain.',
-  MASTER_INCOMPLETE: 'Toutes les cartes de l’album doivent avoir cette finition.',
-  MASTER_UNAVAILABLE: 'Cet album n’a pas de finitions.',
-  LINEUP_CLOSED: 'Écurie verrouillée : les qualifications ont commencé.',
-  LINEUP_INVALID: 'Choisis 2 pilotes, 1 écurie et 1 Légende, toutes différentes.',
-  NOT_OWNED: 'Une de ces cartes n’est plus dans ta collection.',
-}
+/** 1 234 Pièces */
+export const formatCoins = (n) => (n ?? 0).toLocaleString(intlLocale())
 
 /** Message lisible pour une erreur des fonctions de l'atelier (code = hint SQL) */
-export const economyMessage = (err) => ECONOMY_ERRORS[err?.code] ?? 'Une erreur est survenue, réessaie.'
-
-/** Titre de profil débloqué par chaque album (id de l'album → titre affiché sous le pseudo) */
-const ALBUM_TITLES = {
-  champions: 'Faiseur de champions',
-  vainqueurs: 'Chasseur de victoires',
-  podiums: 'Habitué du podium',
-  francais: 'Cocorico',
-  'ecuries-championnes': 'Stratège des constructeurs',
-  'ecuries-victorieuses': "Chef d'écurie",
-  'grille-2026': 'Paddock 2026',
-  'gp-1950': 'Pionnier des années 50',
-  'gp-1960': 'Mémoire des années 60',
-  'gp-1970': 'Mémoire des années 70',
-  'gp-1980': 'Ère turbo',
-  'gp-1990': 'Mémoire des années 90',
-  'gp-2000': 'Mémoire des années 2000',
-  'gp-2010': 'Ère hybride',
-  'gp-2020': 'Mémoire des années 2020',
-  monaco: 'Roi de Monaco',
-  monza: 'Tifoso de Monza',
-  silverstone: 'Seigneur de Silverstone',
-  spa: "Maître de l'Eau Rouge",
-  'courses-mythiques': 'Conteur de légendes',
-  moments: 'Gardien des légendes',
-  'chefs-d-oeuvre': 'Conservateur du musée',
-  vitraux: 'Maître verrier',
-  'jeu-des-pilotes': 'Maître du jeu',
+export const economyMessage = (err) => {
+  const key = `errors.${err?.code}`
+  return err?.code && i18n.global.te(key) ? t(key) : t('errors.GENERIC')
 }
 
-/** Titre affiché pour un album complété (repli sur le nom de l'album) */
-export const albumTitle = (albumId, albums = []) =>
-  ALBUM_TITLES[albumId] ?? albums.find((a) => a.id === albumId)?.title ?? null
+/** Titre affiché pour un album complété (traductions : i18n/locales/fr|en/albumTitles.js, repli sur le nom de l'album) */
+export const albumTitle = (albumId, albums = []) => {
+  if (!albumId) return null
+  const key = `albumTitles.${albumId}`
+  return i18n.global.te(key) ? t(key) : albums.find((a) => a.id === albumId)?.title ?? null
+}
 
 /** Ligne de description d'une carte (fiche détaillée) */
 export function describeCard(card) {
@@ -110,11 +31,11 @@ export function describeCard(card) {
   const period = a === b ? a : `${a}–${b}`
   switch (card.type) {
     case 'driver':
-      return `${getNationalityLabel(card.sub)} · ${period} · ${plural(s.titles, 'titre')}, ${plural(s.wins, 'victoire')}, ${plural(s.podiums, 'podium')}`
+      return `${getNationalityLabel(card.sub)} · ${period} · ${t('describe.driver', { titles: t('describe.titles', s.titles ?? 0), wins: t('describe.wins', s.wins ?? 0), podiums: t('describe.podiums', s.podiums ?? 0) })}`
     case 'team':
-      return `${getNationalityLabel(card.sub)} · ${period} · ${plural(s.titles, 'titre')} constructeurs, ${plural(s.wins, 'victoire')}`
+      return `${getNationalityLabel(card.sub)} · ${period} · ${t('describe.team', { titles: t('describe.teamTitles', s.titles ?? 0), wins: t('describe.wins', s.wins ?? 0) })}`
     case 'gp':
-      return `${a}, manche ${s.round} · ${card.sub} · Vainqueur : ${s.winner} (${s.team})`
+      return t('describe.gp', { year: a, round: s.round, sub: card.sub, winner: s.winner, team: s.team })
     default:
       return `${a} · ${card.sub}`
   }

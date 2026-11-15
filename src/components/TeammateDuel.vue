@@ -22,12 +22,13 @@
       <span class="dv mono" :class="{ lead: row.lead === 1 }">{{ row.display[1] }}</span>
     </div>
 
-    <p v-if="!duel.rounds" class="muted empty-duel">Pas encore de course disputée ensemble.</p>
+    <p v-if="!duel.rounds" class="muted empty-duel">{{ $t('duel.empty') }}</p>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   a: { type: Object, required: true },
@@ -35,6 +36,8 @@ const props = defineProps({
   duel: { type: Object, required: true },
   color: { type: String, default: 'var(--accent)' },
 })
+
+const { t } = useI18n()
 
 /** Ligne « plus c'est haut, mieux c'est » ou l'inverse (moyennes de positions) */
 function makeRow(label, values, lowerIsBetter = false, format = (v) => v) {
@@ -59,11 +62,11 @@ function makeRow(label, values, lowerIsBetter = false, format = (v) => v) {
 const rows = computed(() => {
   const d = props.duel
   return [
-    makeRow('Qualifs', d.quali),
-    makeRow('Courses', d.race),
-    makeRow('Points', d.points, false, (v) => Math.round(v)),
-    makeRow('Moy. grille', d.avgQuali, true, (v) => `P${v.toFixed(1)}`),
-    makeRow('Moy. arrivée', d.avgFinish, true, (v) => `P${v.toFixed(1)}`),
+    makeRow(t('duel.quali'), d.quali),
+    makeRow(t('duel.races'), d.race),
+    makeRow(t('duel.points'), d.points, false, (v) => Math.round(v)),
+    makeRow(t('duel.avgGrid'), d.avgQuali, true, (v) => `P${v.toFixed(1)}`),
+    makeRow(t('duel.avgFinish'), d.avgFinish, true, (v) => `P${v.toFixed(1)}`),
   ]
 })
 </script>

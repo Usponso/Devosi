@@ -7,7 +7,7 @@
         :class="{ open }"
         aria-haspopup="menu"
         :aria-expanded="open"
-        :aria-label="`Mon compte, @${col.profile.username}${col.friendRequests ? `, ${col.friendRequests} demandes d'amis` : ''}`"
+        :aria-label="$t('account.bubble', { user: `@${col.profile.username}` }) + (col.friendRequests ? $t('account.bubbleRequests', col.friendRequests) : '')"
         @click="open = !open"
       >
         <span class="bubble-avatar">
@@ -36,50 +36,54 @@
             />
             <div class="menu-id">
               <div class="menu-name">@{{ col.profile.username }}</div>
-              <div v-if="title" class="menu-title" :class="{ master: col.isMasterTitle(col.profile.title) }">{{ title }}</div>
+              <div v-if="title" class="menu-title" :class="{ master: col.isMasterTitle(col.profile.title), chrome: col.titleClass(col.profile.title) === 'title-chrome' }">{{ title }}</div>
               <div v-if="col.packsToOpen" class="menu-packs muted">
-                <Icon name="package" :size="13" /> {{ col.packsToOpen }} pack{{ col.packsToOpen > 1 ? 's' : '' }} à ouvrir
+                <Icon name="package" :size="13" /> {{ $t('account.packsToOpen', col.packsToOpen) }}
               </div>
               <div v-if="col.questsReady" class="menu-packs muted">
-                <Icon name="trophy" :size="13" /> {{ col.questsReady }} quête{{ col.questsReady > 1 ? 's' : '' }} à récupérer
+                <Icon name="trophy" :size="13" /> {{ $t('account.questsReady', col.questsReady) }}
               </div>
             </div>
           </div>
 
           <router-link to="/profil" class="item" role="menuitem">
-            <Icon name="user" :size="16" /> Mon profil
+            <Icon name="user" :size="16" /> {{ $t('account.profile') }}
             <span v-if="completion && completion.percent < 100" class="item-percent mono">{{ completion.percent }} %</span>
           </router-link>
           <router-link to="/joueurs?onglet=amis" class="item" role="menuitem">
-            <Icon name="users" :size="16" /> Amis
+            <Icon name="users" :size="16" /> {{ $t('account.friends') }}
             <span v-if="col.friendRequests" class="item-badge mono">{{ col.friendRequests }}</span>
           </router-link>
           <router-link to="/collection" class="item" role="menuitem">
-            <Icon name="album" :size="16" /> Ma collection
+            <Icon name="album" :size="16" /> {{ $t('account.collection') }}
           </router-link>
           <button class="item" role="menuitem" @click="openNotifications">
-            <Icon name="bell" :size="16" /> Notifications
+            <Icon name="bell" :size="16" /> {{ $t('account.notifications') }}
           </button>
           <button
             class="item"
             role="menuitemcheckbox"
             :aria-checked="showInTicker"
             :disabled="tickerBusy"
-            title="Tes Légendaires, Mythiques, affiches et Chefs-d'œuvre dans le bandeau En direct"
+            :title="$t('account.tickerHint')"
             @click="toggleTicker"
           >
-            <Icon name="flag" :size="16" /> Apparaître dans le direct
+            <Icon name="flag" :size="16" /> {{ $t('account.ticker') }}
             <span class="switch" :class="{ on: showInTicker }" aria-hidden="true"></span>
           </button>
           <button v-if="canInstall" class="item" role="menuitem" @click="installApp">
-            <Icon name="save" :size="16" /> Installer l'appli
+            <Icon name="save" :size="16" /> {{ $t('account.install') }}
+          </button>
+          <button class="item" role="menuitem" @click="toggleLocale">
+            <Icon name="globe" :size="16" /> {{ $t('account.language') }}
+            <span class="item-percent mono">{{ locale === 'fr' ? 'FR' : 'EN' }}</span>
           </button>
           <div class="sep"></div>
           <button class="item" role="menuitem" @click="openAccount('link')">
-            <Icon name="save" :size="16" /> Mon compte
+            <Icon name="save" :size="16" /> {{ $t('account.account') }}
           </button>
           <button class="item quiet" role="menuitem" :disabled="busy" @click="logout">
-            <Icon name="x" :size="16" /> Se déconnecter
+            <Icon name="x" :size="16" /> {{ $t('account.logout') }}
           </button>
         </div>
       </transition>
@@ -102,6 +106,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Icon from './Icon.vue'
 import AccountDialog from './cards/AccountDialog.vue'
 import PlayerAvatar from './cards/PlayerAvatar.vue'
@@ -110,10 +115,18 @@ import NotificationSettings from './NotificationSettings.vue'
 import { useInstall } from '@/composables/useInstall'
 import { signOut } from '@/services/collection'
 import { albumTitle } from '@/utils/cards'
+import { setLocale } from '@/i18n'
 
 /** Accès au profil depuis l'en-tête : bulle avatar + menu, ou bouton de connexion */
 const col = useCollectionStore()
 const route = useRoute()
+const { t, locale } = useI18n()
+
+/** Bascule français ↔ anglais (rechargement : certaines données sont mises en forme au chargement) */
+function toggleLocale() {
+  setLocale(locale.value === 'fr' ? 'en' : 'fr')
+  window.location.reload()
+}
 
 const root = ref(null)
 const open = ref(false)
@@ -151,8 +164,8 @@ const completion = computed(() => col.profile?.completion ?? null)
 
 const title = computed(() => (col.profile?.title ? albumTitle(col.profile.title, col.albums) : null))
 const guestLabel = computed(() => {
-  if (col.profile?.permanent) return 'Choisir un pseudo'
-  return col.noSession ? 'Se connecter' : 'Sauvegarder'
+  if (col.profile?.permanent) return t('account.pickUsername')
+  return col.noSession ? t('account.login') : t('account.save')
 })
 
 // L'avatar et le titre viennent du catalogue des cartes : chargé quand le joueur en a un
@@ -280,12 +293,16 @@ onUnmounted(() => {
 .menu-name { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menu-title { font-size: 12px; font-weight: 700; color: #ffe08a; }
 /* Titre d'un Master set Or : lettres d'or brillantes */
-.menu-title.master {
+.menu-title.master,
+.menu-title.chrome {
   color: transparent;
   background: linear-gradient(110deg, #c8962c, #fff3c4 50%, #c8962c);
   -webkit-background-clip: text;
   background-clip: text;
 }
+
+/* Master set Chrome : lettres argentées */
+.menu-title.chrome { background-image: linear-gradient(110deg, #9aa3ad, #f4f7fa 50%, #9aa3ad); }
 
 .menu-packs {
   display: flex;

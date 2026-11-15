@@ -1,0 +1,16 @@
+export default {
+  fp1: 'Practice 1',
+  fp1Short: 'FP1',
+  fp2: 'Practice 2',
+  fp2Short: 'FP2',
+  fp3: 'Practice 3',
+  fp3Short: 'FP3',
+  sprintQualifying: 'Sprint qualifying',
+  sprintQualifyingShort: 'SQ',
+  sprint: 'Sprint',
+  sprintShort: 'Sprint',
+  qualifying: 'Qualifying',
+  qualifyingShort: 'Quali',
+  race: 'Race',
+  raceShort: 'Race',
+}

@@ -7,7 +7,7 @@ import {
   fetchSeasonSprints,
   fetchSeasonQualifying,
 } from '@/services/jolpica'
-import { TEAM_META, DRIVER_BIOS } from '@/data/teams'
+import { teamMeta, driverBio } from '@/data/teams'
 import { applySeasonCounts } from '@/utils/stats'
 import { toDate } from '@/utils/race'
 
@@ -82,8 +82,8 @@ export const useF1Store = defineStore('f1', {
         const withMeta = this.seasonYear === CURRENT_YEAR
 
         this.standingsRound = driverData.round
-        this.drivers = driverData.standings.map((d) => ({ ...d, bio: withMeta ? DRIVER_BIOS[d.id] ?? '' : '' }))
-        this.teams = constructorStandings.map((t) => ({ ...t, ...(withMeta ? TEAM_META[t.id] ?? {} : {}) }))
+        this.drivers = driverData.standings.map((d) => ({ ...d, bio: withMeta ? driverBio(d.id) : '' }))
+        this.teams = constructorStandings.map((t) => ({ ...t, ...(withMeta ? teamMeta(t.id) : {}) }))
         // Statut provisoire basé sur le classement, affiné dès que les résultats arrivent
         this.races = schedule.map((race) => ({ ...race, completed: race.round <= driverData.round }))
         this.lastFetch = Date.now()

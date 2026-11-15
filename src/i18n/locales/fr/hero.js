@@ -1,0 +1,15 @@
+export default {
+  live: 'Week-end en cours',
+  next: 'Prochain Grand Prix',
+  endsIn: 'Fin estimée dans',
+  startsIn: 'Départ dans',
+  schedule: 'Programme et infos',
+  weekend: 'Programme du week-end',
+  localTime: 'heure locale',
+  winners: 'Derniers vainqueurs ici',
+  days: 'Jours',
+  hours: 'Heures',
+  min: 'Min',
+  sec: 'Sec',
+  ongoing: 'En cours',
+}

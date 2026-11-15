@@ -10,7 +10,7 @@
       <div class="s-name">
         <span class="s-dot"></span>
         {{ s.label }}
-        <span v-if="s.status === 'live'" class="badge badge-accent badge-live">En cours</span>
+        <span v-if="s.status === 'live'" class="badge badge-accent badge-live">{{ $t('hero.ongoing') }}</span>
       </div>
       <div class="s-time mono">{{ formatSessionTime(s.start) }}</div>
       <div v-if="weather" class="s-weather">

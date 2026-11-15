@@ -5,12 +5,12 @@
       <div class="rd-glow" aria-hidden="true"></div>
       <div class="container rd-hero-grid">
         <div>
-          <router-link to="/season" class="back muted">← Calendrier</router-link>
+          <router-link to="/season" class="back muted">{{ $t('race.back') }}</router-link>
           <div class="rd-tags">
-            <span class="badge mono">Manche {{ race.round }}/{{ store.races.length }}</span>
+            <span class="badge mono">{{ $t('common.round', { n: `${race.round}/${store.races.length}` }) }}</span>
             <span v-if="race.sprint" class="badge"><Icon name="bolt" :size="11" /> Sprint</span>
-            <span v-if="isNext" class="badge badge-accent badge-live">Prochain GP</span>
-            <span v-else-if="race.completed" class="badge">Terminé</span>
+            <span v-if="isNext" class="badge badge-accent badge-live">{{ $t('race.next') }}</span>
+            <span v-else-if="race.completed" class="badge">{{ $t('race.done') }}</span>
           </div>
           <h1 class="title-lg rd-title">{{ race.name }}</h1>
           <div class="rd-place dim">
@@ -18,10 +18,10 @@
             {{ race.circuit }} · {{ race.locality }}, {{ race.country }}
           </div>
           <div class="rd-facts">
-            <div><span class="eyebrow">Date</span><span class="mono">{{ formatDate(race.date) }}</span></div>
-            <div v-if="race.laps"><span class="eyebrow">Tours</span><span class="mono">{{ race.laps }}</span></div>
-            <div v-if="circuitLength"><span class="eyebrow">Tour</span><span class="mono">{{ (circuitLength / 1000).toFixed(3) }} km</span></div>
-            <div v-if="winner"><span class="eyebrow">Vainqueur</span><span :style="{ color: winner.color }">{{ winner.driverName }}</span></div>
+            <div><span class="eyebrow">{{ $t('race.date') }}</span><span class="mono">{{ formatDate(race.date) }}</span></div>
+            <div v-if="race.laps"><span class="eyebrow">{{ $t('results.laps') }}</span><span class="mono">{{ race.laps }}</span></div>
+            <div v-if="circuitLength"><span class="eyebrow">{{ $t('race.lap') }}</span><span class="mono">{{ (circuitLength / 1000).toFixed(3) }} km</span></div>
+            <div v-if="winner"><span class="eyebrow">{{ $t('race.winner') }}</span><span :style="{ color: winner.color }">{{ winner.driverName }}</span></div>
           </div>
         </div>
         <div class="rd-circuit">
@@ -36,13 +36,13 @@
         <div class="upcoming-grid">
           <section class="card">
             <div class="card-head">
-              <h2 class="title-md">Programme du week-end</h2>
-              <span class="muted small">heure locale</span>
+              <h2 class="title-md">{{ $t('hero.weekend') }}</h2>
+              <span class="muted small">{{ $t('hero.localTime') }}</span>
             </div>
             <WeekendSchedule :race="race" :weather="weather" />
           </section>
           <section v-if="pastWinners.length" class="card">
-            <div class="card-head"><h2 class="title-md">Vainqueurs précédents</h2></div>
+            <div class="card-head"><h2 class="title-md">{{ $t('race.pastWinners') }}</h2></div>
             <ol class="past-winners">
               <li v-for="w in pastWinners" :key="w.season" :style="{ '--tc': w.color }">
                 <span class="mono muted">{{ w.season }}</span>
@@ -56,7 +56,7 @@
         <!-- Résultats des séances déjà disputées (EL, qualifs, sprint) -->
         <section v-if="startedSessions.length" class="card table-card weekend-results">
           <div class="card-head wr-head">
-            <h2 class="title-md">Résultats du week-end</h2>
+            <h2 class="title-md">{{ $t('race.weekendResults') }}</h2>
             <div class="tabs">
               <button
                 v-for="s in startedSessions"
@@ -66,7 +66,7 @@
                 @click="weekendTab = s.key"
               >
                 {{ s.short }}
-                <span v-if="s.status === 'live'" class="live-dot" aria-label="en cours"></span>
+                <span v-if="s.status === 'live'" class="live-dot" :aria-label="$t('hero.ongoing')"></span>
               </button>
             </div>
           </div>
@@ -97,7 +97,7 @@
         <!-- Résultats course / sprint -->
         <section v-if="tab === 'race' || tab === 'sprint'" class="card table-card">
           <div class="res-head">
-            <span>Pos</span><span>Pilote</span><span class="c-grid">Grille</span><span class="c-laps">Tours</span><span>Temps / statut</span><span class="c-pts">Pts</span>
+            <span>{{ $t('results.pos') }}</span><span>{{ $t('results.driver') }}</span><span class="c-grid">{{ $t('race.grid') }}</span><span class="c-laps">{{ $t('results.laps') }}</span><span>{{ $t('race.timeStatus') }}</span><span class="c-pts">{{ $t('standings.pts') }}</span>
           </div>
           <ol class="res-list">
             <li
@@ -113,13 +113,13 @@
                 <span class="muted small">{{ r.constructor }}</span>
               </router-link>
               <span class="c-grid mono">
-                <span class="muted">{{ r.grid || 'PL' }}</span>
+                <span class="muted">{{ r.grid || $t('race.pitLane') }}</span>
                 <span v-if="r.classified && r.grid" class="gain" :class="gainClass(r)">{{ gainLabel(r) }}</span>
               </span>
               <span class="c-laps mono muted">{{ r.laps }}</span>
               <span class="c-time mono">
                 {{ r.classified ? r.time : r.status }}
-                <span v-if="r.fastestLap?.rank === 1" class="fl-badge" title="Meilleur tour"><Icon name="timer" :size="12" /> <span class="fl-time">{{ r.fastestLap.time }}</span></span>
+                <span v-if="r.fastestLap?.rank === 1" class="fl-badge" :title="$t('race.fastestLap')"><Icon name="timer" :size="12" /> <span class="fl-time">{{ r.fastestLap.time }}</span></span>
               </span>
               <span class="c-pts mono">{{ r.points || '' }}</span>
             </li>
@@ -129,7 +129,7 @@
         <!-- Qualifications -->
         <section v-else-if="tab === 'quali'" class="card table-card">
           <div class="q-head">
-            <span>Pos</span><span>Pilote</span><span>Q1</span><span>Q2</span><span>Q3</span><span class="c-gap">Écart</span>
+            <span>{{ $t('results.pos') }}</span><span>{{ $t('results.driver') }}</span><span>Q1</span><span>Q2</span><span>Q3</span><span class="c-gap">{{ $t('results.gap') }}</span>
           </div>
           <ol class="res-list">
             <li
@@ -155,8 +155,8 @@
         <!-- Stratégie pneus -->
         <section v-else-if="tab === 'strategy'" class="card">
           <div class="card-head">
-            <h2 class="title-md">Stratégie pneus</h2>
-            <span class="muted small">Données OpenF1</span>
+            <h2 class="title-md">{{ $t('race.strategy') }}</h2>
+            <span class="muted small">{{ $t('race.openf1') }}</span>
           </div>
           <div v-if="openf1.loading" class="skeleton chart-skeleton"></div>
           <p v-else-if="openf1.error" class="empty">{{ openf1.error }}</p>
@@ -176,8 +176,8 @@
         <!-- Positions tour par tour -->
         <section v-else-if="tab === 'positions'" class="card">
           <div class="card-head">
-            <h2 class="title-md">Positions tour par tour</h2>
-            <span class="muted small">Survole une courbe pour l'isoler</span>
+            <h2 class="title-md">{{ $t('race.positions') }}</h2>
+            <span class="muted small">{{ $t('race.hover') }}</span>
           </div>
           <div v-if="openf1.loading" class="skeleton chart-skeleton"></div>
           <p v-else-if="openf1.error" class="empty">{{ openf1.error }}</p>
@@ -190,8 +190,8 @@
             :y-max="positionSeries.length"
             invert
             :format-y="(v) => `P${v}`"
-            :tooltip-title="(i) => (i === 0 ? 'Départ' : `Tour ${i}`)"
-            aria-label="Positions des pilotes à chaque tour"
+            :tooltip-title="(i) => (i === 0 ? $t('race.start') : $t('race.lapN', { n: i }))"
+            :aria-label="$t('race.positionsLabel')"
           />
         </section>
       </template>
@@ -209,12 +209,13 @@
     </Teleport>
   </div>
 
-  <div v-else-if="!store.loading" class="container empty">Grand Prix introuvable.</div>
+  <div v-else-if="!store.loading" class="container empty">{{ $t('race.notFound') }}</div>
 </template>
 
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import Flag from '@/components/Flag.vue'
 import CircuitMap from '@/components/CircuitMap.vue'
@@ -242,6 +243,7 @@ import { winnerOf } from '@/utils/stats'
 
 const route = useRoute()
 const store = useF1Store()
+const { t } = useI18n()
 const prefs = usePrefsStore()
 
 const race = computed(() => store.getRaceById(route.params.id))
@@ -271,13 +273,13 @@ const practiceSessions = computed(() => weekend.value.filter((s) => s.key.starts
 const practiceTab = computed(() => practiceSessions.value.find((s) => s.key === tab.value) ?? null)
 
 const tabs = computed(() => {
-  const list = [{ id: 'race', label: 'Course' }]
-  if (race.value?.qualifyingResults.length) list.push({ id: 'quali', label: 'Qualifs' })
+  const list = [{ id: 'race', label: t('sessions.race') }]
+  if (race.value?.qualifyingResults.length) list.push({ id: 'quali', label: t('sessions.qualifyingShort') })
   if (race.value?.sprintResults.length) list.push({ id: 'sprint', label: 'Sprint' })
   practiceSessions.value.forEach((s) => list.push({ id: s.key, label: s.short }))
   if (hasOpenF1.value) {
-    list.push({ id: 'strategy', label: 'Stratégie' })
-    list.push({ id: 'positions', label: 'Positions' })
+    list.push({ id: 'strategy', label: t('race.strategyTab') })
+    list.push({ id: 'positions', label: t('race.positionsTab') })
     list.push({ id: 'replay', label: 'Replay' })
   }
   return list
@@ -334,7 +336,7 @@ const bestTimes = computed(() => {
 
 /** Écart à la pole sur la dernière séance disputée par le pilote */
 function qualiGap(q) {
-  if (q.pos === 1) return 'Pole'
+  if (q.pos === 1) return t('race.pole')
   const key = q.q3 ? 'q3' : q.q2 ? 'q2' : 'q1'
   const mine = toSeconds(q[key])
   const ref = toSeconds(bestTimes.value[key])
@@ -381,7 +383,7 @@ async function loadOpenF1() {
   openf1.positions = null
   try {
     const session = await findSession(r, 'Race')
-    if (!session) throw new Error('Séance introuvable dans OpenF1.')
+    if (!session) throw Object.assign(new Error(t('race.noSession')), { known: true })
     const winnerNumber = r.results.find((x) => x.pos === 1)?.number
     const [drivers, stints, positions] = await Promise.all([
       fetchSessionDrivers(session.session_key),
@@ -391,9 +393,9 @@ async function loadOpenF1() {
     openf1.drivers = drivers
     openf1.stints = stints
     openf1.positions = positions
-    if (!stints.length) openf1.error = 'Pas de données pneus pour cette course.'
+    if (!stints.length) openf1.error = t('race.noTyres')
   } catch (err) {
-    openf1.error = err.message?.startsWith('Séance') ? err.message : 'Données OpenF1 indisponibles pour le moment.'
+    openf1.error = err.known ? err.message : t('race.openf1Down')
     openf1.raceId = null
   } finally {
     openf1.loading = false
@@ -435,7 +437,7 @@ const strategyRows = computed(() => {
 })
 
 const positionLabels = computed(() =>
-  openf1.positions ? Array.from({ length: openf1.positions.laps + 1 }, (_, i) => (i === 0 ? 'Dép.' : `T${i}`)) : [],
+  openf1.positions ? Array.from({ length: openf1.positions.laps + 1 }, (_, i) => (i === 0 ? t('race.startShort') : t('race.lapShort', { n: i }))) : [],
 )
 
 const positionSeries = computed(() => {

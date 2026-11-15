@@ -3,9 +3,9 @@
     class="ach-badge"
     :class="[`tier-${achievement.tier}`, { locked }]"
     :style="{ '--size': `${size}px` }"
-    :title="`${achievement.title} : ${achievement.description}`"
+    :title="`${achievementTitle(achievement)} : ${achievementDescription(achievement)}`"
     role="img"
-    :aria-label="`${TIER_LABEL[achievement.tier]} · ${achievement.title}`"
+    :aria-label="`${TIER_LABEL[achievement.tier]} · ${achievementTitle(achievement)}`"
   >
     <Icon :name="locked ? 'lock' : ACHIEVEMENT_ICON[achievement.kind] ?? 'star'" :size="Math.round(size * 0.5)" />
   </span>
@@ -13,7 +13,7 @@
 
 <script setup>
 import Icon from '@/components/Icon.vue'
-import { ACHIEVEMENT_ICON, TIER_LABEL } from '@/utils/achievements'
+import { ACHIEVEMENT_ICON, TIER_LABEL, achievementDescription, achievementTitle } from '@/utils/achievements'
 
 defineProps({
   /** { tier, kind, title, description } */

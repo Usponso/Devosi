@@ -1,32 +1,32 @@
 <template>
   <div class="page trades-page">
     <header class="container page-head">
-      <div class="eyebrow">Cartes</div>
-      <h1 class="title-lg">Échanges</h1>
-      <p class="dim">Échange tes cartes avec tes amis : 1 à 5 cartes de chaque côté, sans Pièces.</p>
+      <div class="eyebrow">{{ $t('common.cardsSection') }}</div>
+      <h1 class="title-lg">{{ $t('trades.title') }}</h1>
+      <p class="dim">{{ $t('trades.intro') }}</p>
     </header>
 
     <div class="container body">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
-      <p v-else-if="!col.ready" class="card empty muted">Chargement…</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
+      <p v-else-if="!col.ready" class="card empty muted">{{ $t('common.loading') }}</p>
 
       <!-- Invité ou sans pseudo : les échanges sont entre amis -->
       <section v-else-if="!col.isPlayer" class="card empty invite">
         <Icon name="swap" :size="28" />
-        <p>Les échanges se font entre amis. Sauvegarde ta collection et choisis un pseudo pour ajouter des amis et échanger avec eux.</p>
-        <router-link to="/profil" class="btn">Créer mon profil</router-link>
+        <p>{{ $t('trades.invite') }}</p>
+        <router-link to="/profil" class="btn">{{ $t('trades.createProfile') }}</router-link>
       </section>
 
       <template v-else>
         <!-- Échange conclu -->
         <section v-if="done" class="card done">
-          <div class="title-md">Échange conclu avec {{ done.other }}</div>
+          <div class="title-md">{{ $t('trades.doneWith', { user: done.other }) }}</div>
           <div class="done-cards">
             <F1Card v-for="c in done.cards" :key="c.id" :card="c" :is-new="c.isNew" class="done-card" />
           </div>
           <div class="done-actions">
-            <router-link to="/collection" class="btn btn-ghost">Voir ma collection</router-link>
-            <button class="link-arrow" @click="done = null">Fermer</button>
+            <router-link to="/collection" class="btn btn-ghost">{{ $t('trades.seeCollection') }}</router-link>
+            <button class="link-arrow" @click="done = null">{{ $t('common.close') }}</button>
           </div>
         </section>
 
@@ -34,12 +34,12 @@
         <TradeComposer v-if="friend" :friend="friend" @close="closeComposer" @sent="onSent" />
         <section v-else-if="picking" class="card pick-friend">
           <div class="pf-head">
-            <h2 class="title-md">Avec quel ami ?</h2>
-            <button class="link-arrow" @click="picking = false">Annuler</button>
+            <h2 class="title-md">{{ $t('trades.whichFriend') }}</h2>
+            <button class="link-arrow" @click="picking = false">{{ $t('common.cancel') }}</button>
           </div>
-          <p v-if="!col.friends" class="muted small">Chargement…</p>
+          <p v-if="!col.friends" class="muted small">{{ $t('common.loading') }}</p>
           <p v-else-if="!col.friends.friends.length" class="muted small">
-            Ajoute d'abord des amis depuis l'onglet <router-link to="/joueurs" class="link-arrow">Joueurs →</router-link>
+            <i18n-t keypath="trades.addFriends" scope="global"><template #link><router-link to="/joueurs" class="link-arrow">{{ $t('trades.playersLink') }}</router-link></template></i18n-t>
           </p>
           <div v-else class="friends">
             <button v-for="f in col.friends.friends" :key="f.username" class="friend" @click="openComposer(f.username)">
@@ -58,14 +58,14 @@
               </button>
             </div>
             <div class="list-tools">
-              <span v-if="col.trades" class="muted small">Échanges aujourd'hui : {{ col.trades.today }} / {{ col.trades.daily }}</span>
-              <button v-if="!picking" class="btn" @click="startPicking"><Icon name="plus" :size="15" /> Nouvel échange</button>
+              <span v-if="col.trades" class="muted small">{{ $t('trades.today', { n: col.trades.today, max: col.trades.daily }) }}</span>
+              <button v-if="!picking" class="btn" @click="startPicking"><Icon name="plus" :size="15" /> {{ $t('trades.new') }}</button>
             </div>
           </div>
 
           <p v-if="error" class="error small">{{ error }}</p>
-          <p v-if="!col.trades" class="muted small">Chargement…</p>
-          <p v-else-if="!shown.length" class="muted small empty-list">{{ EMPTY[tab] }}</p>
+          <p v-if="!col.trades" class="muted small">{{ $t('common.loading') }}</p>
+          <p v-else-if="!shown.length" class="muted small empty-list">{{ $t(`trades.empty.${tab}`) }}</p>
 
           <ul v-else class="items">
             <li v-for="t in shown" :key="t.id" class="item" :class="`st-${t.status}`">
@@ -73,22 +73,22 @@
                 <router-link :to="`/joueurs/${t.other}`" class="who">
                   <PlayerAvatar :card-id="t.other_avatar" :username="t.other" :team="t.other_team" :size="30" />
                   <span>
-                    <b>{{ t.direction === 'received' ? `${t.other} te propose` : `Proposé à ${t.other}` }}</b>
+                    <b>{{ t.direction === 'received' ? $t('trades.offersYou', { user: t.other }) : $t('trades.offeredTo', { user: t.other }) }}</b>
                     <span class="muted small when">{{ whenLabel(t) }}</span>
                   </span>
                 </router-link>
-                <span v-if="t.status !== 'pending'" class="status">{{ STATUS[t.status] }}</span>
+                <span v-if="t.status !== 'pending'" class="status">{{ $t(`trades.status.${t.status}`) }}</span>
               </div>
 
               <div class="it-cards">
                 <div class="it-side">
-                  <div class="muted small">{{ t.direction === 'received' ? 'Tu reçois' : 'Tu demandes' }}</div>
+                  <div class="muted small">{{ t.direction === 'received' ? $t('trades.youGet') : $t('trades.youAsk') }}</div>
                   <div class="mini-cards">
                     <div v-for="c in cardsOf(t.direction === 'received' ? t.give : t.take)" :key="c.id" class="mini-wrap">
                       <F1Card :card="c" :interactive="false" class="mini" />
                       <!-- Ce que j'en ai déjà (échanges en attente seulement) -->
                       <template v-if="t.status === 'pending'">
-                        <span v-if="!col.owned.has(c.id)" class="mini-badge new">Nouvelle</span>
+                        <span v-if="!col.owned.has(c.id)" class="mini-badge new">{{ $t('trades.newBadge') }}</span>
                         <span v-else class="mini-badge mono">×{{ col.owned.get(c.id) }}</span>
                       </template>
                     </div>
@@ -96,13 +96,13 @@
                 </div>
                 <Icon name="swap" :size="20" class="arrow" />
                 <div class="it-side">
-                  <div class="muted small">Tu donnes</div>
+                  <div class="muted small">{{ $t('trades.youGive') }}</div>
                   <div class="mini-cards">
                     <div v-for="c in cardsOf(t.direction === 'received' ? t.take : t.give)" :key="c.id" class="mini-wrap">
                       <F1Card :card="c" :interactive="false" class="mini" />
                       <!-- Mes exemplaires de la carte donnée : doublon ou dernier -->
                       <template v-if="t.status === 'pending'">
-                        <span v-if="(col.owned.get(c.id) ?? 0) <= 1" class="mini-badge last">Dernier</span>
+                        <span v-if="(col.owned.get(c.id) ?? 0) <= 1" class="mini-badge last">{{ $t('trades.last') }}</span>
                         <span v-else class="mini-badge mono">×{{ col.owned.get(c.id) }}</span>
                       </template>
                     </div>
@@ -114,10 +114,10 @@
                 <span class="muted small">{{ t.direction === 'received' ? impact(t) : '' }}</span>
                 <div class="it-actions">
                   <template v-if="t.direction === 'received'">
-                    <button class="btn btn-ghost" :disabled="busy" @click="respond(t, false)">Refuser</button>
-                    <button class="btn" :disabled="busy" @click="respond(t, true)">Accepter</button>
+                    <button class="btn btn-ghost" :disabled="busy" @click="respond(t, false)">{{ $t('friend.decline') }}</button>
+                    <button class="btn" :disabled="busy" @click="respond(t, true)">{{ $t('friend.accept') }}</button>
                   </template>
-                  <button v-else class="btn btn-ghost" :disabled="busy" @click="cancel(t)">Annuler</button>
+                  <button v-else class="btn btn-ghost" :disabled="busy" @click="cancel(t)">{{ $t('common.cancel') }}</button>
                 </div>
               </div>
             </li>
@@ -131,6 +131,8 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { intlLocale } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
@@ -138,17 +140,8 @@ import TradeComposer from '@/components/cards/TradeComposer.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { economyMessage } from '@/utils/cards'
 
-const TABS = [
-  { id: 'received', label: 'Reçues' },
-  { id: 'sent', label: 'Envoyées' },
-  { id: 'history', label: 'Historique' },
-]
-const EMPTY = {
-  received: 'Aucune proposition reçue pour le moment.',
-  sent: 'Aucune proposition en attente. Lance un nouvel échange avec un ami !',
-  history: 'Tes échanges terminés apparaîtront ici.',
-}
-const STATUS = { accepted: 'Conclu', declined: 'Refusé', cancelled: 'Annulé', expired: 'Expiré', failed: 'Impossible' }
+const { t: tr } = useI18n()
+const TABS = ['received', 'sent', 'history'].map((id) => ({ id, label: tr(`trades.tabs.${id}`) }))
 
 const col = useCollectionStore()
 const route = useRoute()
@@ -173,15 +166,15 @@ function impact(t) {
   const fresh = t.give.filter((id) => !col.owned.has(id)).length
   const last = t.take.filter((id) => col.owned.get(id) === 1).length
   const parts = []
-  if (fresh) parts.push(`${fresh} nouvelle${fresh > 1 ? 's' : ''} pour toi`)
-  if (last) parts.push(`${last} dernier${last > 1 ? 's' : ''} exemplaire${last > 1 ? 's' : ''} donné${last > 1 ? 's' : ''}`)
+  if (fresh) parts.push(tr('trades.fresh', fresh))
+  if (last) parts.push(tr('trades.lastGiven', last))
   return parts.join(' · ')
 }
 
 function whenLabel(t) {
-  if (t.status !== 'pending') return new Date(t.resolved_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+  if (t.status !== 'pending') return new Date(t.resolved_at).toLocaleDateString(intlLocale(), { day: 'numeric', month: 'short' })
   const h = Math.max(0, Math.round((new Date(t.expires_at).getTime() - Date.now()) / 3600000))
-  return `expire dans ${h} h`
+  return tr('trades.expires', { n: h })
 }
 
 // Composer : depuis « Nouvel échange » ou un profil (?avec=pseudo)
@@ -242,7 +235,7 @@ async function cancel(t) {
 
 onMounted(async () => {
   if (!col.ready) await col.init()
-  if (col.isPlayer) col.loadTrades().catch(() => (error.value = 'Impossible de charger tes échanges.'))
+  if (col.isPlayer) col.loadTrades().catch(() => (error.value = tr('trades.loadError')))
 })
 </script>
 

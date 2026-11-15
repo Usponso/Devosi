@@ -2,14 +2,14 @@
   <section class="quests" aria-labelledby="quests-title">
     <header class="q-head">
       <div>
-        <h2 id="quests-title" class="title-md">Quêtes du jour</h2>
+        <h2 id="quests-title" class="title-md">{{ $t('quests.title') }}</h2>
         <p class="muted small q-sub">
-          <Icon name="clock" :size="13" /> Nouvelles quêtes dans <span class="mono">{{ resetIn }}</span>
-          <template v-if="data?.reroll_available"> · 1 relance disponible</template>
+          <Icon name="clock" :size="13" /> {{ $t('quests.newIn') }} <span class="mono">{{ resetIn }}</span>
+          <template v-if="data?.reroll_available"> · {{ $t('quests.rerollAvailable') }}</template>
         </p>
       </div>
-      <div class="streak" :aria-label="`Série de ${streak} jour${streak > 1 ? 's' : ''} sur 7`">
-        <span class="muted small">Série : {{ streak }} jour{{ streak > 1 ? 's' : '' }}</span>
+      <div class="streak" :aria-label="$t('quests.streakLabel', { n: streak })">
+        <span class="muted small">{{ $t('quests.streak', streak) }}</span>
         <span class="days">
           <span v-for="d in 7" :key="d" class="day" :class="{ on: d <= streak, gift: d === 7 }">
             <Icon v-if="d === 7" name="gift" :size="12" />
@@ -20,36 +20,36 @@
     </header>
 
     <p v-if="error" class="error small">{{ error }}</p>
-    <p v-else-if="!data" class="muted small">Chargement des quêtes…</p>
+    <p v-else-if="!data" class="muted small">{{ $t('quests.loading') }}</p>
 
     <template v-else>
       <ul class="q-list">
         <li v-for="q in data.quests" :key="`${q.slot}-${q.id}`" class="quest" :class="[`tier-${q.tier}`, { done: q.progress >= q.target, claimed: q.claimed }]">
           <span class="q-icon"><Icon :name="questIcon(q)" :size="18" /></span>
           <div class="q-body">
-            <div class="q-tier">{{ TIERS[q.tier] }}</div>
+            <div class="q-tier">{{ $t(`quests.tier.${q.tier}`) }}</div>
             <div class="q-name">
               {{ questLabel(q) }}
-              <router-link v-if="ATELIER_KINDS.includes(q.kind) && !q.claimed && q.progress < q.target" to="/atelier" class="q-link">Atelier →</router-link>
+              <router-link v-if="ATELIER_KINDS.includes(q.kind) && !q.claimed && q.progress < q.target" to="/atelier" class="q-link">{{ $t('quests.atelierLink') }}</router-link>
             </div>
             <div v-if="questHint(q)" class="q-hint">{{ questHint(q) }}</div>
             <span class="q-bar"><span :style="{ width: `${Math.min(1, q.progress / q.target) * 100}%` }"></span></span>
           </div>
           <div class="q-side">
             <span class="q-reward">
-              <template v-if="q.packs"><Icon name="package" :size="14" /> {{ q.packs }} pack bonus</template>
+              <template v-if="q.packs"><Icon name="package" :size="14" /> {{ $t('quests.bonusPacks', q.packs) }}</template>
               <template v-else><span class="mono">{{ q.coins }}</span> <Icon name="coin" :size="14" class="coin" /></template>
             </span>
-            <span v-if="q.claimed" class="q-claimed"><Icon name="check" :size="14" /> Récupéré</span>
-            <button v-else-if="q.progress >= q.target" class="btn q-claim" :disabled="busy" @click="claim(q)">Récupérer</button>
+            <span v-if="q.claimed" class="q-claimed"><Icon name="check" :size="14" /> {{ $t('quests.claimed') }}</span>
+            <button v-else-if="q.progress >= q.target" class="btn q-claim" :disabled="busy" @click="claim(q)">{{ $t('common.claim') }}</button>
             <span v-else class="q-progress">
               <span class="mono muted">{{ q.progress }} / {{ q.target }}</span>
               <button
                 v-if="data.reroll_available"
                 class="q-reroll"
                 :disabled="busy"
-                :title="'Remplacer cette quête (1 fois par jour)'"
-                :aria-label="`Remplacer la quête : ${questLabel(q)}`"
+                :title="$t('quests.rerollTitle')"
+                :aria-label="$t('quests.rerollLabel', { quest: questLabel(q) })"
                 @click="reroll(q)"
               >
                 <Icon name="rotate" :size="14" />
@@ -65,10 +65,10 @@
       <div class="bonus" :class="{ done: data.bonus_claimed }">
         <Icon name="gift" :size="22" />
         <div>
-          <div class="bonus-title">{{ data.bonus_claimed ? 'Bonus du jour récupéré' : 'Les 4 quêtes terminées' }}</div>
+          <div class="bonus-title">{{ data.bonus_claimed ? $t('quests.bonusClaimed') : $t('quests.bonusTitle') }}</div>
           <div class="muted small">
             <template v-if="bonusMessage">{{ bonusMessage }}</template>
-            <template v-else>+1 pack bonus et un jour de série en plus · {{ claimedCount }} / 4</template>
+            <template v-else>{{ $t('quests.bonusText', { n: claimedCount }) }}</template>
           </div>
         </div>
       </div>
@@ -78,17 +78,17 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import { PICKABLE_TEAMS } from '@/data/teams'
 import { RARITY_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { economyMessage } from '@/utils/cards'
 
-const TIERS = { 1: 'Facile', 2: 'Moyenne', 3: 'Difficile' }
-const TYPE_LABELS = { driver: ['carte Pilote', 'cartes Pilote'], team: ['carte Écurie', 'cartes Écurie'], gp: ['carte Grand Prix', 'cartes Grand Prix'], moment: ['carte Moment', 'cartes Moment'], masterpiece: ["carte Chef-d'œuvre", "cartes Chef-d'œuvre"], poster: ['Affiche', 'Affiches'], stained_glass: ['Vitrail', 'Vitraux'], playing_card: ['carte à jouer', 'cartes à jouer'] }
 const ICONS = { open: 'package', recycle: 'recycle', new: 'cards', cards: 'cards', type: 'album', rarity: 'star', craft: 'hammer', trade_up: 'gauge', upgrade: 'star', team: 'flag', decade: 'calendar' }
 const ATELIER_KINDS = ['recycle', 'craft', 'trade_up', 'upgrade']
 
 const col = useCollectionStore()
+const { t, te } = useI18n()
 const data = computed(() => col.quests)
 const busy = ref(false)
 const error = ref('')
@@ -98,8 +98,6 @@ const bonusMessage = ref('')
 const streak = computed(() => data.value?.streak ?? 0)
 const claimedCount = computed(() => data.value?.quests.filter((q) => q.claimed).length ?? 0)
 
-const plural = (n, [one, many]) => `${n} ${n > 1 ? many : one}`
-
 /** Nom d'écurie : la grille actuelle, sinon la carte Écurie du catalogue */
 function teamName(id) {
   return PICKABLE_TEAMS.find((t) => t.id === id)?.name ?? col.byId.get(`t-${id}`)?.name ?? id
@@ -108,19 +106,22 @@ function teamName(id) {
 function questLabel(q) {
   const n = q.target
   switch (q.kind) {
-    case 'open': return `Ouvrir ${plural(n, ['pack', 'packs'])}`
-    case 'recycle': return `Recycler ${plural(n, ['doublon', 'doublons'])}`
-    case 'new': return `Obtenir ${plural(n, ['nouvelle carte', 'nouvelles cartes'])}`
-    case 'cards': return `Obtenir ${plural(n, ['carte', 'cartes'])}`
-    case 'type': return `Obtenir ${n > 1 ? n : 'une'} ${TYPE_LABELS[q.param]?.[n > 1 ? 1 : 0] ?? 'carte'}`
-    case 'rarity': return `Obtenir une ${RARITY_LABEL[q.param]} ou mieux`
-    case 'craft': return 'Fabriquer une carte à l’Atelier'
-    case 'trade_up': return 'Faire une « Vitesse supérieure »'
-    case 'upgrade': return 'Débloquer une finition Chrome ou Or'
-    case 'team': return q.param ? `Obtenir une carte ${teamName(q.param)}` : 'Obtenir une carte Écurie'
+    case 'open':
+    case 'recycle':
+    case 'new':
+    case 'cards':
+      return t(`quests.kind.${q.kind}`, n)
+    case 'type':
+      return te(`quests.type.${q.param}`) ? t(`quests.type.${q.param}`, n) : t('quests.kind.cards', n)
+    case 'rarity': return t('quests.kind.rarity', { rarity: RARITY_LABEL[q.param] })
+    case 'craft':
+    case 'trade_up':
+    case 'upgrade':
+      return t(`quests.kind.${q.kind}`)
+    case 'team': return q.param ? t('quests.kind.team', { team: teamName(q.param) }) : t('quests.kind.anyTeam')
     case 'decade': {
       const y = Number(q.param)
-      return `Obtenir une carte des années ${y < 2000 ? y % 100 : y}`
+      return t('quests.kind.decade', { decade: y < 2000 ? y % 100 : y })
     }
     default: return q.id
   }
@@ -129,8 +130,8 @@ function questLabel(q) {
 /** Précision sur les cartes qui comptent, pour les quêtes qui ne sont pas évidentes */
 function questHint(q) {
   if (q.claimed || q.progress >= q.target) return ''
-  if (q.kind === 'team' && q.param) return `Pilote (son écurie principale), carte Écurie ou Grand Prix gagné par ${teamName(q.param)}`
-  if (q.kind === 'decade') return 'Pilote ou écurie qui y a débuté, Grand Prix ou Moment de cette décennie'
+  if (q.kind === 'team' && q.param) return t('quests.hintTeam', { team: teamName(q.param) })
+  if (q.kind === 'decade') return t('quests.hintDecade')
   return ''
 }
 
@@ -166,7 +167,7 @@ async function load() {
     await col.loadQuests()
   } catch (err) {
     console.error('[Quêtes]', err)
-    error.value = 'Impossible de charger les quêtes pour le moment.'
+    error.value = t('quests.loadError')
   }
 }
 
@@ -185,12 +186,12 @@ async function run(task) {
 const claim = (q) =>
   run(async () => {
     const { reward, bonus } = await col.claimQuest(q.slot)
-    flash[q.slot] = reward.packs ? `+${reward.packs} pack bonus` : `+${reward.coins} Pièces`
+    flash[q.slot] = reward.packs ? `+${t('quests.bonusPacks', reward.packs)}` : `+${t('common.coins', reward.coins)}`
     setTimeout(() => delete flash[q.slot], 1800)
     if (bonus) {
       bonusMessage.value = bonus.special
-        ? `+1 pack bonus · 7 jours de série : un pack spécial avec une Épique garantie t’attend !`
-        : `+1 pack bonus · série de ${bonus.streak} jour${bonus.streak > 1 ? 's' : ''}`
+        ? t('quests.bonusSpecial')
+        : t('quests.bonusStreak', bonus.streak)
     }
   })
 

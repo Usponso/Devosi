@@ -2,10 +2,10 @@
   <transition name="picker">
     <div v-if="prefs.pickerOpen" class="picker-backdrop" @click.self="close">
       <div class="picker" role="dialog" aria-modal="true" aria-labelledby="picker-title">
-        <button class="picker-close" aria-label="Fermer" @click="close"><Icon name="x" /></button>
-        <div class="eyebrow">Personnalise ton Devosi</div>
-        <h2 id="picker-title" class="title-lg picker-title">Ton écurie</h2>
-        <p class="dim picker-sub">L'app prend ses couleurs et met ses pilotes en avant.</p>
+        <button class="picker-close" :aria-label="$t('common.close')" @click="close"><Icon name="x" /></button>
+        <div class="eyebrow">{{ $t('picker.eyebrow') }}</div>
+        <h2 id="picker-title" class="title-lg picker-title">{{ $t('picker.title') }}</h2>
+        <p class="dim picker-sub">{{ $t('picker.sub') }}</p>
 
         <div class="picker-grid">
           <button
@@ -22,7 +22,7 @@
           </button>
         </div>
 
-        <button v-if="!prefs.favoriteTeamId" class="picker-skip muted" @click="prefs.skipPicker()">Plus tard</button>
+        <button v-if="!prefs.favoriteTeamId" class="picker-skip muted" @click="prefs.skipPicker()">{{ $t('common.later') }}</button>
       </div>
     </div>
   </transition>

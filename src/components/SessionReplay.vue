@@ -1,7 +1,7 @@
 <template>
   <div class="replay">
     <!-- Séances du week-end -->
-    <div class="sessions" role="tablist" aria-label="Séance">
+    <div class="sessions" role="tablist" :aria-label="$t('replay.sessionTabs')">
       <button
         v-for="s in sessions"
         :key="s.key"
@@ -19,14 +19,14 @@
       </span>
     </div>
 
-    <p v-if="!sessions.length && !listLoading" class="muted empty">Aucune séance disponible pour ce Grand Prix.</p>
+    <p v-if="!sessions.length && !listLoading" class="muted empty">{{ $t('replay.none') }}</p>
     <div v-else-if="listLoading || loading" class="skeleton replay-skeleton"></div>
 
     <!-- Séance en cours : chrono, le replay arrive après -->
     <div v-else-if="selected?.status === 'live'" class="live card-in">
-      <span class="live-badge"><span class="live-dot"></span> Séance en cours</span>
+      <span class="live-badge"><span class="live-dot"></span> {{ $t('replay.liveBadge') }}</span>
       <div class="live-clock mono">{{ liveElapsed }}</div>
-      <p class="muted">{{ selected.label }} · le replay sera disponible vers {{ readyAt }}, environ 30 minutes après la fin.</p>
+      <p class="muted">{{ $t('replay.liveText', { session: selected.label, time: readyAt }) }}</p>
     </div>
 
     <p v-else-if="error" class="muted empty">{{ error }}</p>
@@ -37,7 +37,7 @@
         <div class="tower">
           <div class="tower-head">
             <span class="title-sm">{{ progressLabel }}</span>
-            <span class="muted small">{{ model.kind === 'race' ? 'Écart' : 'Meilleur tour' }}</span>
+            <span class="muted small">{{ model.kind === 'race' ? $t('replay.gap') : $t('replay.bestLap') }}</span>
           </div>
           <TransitionGroup tag="ol" name="tower" class="rows">
             <li v-for="r in rows" :key="r.n" class="row" :class="{ out: r.out, me: favoriteNumbers.has(r.n) }">
@@ -46,7 +46,7 @@
               <span class="code">{{ driver(r.n).code }}</span>
               <span v-if="r.delta > 0" class="delta up">▲{{ r.delta }}</span>
               <span v-else-if="r.delta < 0" class="delta down">▼{{ -r.delta }}</span>
-              <span v-if="r.pit" class="tag pit">PIT</span>
+              <span v-if="r.pit" class="tag pit">{{ $t('replay.pitTag') }}</span>
               <span class="gap mono">{{ r.label }}</span>
             </li>
           </TransitionGroup>
@@ -55,15 +55,15 @@
         <!-- Tracé et événements -->
         <div class="side">
           <div v-if="model.kind === 'race' && shape" class="map">
-            <svg :viewBox="shape.viewBox" role="img" aria-label="Position des voitures sur le tracé">
+            <svg :viewBox="shape.viewBox" role="img" :aria-label="$t('replay.mapLabel')">
               <path ref="trackPath" class="track" :d="shape.d" />
               <circle v-for="dot in dots" :key="dot.n" :cx="dot.x" :cy="dot.y" :r="dot.lead ? 20 : 15" :fill="dot.color" class="car" :class="{ lead: dot.lead }" />
             </svg>
-            <span class="map-note muted">Positions estimées d'après les écarts</span>
+            <span class="map-note muted">{{ $t('replay.mapNote') }}</span>
           </div>
           <div class="feed">
-            <div class="title-sm">Événements</div>
-            <p v-if="!feed.length" class="muted small">Rien à signaler pour l'instant.</p>
+            <div class="title-sm">{{ $t('replay.events') }}</div>
+            <p v-if="!feed.length" class="muted small">{{ $t('replay.noEvents') }}</p>
             <TransitionGroup v-else tag="ul" name="feed" class="feed-list">
               <li v-for="e in feed" :key="e.id" :class="`ev-${e.kind}`">
                 <span class="ev-when mono">{{ e.when }}</span>
@@ -78,7 +78,7 @@
 
       <!-- Lecture -->
       <div class="controls">
-        <button class="btn play" :aria-label="playing ? 'Pause' : 'Lecture'" @click="toggle">
+        <button class="btn play" :aria-label="playing ? $t('replay.pause') : $t('replay.play')" @click="toggle">
           <Icon :name="playing ? 'pause' : 'play'" :size="16" />
         </button>
         <input
@@ -88,10 +88,10 @@
           min="0"
           :max="end"
           :step="model.kind === 'race' ? 0.01 : 1"
-          aria-label="Position dans la séance"
+          :aria-label="$t('replay.scrub')"
           @input="playing = false"
         />
-        <div class="speeds" role="group" aria-label="Vitesse">
+        <div class="speeds" role="group" :aria-label="$t('replay.speed')">
           <button v-for="s in SPEEDS" :key="s" class="chip small" :class="{ on: speed === s }" @click="speed = s">×{{ s }}</button>
         </div>
       </div>
@@ -101,6 +101,8 @@
 
 <script setup>
 import { computed, onUnmounted, ref, shallowRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { intlLocale } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import circuits from '@/data/circuits.json'
 import { useF1Store } from '@/stores/f1Store'
@@ -110,9 +112,11 @@ import { weekendSessions } from '@/utils/race'
 import { buildRaceReplay, buildTimedReplay, formatLapTime, timedStandings } from '@/utils/replay'
 
 const props = defineProps({ race: { type: Object, required: true } })
+// `t` est déjà le curseur de lecture : la traduction s'appelle `tr`
+const { t: tr } = useI18n()
 
 const SPEEDS = [1, 4, 16]
-const TRACK_LABEL = { SC: 'Safety car', VSC: 'Virtual safety car', RED: 'Drapeau rouge' }
+const TRACK_LABEL = { SC: tr('replay.sc'), VSC: tr('replay.vsc'), RED: tr('replay.red') }
 // Vitesse ×1 : 1 tour toutes les 4 s (course), 30 s de séance par seconde (qualifs, essais)
 const RACE_RATE = 0.25
 const TIMED_RATE = 30
@@ -179,7 +183,7 @@ async function select(session) {
     }
     t.value = 0
   } catch {
-    if (selected.value === session) error.value = 'Données de replay indisponibles pour cette séance.'
+    if (selected.value === session) error.value = tr('replay.unavailable')
   } finally {
     if (selected.value === session) loading.value = false
   }
@@ -243,7 +247,7 @@ const rows = computed(() => {
     return frameRows.map((r) => ({
       ...r,
       delta: prev.has(r.n) && !r.out ? prev.get(r.n) - r.pos : 0,
-      label: r.out ? 'Abandon' : lap.value === 0 ? 'Grille' : r.pos === 1 ? 'Leader' : r.lapsDown ? `+${r.lapsDown} T` : r.gap != null ? `+${r.gap.toFixed(1)}` : '',
+      label: r.out ? tr('replay.retired') : lap.value === 0 ? tr('replay.grid') : r.pos === 1 ? tr('home.leader') : r.lapsDown ? tr('replay.lapsDown', { n: r.lapsDown }) : r.gap != null ? `+${r.gap.toFixed(1)}` : '',
     }))
   }
   const numbers = [...drivers.value.keys()]
@@ -253,14 +257,14 @@ const rows = computed(() => {
     delta: 0,
     pit: false,
     out: false,
-    label: r.time == null ? 'Pas de temps' : i === 0 ? formatLapTime(r.time) : `+${r.gap.toFixed(3)}`,
+    label: r.time == null ? tr('replay.noTime') : i === 0 ? formatLapTime(r.time) : `+${r.gap.toFixed(3)}`,
   }))
 })
 
 const progressLabel = computed(() => {
   const m = model.value
   if (!m) return ''
-  if (m.kind === 'race') return lap.value === 0 ? 'Grille de départ' : `Tour ${lap.value} / ${m.totalLaps}`
+  if (m.kind === 'race') return lap.value === 0 ? tr('replay.startingGrid') : tr('replay.lapOf', { lap: lap.value, total: m.totalLaps })
   const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
   return `${fmt(second.value)} / ${fmt(m.duration)}`
 })
@@ -278,7 +282,7 @@ const feed = computed(() => {
     .map((e, i) => ({
       ...e,
       id: `${e.lap ?? e.t}-${e.kind}-${e.n ?? ''}-${e.other ?? ''}-${i}`,
-      when: m.kind === 'race' ? `T${e.lap}` : `${Math.floor(e.t / 60)}'`,
+      when: m.kind === 'race' ? tr('replay.lapShort', { n: e.lap }) : `${Math.floor(e.t / 60)}'`,
     }))
 })
 
@@ -319,7 +323,7 @@ const liveElapsed = computed(() => {
   return h ? `${h}:${mm}:${ss}` : `${mm}:${ss}`
 })
 const readyAt = computed(() =>
-  selected.value ? new Date(selected.value.end.getTime() + PUBLISH_DELAY).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '',
+  selected.value ? new Date(selected.value.end.getTime() + PUBLISH_DELAY).toLocaleTimeString(intlLocale(), { hour: '2-digit', minute: '2-digit' }) : '',
 )
 
 const clock = setInterval(() => {

@@ -2,12 +2,12 @@
   <transition name="fade">
     <div v-if="open" class="backdrop" @click.self="close">
       <div class="dialog card" :class="{ compact: single && !['showcase', 'avatar'].includes(tab) }" role="dialog" aria-modal="true" aria-labelledby="profile-title">
-        <button class="close" aria-label="Fermer" @click="close"><Icon name="x" /></button>
+        <button class="close" :aria-label="$t('common.close')" @click="close"><Icon name="x" /></button>
 
         <!-- Une seule section : titre de la fenêtre -->
         <div v-if="single" class="single-head">
-          <div class="eyebrow">Mon profil</div>
-          <h2 id="profile-title" class="title-md">{{ SINGLE_TITLES[tab] }}</h2>
+          <div class="eyebrow">{{ $t('account.profile') }}</div>
+          <h2 id="profile-title" class="title-md">{{ $t(`profileEditor.single.${tab}`) }}</h2>
         </div>
 
         <!-- Aperçu -->
@@ -20,27 +20,27 @@
             :size="72"
           />
           <div class="preview-text">
-            <div class="eyebrow">Mon profil</div>
-            <h2 id="profile-title" class="title-md">{{ profile.username ? `@${profile.username}` : 'Ma collection' }}</h2>
-            <div v-if="currentTitle" class="title-badge" :class="{ 'title-master': col.isMasterTitle(profile.title) }">{{ currentTitle }}</div>
+            <div class="eyebrow">{{ $t('account.profile') }}</div>
+            <h2 id="profile-title" class="title-md">{{ profile.username ? `@${profile.username}` : $t('account.collection') }}</h2>
+            <div v-if="currentTitle" class="title-badge" :class="col.titleClass(profile.title)">{{ currentTitle }}</div>
           </div>
         </div>
 
         <div v-if="!single" class="tabs" role="tablist">
           <button v-for="t in TABS" :key="t.id" role="tab" class="tab" :class="{ active: tab === t.id }" :aria-selected="tab === t.id" @click="tab = t.id">
-            <Icon :name="t.icon" :size="15" /> {{ t.label }}
+            <Icon :name="t.icon" :size="15" /> {{ $t(`profileEditor.tabs.${t.id}`) }}
           </button>
         </div>
 
         <!-- Vitrine : 5 cartes affichées sur le profil public -->
         <section v-if="tab === 'showcase'" class="panel">
-          <p class="muted small">Tes 5 cartes préférées, en tête de ton profil public. Touche une carte de ta collection pour l'ajouter, et glisse les cartes de la vitrine pour changer leur ordre.</p>
+          <p class="muted small">{{ $t('profileEditor.showcaseText') }}</p>
           <ShowcaseSlots :ids="col.showcase" :busy="busy" @reorder="reorderShowcase" @remove="toggleShowcase" />
           <div class="filters">
             <div class="chips">
               <button v-for="t in CARD_TYPES" :key="t.id" class="chip" :class="{ active: type === t.id }" @click="type = t.id">{{ t.label }}</button>
             </div>
-            <input v-model.trim="search" class="input" type="search" placeholder="Rechercher" aria-label="Rechercher une carte" />
+            <input v-model.trim="search" class="input" type="search" :placeholder="$t('common.search')" :aria-label="$t('common.searchCard')" />
           </div>
           <div class="sc-grid">
             <button
@@ -57,23 +57,23 @@
               <span v-if="col.showcase.includes(card.id)" class="sc-order mono">{{ col.showcase.indexOf(card.id) + 1 }}</span>
             </button>
           </div>
-          <p v-if="!ownedOfType.length" class="muted small">Aucune carte de ce type pour l'instant.</p>
-          <button v-if="ownedOfType.length > limit" class="btn btn-ghost more" @click="limit += 48">Afficher plus</button>
+          <p v-if="!ownedOfType.length" class="muted small">{{ $t('profileEditor.noneOfType') }}</p>
+          <button v-if="ownedOfType.length > limit" class="btn btn-ghost more" @click="limit += 48">{{ $t('common.showMore') }}</button>
         </section>
 
         <!-- Avatar -->
         <section v-else-if="tab === 'avatar'" class="panel">
-          <p class="muted small">La photo d'une de tes cartes, dans un cadre aux couleurs de sa rareté. Les finitions Chrome et Or brillent aussi.</p>
+          <p class="muted small">{{ $t('profileEditor.avatarText') }}</p>
           <div class="filters">
             <div class="chips">
               <button v-for="t in CARD_TYPES" :key="t.id" class="chip" :class="{ active: type === t.id }" @click="type = t.id">{{ t.label }}</button>
             </div>
-            <input v-model.trim="search" class="input" type="search" placeholder="Rechercher" aria-label="Rechercher une carte" />
+            <input v-model.trim="search" class="input" type="search" :placeholder="$t('common.search')" :aria-label="$t('common.searchCard')" />
           </div>
           <div class="avatar-grid">
             <button class="avatar-pick" :class="{ selected: !profile.avatar }" :disabled="busy" @click="save('avatar', null)">
               <PlayerAvatar :username="profile.username" :team="profile.team" :size="56" />
-              <span class="pick-name">Initiale</span>
+              <span class="pick-name">{{ $t('profileEditor.initial') }}</span>
             </button>
             <button
               v-for="card in visibleCards"
@@ -87,16 +87,16 @@
               <span class="pick-name">{{ card.name }}</span>
             </button>
           </div>
-          <p v-if="!ownedOfType.length" class="muted small">Aucune carte de ce type pour l'instant.</p>
-          <button v-if="ownedOfType.length > limit" class="btn btn-ghost more" @click="limit += 48">Afficher plus</button>
+          <p v-if="!ownedOfType.length" class="muted small">{{ $t('profileEditor.noneOfType') }}</p>
+          <button v-if="ownedOfType.length > limit" class="btn btn-ghost more" @click="limit += 48">{{ $t('common.showMore') }}</button>
         </section>
 
         <!-- Titre -->
         <section v-else-if="tab === 'title'" class="panel">
-          <p class="muted small">Chaque album complété débloque un titre affiché sous ton pseudo.</p>
+          <p class="muted small">{{ $t('profileEditor.titleText') }}</p>
           <div class="title-list">
             <button class="title-pick" :class="{ selected: !profile.title }" :disabled="busy" @click="save('title', null)">
-              <span>Aucun titre</span>
+              <span>{{ $t('profileEditor.noTitle') }}</span>
             </button>
             <button
               v-for="t in titles"
@@ -108,7 +108,7 @@
             >
               <span class="tp-name"><Icon v-if="!t.unlocked" name="lock" :size="13" /> {{ t.label }}</span>
               <span class="tp-album muted">
-                {{ t.unlocked ? t.album : t.complete ? `Récupère la récompense de « ${t.album} »` : `Album « ${t.album} » · ${t.owned}/${t.total}` }}
+                {{ t.unlocked ? t.album : t.complete ? $t('profileEditor.claimAlbum', { album: t.album }) : $t('profileEditor.albumProgress', { album: t.album, owned: t.owned, total: t.total }) }}
               </span>
             </button>
           </div>
@@ -116,10 +116,10 @@
 
         <!-- Badges : 3 succès débloqués -->
         <section v-else-if="tab === 'badges'" class="panel">
-          <p class="muted small">Jusqu'à 3 succès débloqués, affichés sous ton pseudo. Touche un succès pour l'ajouter ou le retirer.</p>
-          <p v-if="!col.achievements" class="muted small">Chargement…</p>
+          <p class="muted small">{{ $t('profileEditor.badgesText') }}</p>
+          <p v-if="!col.achievements" class="muted small">{{ $t('common.loading') }}</p>
           <p v-else-if="!unlockedAchievements.length" class="muted small">
-            Aucun succès débloqué pour l'instant. <router-link to="/succes" class="link-arrow" @click="close">Voir les succès →</router-link>
+            {{ $t('profileEditor.noAchievements') }} <router-link to="/succes" class="link-arrow" @click="close">{{ $t('profileEditor.seeAchievements') }}</router-link>
           </p>
           <div v-else class="badge-list">
             <button
@@ -133,8 +133,8 @@
             >
               <AchievementBadge :achievement="a" :size="40" />
               <span class="bp-text">
-                <span class="bp-title">{{ a.title }}</span>
-                <span class="muted small">{{ a.description }}</span>
+                <span class="bp-title">{{ achievementTitle(a) }}</span>
+                <span class="muted small">{{ achievementDescription(a) }}</span>
               </span>
               <span v-if="badges.includes(a.id)" class="bp-order mono">{{ badges.indexOf(a.id) + 1 }}</span>
             </button>
@@ -143,7 +143,7 @@
 
         <!-- Écurie -->
         <section v-else class="panel">
-          <p class="muted small">Ton profil public prend les couleurs de ton écurie.</p>
+          <p class="muted small">{{ $t('profileEditor.teamText') }}</p>
           <div class="team-grid">
             <button
               v-for="team in PICKABLE_TEAMS"
@@ -157,7 +157,7 @@
               <span class="swatch"></span> {{ team.name }}
             </button>
             <button class="team-pick" :class="{ selected: !profile.team }" :disabled="busy" @click="save('team', null)">
-              <span class="swatch none"></span> Aucune
+              <span class="swatch none"></span> {{ $t('profileEditor.noTeam') }}
             </button>
           </div>
         </section>
@@ -170,6 +170,8 @@
 
 <script setup>
 import { computed, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { achievementDescription, achievementTitle } from '@/utils/achievements'
 import Icon from '@/components/Icon.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
 import F1Card from '@/components/cards/F1Card.vue'
@@ -190,22 +192,16 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const TABS = [
-  { id: 'showcase', label: 'Vitrine', icon: 'star' },
-  { id: 'avatar', label: 'Avatar', icon: 'user' },
-  { id: 'title', label: 'Titre', icon: 'trophy' },
-  { id: 'team', label: 'Écurie', icon: 'flag' },
-  { id: 'badges', label: 'Badges', icon: 'star' },
+  // Libellés : profileEditor.tabs.<id>
+  { id: 'showcase', icon: 'star' },
+  { id: 'avatar', icon: 'user' },
+  { id: 'title', icon: 'trophy' },
+  { id: 'team', icon: 'flag' },
+  { id: 'badges', icon: 'star' },
 ]
 
-const SINGLE_TITLES = {
-  showcase: 'Ma vitrine',
-  avatar: 'Mon avatar',
-  title: 'Mon titre',
-  team: 'Mon écurie',
-  badges: 'Mes badges',
-}
-
 const col = useCollectionStore()
+const { t } = useI18n()
 const prefs = usePrefsStore()
 
 const tab = ref(props.initialTab)
@@ -233,7 +229,7 @@ async function toggleShowcase(cardId) {
   try {
     await col.toggleShowcase(cardId)
   } catch (err) {
-    error.value = err.code === 'SHOWCASE_FULL' ? 'Ta vitrine est pleine : retire d’abord une carte.' : economyMessage(err)
+    error.value = err.code === 'SHOWCASE_FULL' ? t('profileEditor.showcaseFull') : economyMessage(err)
   } finally {
     busy.value = false
   }
@@ -277,7 +273,7 @@ const unlockedAchievements = computed(() =>
 async function toggleBadge(id) {
   const on = badges.value.includes(id)
   if (!on && badges.value.length >= 3) {
-    error.value = '3 badges maximum : retire-en un avant d’en ajouter un autre.'
+    error.value = t('achievementsPage.max')
     return
   }
   busy.value = true

@@ -1,8 +1,8 @@
 <template>
-  <div class="coin-balance" :title="`${formatCoins(col.coins)} Pièces`" role="status" aria-label="Solde de Pièces">
+  <div class="coin-balance" :title="$t('common.coins', { n: formatCoins(col.coins) }, col.coins)" role="status" :aria-label="$t('common.balance')">
     <span class="coin" aria-hidden="true"><Icon name="coin" :size="15" /></span>
     <span v-countup="col.coins" class="amount mono"></span>
-    <span class="label">Pièces</span>
+    <span class="label">{{ $t('common.coinsWord') }}</span>
   </div>
 </template>
 

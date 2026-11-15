@@ -2,6 +2,7 @@
  * Données statiques des écuries (non fournies par l'API Jolpica).
  * Couleurs 2026 issues d'OpenF1 (`team_colour`), anciennes écuries en secours pour l'historique.
  */
+import { locale } from '@/i18n'
 
 export const TEAM_COLORS = {
   mercedes: '#00D7B6',
@@ -180,6 +181,53 @@ export const DRIVER_BIOS = {
   bottas: 'Dix fois vainqueur en Grand Prix, Valtteri Bottas fait son retour en titulaire avec Cadillac.',
   perez: 'Sergio « Checo » Pérez, six fois vainqueur, revient en F1 pour lancer le projet Cadillac.',
 }
+
+/** Textes anglais de la saison en cours (bio, base) : remplacent ceux de TEAM_META en anglais */
+const TEAM_META_EN = {
+  mercedes: { base: 'Brackley, United Kingdom', bio: 'After three seasons in the shadows, Mercedes nailed the switch to the 2026 regulations.' },
+  ferrari: { base: 'Maranello, Italy', bio: 'The Scuderia, the most successful team in history, fields Leclerc and Hamilton to get back to the top.' },
+  mclaren: { base: 'Woking, United Kingdom', bio: 'Two-time reigning constructors’ champions, McLaren defend their crown with Norris and Piastri.' },
+  red_bull: { base: 'Milton Keynes, United Kingdom', bio: 'Red Bull Racing enters a new era with its own engine, developed with Ford.' },
+  aston_martin: { base: 'Silverstone, United Kingdom', bio: 'Adrian Newey, Honda and a new wind tunnel: Aston Martin has bet everything on 2026.' },
+  alpine: { base: 'Enstone, United Kingdom', bio: 'Heir to Toleman, Benetton and Renault, the Enstone team now races with a Mercedes engine.' },
+  williams: { base: 'Grove, United Kingdom', bio: 'The Williams rebuild goes on under James Vowles, with Sainz and Albon.' },
+  rb: { base: 'Faenza, Italy', bio: 'Red Bull’s sister team remains the springboard for the programme’s young talents.' },
+  audi: { base: 'Hinwil, Switzerland', bio: 'Sauber becomes Audi: the German manufacturer makes its F1 debut as a works team.' },
+  haas: { base: 'Kannapolis, United States', bio: 'Haas F1 Team, now partnered with Toyota, keeps progressing in the midfield.' },
+  cadillac: { base: 'Silverstone, United Kingdom / Fishers, United States', bio: 'The grid’s eleventh team, Cadillac arrives in F1 with two experienced drivers: Bottas and Pérez.' },
+}
+
+const DRIVER_BIOS_EN = {
+  norris: '2025 world champion, Lando Norris now carries the number 1 at McLaren.',
+  piastri: 'A multiple Grand Prix winner, Oscar Piastri has become one of the most consistent drivers on the grid.',
+  max_verstappen: 'Four-time world champion, Max Verstappen is one of the most complete drivers in F1 history.',
+  hadjar: 'The 2025 revelation at Racing Bulls, Isack Hadjar was promoted to Red Bull alongside Verstappen.',
+  leclerc: 'Ferrari’s standard-bearer, Charles Leclerc combines raw speed with flawless technique.',
+  hamilton: 'Seven-time world champion, Lewis Hamilton is writing the final chapter of his legend in red.',
+  russell: 'Mercedes team leader George Russell is methodical and consistent in his quest for the title.',
+  antonelli: 'Mercedes’ young gem, Andrea Kimi Antonelli has become the big favourite for the 2026 title.',
+  albon: 'Alexander Albon has become a pillar of Williams, bringing experience and consistency.',
+  sainz: 'A four-time Grand Prix winner, Carlos Sainz brings precious experience to Williams.',
+  alonso: 'Two-time world champion, Fernando Alonso keeps defying time with undimmed passion.',
+  stroll: 'Lance Stroll continues his career at Aston Martin, now powered by Honda.',
+  hulkenberg: 'Nico Hülkenberg, one of the most experienced drivers in the paddock, leads the Audi project.',
+  bortoleto: 'F2 champion Gabriel Bortoleto embodies the future of the Audi team.',
+  gasly: 'Pierre Gasly, winner at Monza in 2020, is Alpine’s team leader.',
+  colapinto: 'Franco Colapinto, the promising Argentine, is looking to make his mark at Alpine.',
+  ocon: 'Esteban Ocon, winner in Hungary in 2021, brings his experience to Haas.',
+  bearman: 'Oliver Bearman is confirming at Haas the talent glimpsed in his remarkable debut with Ferrari.',
+  lawson: 'Liam Lawson, the New Zealand talent, brings his aggressive style to Racing Bulls.',
+  arvid_lindblad: 'Arvid Lindblad, the youngest driver on the grid, makes his F1 debut at Racing Bulls.',
+  tsunoda: 'Yuki Tsunoda, the fiery Japanese driver, long carried the colours of the Red Bull programme.',
+  bottas: 'A ten-time Grand Prix winner, Valtteri Bottas returns as a race driver with Cadillac.',
+  perez: 'Sergio “Checo” Pérez, a six-time winner, returns to F1 to launch the Cadillac project.',
+}
+
+/** Métadonnées d'une écurie dans la langue de l'app */
+export const teamMeta = (id) => (TEAM_META[id] ? { ...TEAM_META[id], ...(locale() === 'en' ? TEAM_META_EN[id] : {}) } : {})
+
+/** Bio d'un pilote dans la langue de l'app */
+export const driverBio = (id) => (locale() === 'en' ? DRIVER_BIOS_EN[id] : DRIVER_BIOS[id]) ?? ''
 
 /**
  * Livrées simplifiées pour l'illustration SVG de l'intro (grille 2026).

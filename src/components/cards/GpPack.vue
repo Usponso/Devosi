@@ -12,7 +12,7 @@
       </svg>
       <span class="gp-bottom">
         <span class="gp-name">{{ shortName }}</span>
-        <span class="gp-round">Manche {{ round }}</span>
+        <span class="gp-round">{{ $t('common.round', { n: round }) }}</span>
       </span>
       <span v-if="locked" class="gp-lock"><Icon name="lock" :size="Math.round(width * 0.16)" /></span>
     </span>

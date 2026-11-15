@@ -1,0 +1,18 @@
+export default {
+  single: { showcase: 'Ma vitrine', avatar: 'Mon avatar', title: 'Mon titre', team: 'Mon écurie', badges: 'Mes badges' },
+  tabs: { showcase: 'Vitrine', avatar: 'Avatar', title: 'Titre', team: 'Écurie', badges: 'Badges' },
+  showcaseText: "Tes 5 cartes préférées, en tête de ton profil public. Touche une carte de ta collection pour l'ajouter, et glisse les cartes de la vitrine pour changer leur ordre.",
+  noneOfType: "Aucune carte de ce type pour l'instant.",
+  avatarText: "La photo d'une de tes cartes, dans un cadre aux couleurs de sa rareté. Les finitions Chrome et Or brillent aussi.",
+  initial: 'Initiale',
+  titleText: 'Chaque album complété débloque un titre affiché sous ton pseudo.',
+  noTitle: 'Aucun titre',
+  claimAlbum: 'Récupère la récompense de « {album} »',
+  albumProgress: 'Album « {album} » · {owned}/{total}',
+  badgesText: "Jusqu'à 3 succès débloqués, affichés sous ton pseudo. Touche un succès pour l'ajouter ou le retirer.",
+  noAchievements: "Aucun succès débloqué pour l'instant.",
+  seeAchievements: 'Voir les succès →',
+  teamText: 'Ton profil public prend les couleurs de ton écurie.',
+  noTeam: 'Aucune',
+  showcaseFull: 'Ta vitrine est pleine : retire d’abord une carte.',
+}

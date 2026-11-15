@@ -1,6 +1,6 @@
 <template>
-  <div v-if="items.length >= MIN_ITEMS" class="ticker" aria-label="Tirages marquants des dernières 24 heures">
-    <span class="live" aria-hidden="true"><span class="dot"></span><span class="live-label">En direct</span></span>
+  <div v-if="items.length >= MIN_ITEMS" class="ticker" :aria-label="$t('ticker.label')">
+    <span class="live" aria-hidden="true"><span class="dot"></span><span class="live-label">{{ $t('ticker.live') }}</span></span>
     <div class="viewport">
       <!-- Deux fois la liste : le défilement boucle sans saut -->
       <div class="track" :style="{ animationDuration: `${items.length * SECONDS_PER_ITEM}s` }">
@@ -23,6 +23,7 @@
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { RARITY_LABEL, TYPE_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { fetchLiveTicker } from '@/services/collection'
 import { useCardViewer } from '@/composables/useCardViewer'
@@ -32,6 +33,7 @@ const MIN_ITEMS = 3
 const SECONDS_PER_ITEM = 7
 const REFRESH_MS = 60_000
 
+const { t } = useI18n()
 const col = useCollectionStore()
 const viewer = useCardViewer()
 const rows = ref([])
@@ -44,7 +46,7 @@ const items = computed(() =>
     .map((r) => {
       const card = col.byId.get(r.card)
       if (!card) return null
-      const special = card.edition ? 'Édition' : ['poster', 'masterpiece', 'stained_glass'].includes(card.type) ? TYPE_LABEL[card.type] : null
+      const special = card.edition ? t('ticker.edition') : ['poster', 'masterpiece', 'stained_glass'].includes(card.type) ? TYPE_LABEL[card.type] : null
       return {
         ...r,
         card,
@@ -57,9 +59,9 @@ const items = computed(() =>
 
 function ago(at) {
   const min = Math.max(0, Math.round((now.value - new Date(at).getTime()) / 60000))
-  if (min < 1) return 'à l’instant'
-  if (min < 60) return `il y a ${min} min`
-  return `il y a ${Math.floor(min / 60)} h`
+  if (min < 1) return t('ticker.now')
+  if (min < 60) return t('ticker.minAgo', { n: min })
+  return t('ticker.hAgo', { n: Math.floor(min / 60) })
 }
 
 function open(card) {

@@ -1,41 +1,45 @@
 <template>
   <section class="owner">
     <div class="owned-line">
-      <Icon name="album" :size="16" /> Dans ta collection ×{{ copies }}
+      <Icon name="album" :size="16" /> {{ $t('owner.inCollection', { n: copies }) }}
       <span v-if="finish" class="finish-chip" :class="`f-${finish}`">{{ FINISHES[finish].label }}</span>
     </div>
     <p class="small muted points-line">
       <Icon name="trophy" :size="14" />
-      {{ points(finish) }} pt{{ points(finish) > 1 ? 's' : '' }} au classement
-      <template v-if="finish">({{ value.points }} × {{ FINISHES[finish].multiplier }}, finition {{ FINISHES[finish].label }})</template>
+      {{ $t('owner.points', points(finish)) }}
+      <template v-if="finish">{{ $t('owner.pointsDetail', { base: value.points, mult: FINISHES[finish].multiplier, finish: FINISHES[finish].label }) }}</template>
     </p>
 
     <!-- Doublons : finition et recyclage -->
     <div v-if="nextFinish" class="upgrade">
       <div class="upgrade-head">
-        <span>Finition <b>{{ nextFinish.label }}</b></span>
+        <span><i18n-t keypath="owner.finish" scope="global"><template #name><b>{{ nextFinish.label }}</b></template></i18n-t></span>
         <span class="mono muted">{{ Math.min(copies, nextFinish.copies) }}/{{ nextFinish.copies }}</span>
       </div>
       <span class="meter"><span :class="`f-${nextFinish.id}`" :style="{ width: `${Math.min(1, copies / nextFinish.copies) * 100}%` }"></span></span>
       <span class="small muted">
-        En {{ nextFinish.label }}, la carte compte ×{{ nextFinish.multiplier }} au classement :
-        <b class="mono">{{ points(nextFinish.id) }} pts</b> au lieu de {{ points(finish) }}.
+        <i18n-t keypath="owner.upgradeText" scope="global">
+          <template #finish>{{ nextFinish.label }}</template>
+          <template #mult>{{ nextFinish.multiplier }}</template>
+          <template #pts><b class="mono">{{ $t('common.pts', { n: points(nextFinish.id) }) }}</b></template>
+          <template #current>{{ points(finish) }}</template>
+        </i18n-t>
       </span>
       <button v-if="copies >= nextFinish.copies" class="btn" :disabled="busy" @click="upgrade">
-        <Icon name="star" :size="16" /> Améliorer en {{ nextFinish.label }} ({{ nextFinish.copies - 1 }} doublons)
+        <Icon name="star" :size="16" /> {{ $t('owner.upgrade', { finish: nextFinish.label, n: nextFinish.copies - 1 }) }}
       </button>
     </div>
 
     <div class="row">
       <button class="btn" :class="{ 'btn-ghost': inShowcase }" :disabled="busy" @click="toggleShowcase">
         <Icon :name="inShowcase ? 'check' : 'star'" :size="16" />
-        {{ inShowcase ? 'Retirer de la vitrine' : 'Mettre en vitrine' }}
+        {{ inShowcase ? $t('owner.unshowcase') : $t('owner.showcase') }}
       </button>
       <button v-if="copies > 1 && !numbered" class="btn btn-ghost" :disabled="busy" @click="recycle(1)">
-        <Icon name="recycle" :size="16" /> Recycler 1 · +{{ value.recycle }}
+        <Icon name="recycle" :size="16" /> {{ $t('owner.recycleOne', { n: value.recycle }) }}
       </button>
       <button v-if="copies > 2 && !numbered" class="btn btn-ghost" :disabled="busy" @click="recycle(copies - 1)">
-        <Icon name="recycle" :size="16" /> Recycler les {{ copies - 1 }} doublons · +{{ formatCoins(value.recycle * (copies - 1)) }}
+        <Icon name="recycle" :size="16" /> {{ $t('owner.recycleAll', { n: copies - 1, coins: formatCoins(value.recycle * (copies - 1)) }) }}
       </button>
     </div>
     <p v-if="message" class="small" :class="error ? 'error' : 'accent'">{{ message }}</p>
@@ -44,6 +48,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import { FINISHES, RARITIES, RARITY_VALUE, useCollectionStore } from '@/stores/collectionStore'
 import { economyMessage, formatCoins } from '@/utils/cards'
@@ -54,6 +59,7 @@ const props = defineProps({
 })
 
 const col = useCollectionStore()
+const { t } = useI18n()
 const busy = ref(false)
 const message = ref('')
 const error = ref(false)
@@ -78,17 +84,17 @@ async function run(task) {
     message.value = (await task()) ?? ''
   } catch (err) {
     error.value = true
-    message.value = err.code === 'SHOWCASE_FULL' ? 'Ta vitrine est pleine : retires-en une carte d’abord.' : economyMessage(err)
+    message.value = err.code === 'SHOWCASE_FULL' ? t('profileEditor.showcaseFull') : economyMessage(err)
   } finally {
     busy.value = false
   }
 }
 
-const recycle = (qty) => run(async () => `+${formatCoins(await col.recycle(props.card.id, qty))} Pièces`)
-const upgrade = () => run(async () => `Finition ${FINISHES[await col.upgrade(props.card.id)].label} débloquée !`)
+const recycle = (qty) => run(async () => `+${t('common.coins', { n: formatCoins(await col.recycle(props.card.id, qty)) }, 2)}`)
+const upgrade = () => run(async () => t('owner.unlocked', { finish: FINISHES[await col.upgrade(props.card.id)].label }))
 const toggleShowcase = () => run(async () => {
   await col.toggleShowcase(props.card.id)
-  return inShowcase.value ? 'Ajoutée à ta vitrine.' : 'Retirée de ta vitrine.'
+  return inShowcase.value ? t('packs.added') : t('owner.removed')
 })
 </script>
 

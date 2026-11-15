@@ -5,6 +5,7 @@
  *    abandons).
  *  - Qualifs / essais : meilleur tour de chaque pilote au fil de la séance.
  */
+import { t, intlLocale } from '@/i18n'
 
 /** Instant (ms) où un pilote boucle un tour */
 function crossing(lap, next) {
@@ -33,12 +34,12 @@ function crossingsByDriver(laps) {
   return out
 }
 
-/** Messages de la direction de course → état de la piste et événement en français */
+/** Messages de la direction de course → état de la piste et événement (traduit) */
 const CONTROL_RULES = [
-  [/VSC DEPLOYED/, 'VSC', 'Virtual safety car'],
-  [/VSC ENDING/, null, 'Fin de la virtual safety car'],
-  [/SAFETY CAR DEPLOYED/, 'SC', 'Safety car'],
-  [/SAFETY CAR IN THIS LAP/, 'SC', 'La safety car rentre à ce tour'],
+  [/VSC DEPLOYED/, 'VSC', t('replay.vsc')],
+  [/VSC ENDING/, null, t('replay.vscEnd')],
+  [/SAFETY CAR DEPLOYED/, 'SC', t('replay.sc')],
+  [/SAFETY CAR IN THIS LAP/, 'SC', t('replay.scIn')],
 ]
 
 function controlEvents(control) {
@@ -50,9 +51,9 @@ function controlEvents(control) {
       const rule = CONTROL_RULES.find(([re]) => re.test(msg))
       if (rule) events.push({ lap: m.lap_number, kind: 'flag', track: rule[1], end: rule[1] === null || /IN THIS LAP/.test(msg), text: rule[2] })
     } else if (m.category === 'Flag' && m.flag === 'RED') {
-      events.push({ lap: m.lap_number, kind: 'flag', track: 'RED', text: 'Drapeau rouge' })
+      events.push({ lap: m.lap_number, kind: 'flag', track: 'RED', text: t('replay.red') })
     } else if (m.category === 'Flag' && m.flag === 'GREEN' && events.at(-1)?.track === 'RED') {
-      events.push({ lap: m.lap_number, kind: 'flag', track: null, end: true, text: 'Reprise de la course' })
+      events.push({ lap: m.lap_number, kind: 'flag', track: null, end: true, text: t('replay.restart') })
     }
   }
   return events
@@ -139,20 +140,20 @@ export function buildRaceReplay({ laps, control, pits }, results = []) {
   const events = ctrl.map(({ lap, kind, text }) => ({ lap, kind, text }))
   for (const [n, map] of pitLaps) {
     for (const [lap, { stop, lane }] of map) {
-      const sec = (v) => v.toFixed(1).replace('.', ',')
-      const detail = stop ? ` (arrêt de ${sec(stop)} s)` : lane ? ` (${sec(lane)} s)` : ''
-      events.push({ lap, kind: 'pit', n, text: `aux stands${detail}` })
+      const sec = (v) => v.toLocaleString(intlLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+      const detail = stop ? t('replay.stopDetail', { s: sec(stop) }) : lane ? t('replay.laneDetail', { s: sec(lane) }) : ''
+      events.push({ lap, kind: 'pit', n, text: t('replay.pit', { detail }) })
     }
   }
   for (const [n, k] of retiredAfter) {
-    if (k < totalLaps) events.push({ lap: k + 1, kind: 'out', n, text: 'abandonne' })
+    if (k < totalLaps) events.push({ lap: k + 1, kind: 'out', n, text: t('replay.out') })
   }
   // Départ : plus belle remontée du 1er tour
   if (frames[1]) {
     const best = frames[1]
       .map((r) => ({ n: r.n, gained: (frames[0].find((g) => g.n === r.n)?.pos ?? r.pos) - r.pos }))
       .sort((a, b) => b.gained - a.gained)[0]
-    if (best?.gained >= 2) events.push({ lap: 1, kind: 'move', n: best.n, text: `gagne ${best.gained} places au départ` })
+    if (best?.gained >= 2) events.push({ lap: 1, kind: 'move', n: best.n, text: t('replay.startGain', { n: best.gained }) })
   }
   // Dépassements en piste dans le top 10 (sans arrêt aux stands ni neutralisation)
   for (let L = 2; L <= totalLaps; L++) {
@@ -168,7 +169,7 @@ export function buildRaceReplay({ laps, control, pits }, results = []) {
       const prevB = b && before.get(b.n)
       if (!prevB || b.out || b.pit || prevB.pit || pitLaps.get(b.n)?.has(L + 1)) continue
       if (prevA.pos > prevB.pos) {
-        events.push({ lap: L, kind: a.pos === 1 ? 'lead' : 'move', n: a.n, other: b.n, text: a.pos === 1 ? 'prend la tête devant' : 'dépasse' })
+        events.push({ lap: L, kind: a.pos === 1 ? 'lead' : 'move', n: a.n, other: b.n, text: a.pos === 1 ? t('replay.takesLead') : t('replay.overtakes') })
       }
     }
   }
@@ -196,12 +197,12 @@ export function buildTimedReplay({ laps, control }, sessionStart, sessionEnd) {
   for (const l of timed) {
     if (l.time < best) {
       best = l.time
-      events.push({ t: l.t, kind: 'lead', n: l.n, text: `meilleur temps : ${formatLapTime(l.time)}` })
+      events.push({ t: l.t, kind: 'lead', n: l.n, text: t('replay.bestTime', { time: formatLapTime(l.time) }) })
     }
   }
   for (const m of control ?? []) {
     if (m.category === 'Flag' && m.flag === 'RED' && m.date) {
-      events.push({ t: (Date.parse(m.date) - start) / 1000, kind: 'flag', text: 'Drapeau rouge' })
+      events.push({ t: (Date.parse(m.date) - start) / 1000, kind: 'flag', text: t('replay.red') })
     }
   }
   events.sort((a, b) => a.t - b.t)

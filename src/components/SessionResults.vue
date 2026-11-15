@@ -1,15 +1,15 @@
 <template>
   <div class="session-results">
     <div v-if="!rows.length" class="sr-empty">
-      <span v-if="status === 'live'" class="badge badge-accent badge-live">En piste</span>
+      <span v-if="status === 'live'" class="badge badge-accent badge-live">{{ $t('results.onTrack') }}</span>
       <p class="muted">
-        {{ status === 'upcoming' ? 'La séance n\'a pas encore commencé.' : 'Le classement est publié à la fin de la séance. Mise à jour automatique toutes les minutes.' }}
+        {{ status === 'upcoming' ? $t('results.notStarted') : $t('results.pending') }}
       </p>
     </div>
 
     <template v-else>
       <div class="sr-head">
-        <span>Pos</span><span>Pilote</span><span class="c-best">Temps</span><span class="c-gap">Écart</span><span class="c-laps">Tours</span>
+        <span>{{ $t('results.pos') }}</span><span>{{ $t('results.driver') }}</span><span class="c-best">{{ $t('results.time') }}</span><span class="c-gap">{{ $t('results.gap') }}</span><span class="c-laps">{{ $t('results.laps') }}</span>
       </div>
       <ol class="sr-list">
         <li
@@ -19,7 +19,7 @@
           :class="{ 'is-fav': r.teamId && r.teamId === prefs.favoriteTeamId, out: r.pos == null }"
           :style="{ '--tc': r.color, animationDelay: `${i * 20}ms` }"
         >
-          <span class="mono c-pos" :class="`pos-${r.pos}`">{{ r.pos ?? (r.dns ? 'NP' : 'AB') }}</span>
+          <span class="mono c-pos" :class="`pos-${r.pos}`">{{ r.pos ?? (r.dns ? $t('results.dns') : $t('results.dnf')) }}</span>
           <component :is="r.driverId ? 'router-link' : 'span'" :to="r.driverId ? `/drivers/${r.driverId}` : undefined" class="c-driver">
             <strong>{{ r.name }}</strong>
             <span class="muted small">{{ r.team }}</span>

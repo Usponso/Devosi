@@ -1,0 +1,18 @@
+export default {
+  single: { showcase: 'My showcase', avatar: 'My avatar', title: 'My title', team: 'My team', badges: 'My badges' },
+  tabs: { showcase: 'Showcase', avatar: 'Avatar', title: 'Title', team: 'Team', badges: 'Badges' },
+  showcaseText: 'Your 5 favourite cards, at the top of your public profile. Tap a card from your collection to add it, and drag the showcase cards to reorder them.',
+  noneOfType: 'No card of this type yet.',
+  avatarText: "The photo from one of your cards, in a frame matching its rarity. Chrome and Gold finishes shine too.",
+  initial: 'Initial',
+  titleText: 'Every completed album unlocks a title shown under your username.',
+  noTitle: 'No title',
+  claimAlbum: 'Claim the “{album}” reward',
+  albumProgress: '“{album}” album · {owned}/{total}',
+  badgesText: 'Up to 3 unlocked achievements, shown under your username. Tap an achievement to add or remove it.',
+  noAchievements: 'No achievement unlocked yet.',
+  seeAchievements: 'See achievements →',
+  teamText: 'Your public profile takes on your team’s colours.',
+  noTeam: 'None',
+  showcaseFull: 'Your showcase is full: remove a card first.',
+}

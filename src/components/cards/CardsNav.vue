@@ -1,5 +1,5 @@
 <template>
-  <nav class="cards-nav" aria-label="Section Cartes">
+  <nav class="cards-nav" :aria-label="$t('cardsNav.label')">
     <div class="container cn-inner">
       <div ref="scroller" class="cn-tabs">
         <router-link
@@ -11,7 +11,7 @@
           :aria-current="isActive(tab) ? 'page' : undefined"
         >
           <Icon :name="tab.icon" :size="16" />
-          <span>{{ tab.label }}</span>
+          <span>{{ $t(`cardsNav.${tab.key}`) }}</span>
           <span v-if="badge(tab)" class="cn-badge mono">{{ badge(tab) }}</span>
         </router-link>
       </div>
@@ -29,15 +29,16 @@ import { useCollectionStore } from '@/stores/collectionStore'
 
 /** Onglets communs à toutes les pages de la collection de cartes */
 const TABS = [
-  { to: '/profil', label: 'Mon profil', icon: 'user', badge: 'profile' },
-  { to: '/packs', label: 'Packs', icon: 'package', badge: 'packs' },
-  { to: '/quetes', label: 'Quêtes', icon: 'trophy', badge: 'quests' },
-  { to: '/succes', label: 'Succès', icon: 'star', badge: 'achievements' },
-  { to: '/boutique', label: 'Boutique', icon: 'cart' },
-  { to: '/collection', label: 'Collection', icon: 'album' },
-  { to: '/atelier', label: 'Atelier', icon: 'hammer' },
-  { to: '/echanges', label: 'Échanges', icon: 'swap', badge: 'trades' },
-  { to: '/joueurs', label: 'Joueurs', icon: 'users', badge: 'friends' },
+  // `key` : libellé dans i18n/locales/*/cardsNav.js
+  { to: '/profil', key: 'profile', icon: 'user', badge: 'profile' },
+  { to: '/packs', key: 'packs', icon: 'package', badge: 'packs' },
+  { to: '/quetes', key: 'quests', icon: 'trophy', badge: 'quests' },
+  { to: '/succes', key: 'achievements', icon: 'star', badge: 'achievements' },
+  { to: '/boutique', key: 'shop', icon: 'cart' },
+  { to: '/collection', key: 'collection', icon: 'album' },
+  { to: '/atelier', key: 'atelier', icon: 'hammer' },
+  { to: '/echanges', key: 'trades', icon: 'swap', badge: 'trades' },
+  { to: '/joueurs', key: 'players', icon: 'users', badge: 'friends' },
 ]
 
 const route = useRoute()

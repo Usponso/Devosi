@@ -1,6 +1,6 @@
 <template>
   <div class="circuit" :class="{ small }">
-    <svg v-if="shape" :viewBox="shape.viewBox" role="img" :aria-label="`Tracé du circuit ${label}`">
+    <svg v-if="shape" :viewBox="shape.viewBox" role="img" :aria-label="$t('circuit.label', { name: label })">
       <defs>
         <filter :id="`glow-${uid}`" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="8" />
@@ -17,7 +17,7 @@
     </svg>
     <div v-else-if="!small" class="circuit-missing muted">
       <Icon name="pin" :size="28" />
-      <span>Tracé indisponible</span>
+      <span>{{ $t('circuit.none') }}</span>
     </div>
   </div>
 </template>

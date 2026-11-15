@@ -1,43 +1,43 @@
 <template>
   <div class="page achievements-page">
     <header class="container page-head">
-      <div class="eyebrow">Cartes</div>
-      <h1 class="title-lg">Succès</h1>
-      <p class="dim">Des objectifs à long terme : chaque succès débloqué rapporte des Pièces, et tu peux en afficher 3 en badges sur ton profil.</p>
+      <div class="eyebrow">{{ $t('common.cardsSection') }}</div>
+      <h1 class="title-lg">{{ $t('achievementsPage.title') }}</h1>
+      <p class="dim">{{ $t('achievementsPage.intro') }}</p>
     </header>
 
     <div class="container body">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
       <p v-else-if="error && !data" class="card empty">
-        Impossible de charger les succès. <button class="link-arrow" @click="load">Réessayer</button>
+        {{ $t('achievementsPage.loadError') }} <button class="link-arrow" @click="load">{{ $t('common.retry') }}</button>
       </p>
-      <p v-else-if="!data" class="card empty muted">Chargement…</p>
+      <p v-else-if="!data" class="card empty muted">{{ $t('common.loading') }}</p>
 
       <template v-else>
         <!-- Résumé et badges du profil -->
         <section class="card summary">
           <div class="sum-count">
             <span class="mono big">{{ unlockedCount }}</span>
-            <span class="muted">/ {{ list.length }} succès</span>
+            <span class="muted">{{ $t('achievementsPage.count', { n: list.length }) }}</span>
             <span v-if="col.achievementsReady" class="ready-chip">
-              {{ col.achievementsReady }} récompense{{ col.achievementsReady > 1 ? 's' : '' }} à récupérer
+              {{ $t('achievementsPage.ready', col.achievementsReady) }}
             </span>
           </div>
           <div class="sum-badges">
-            <span class="muted small">Sur ton profil :</span>
+            <span class="muted small">{{ $t('achievementsPage.onProfile') }}</span>
             <template v-for="i in 3" :key="i">
               <AchievementBadge v-if="badgeItems[i - 1]" :achievement="badgeItems[i - 1]" :size="36" />
-              <span v-else class="badge-slot" title="Emplacement libre"></span>
+              <span v-else class="badge-slot" :title="$t('achievementsPage.freeSlot')"></span>
             </template>
             <span class="muted small hint">
-              <template v-if="col.isPlayer">Touche l'étoile d'un succès débloqué pour l'afficher.</template>
-              <template v-else>Visible quand tu auras un pseudo.</template>
+              <template v-if="col.isPlayer">{{ $t('achievementsPage.starHint') }}</template>
+              <template v-else>{{ $t('achievementsPage.needUsername') }}</template>
             </span>
           </div>
           <p v-if="message" class="small" :class="messageError ? 'error' : 'success'">
             {{ message }}
             <button v-if="suggest && !badges.includes(suggest.id) && badges.length < 3" class="link-arrow" :disabled="busy" @click="toggleBadge(suggest)">
-              Afficher « {{ suggest.title }} » sur mon profil →
+              {{ $t('achievementsPage.showSuggest', { title: achievementTitle(suggest) }) }}
             </button>
           </p>
         </section>
@@ -45,7 +45,7 @@
         <!-- Filtres -->
         <div class="filters" role="tablist">
           <button
-            v-for="f in [{ id: 'all', label: 'Tous' }, ...FAMILIES]"
+            v-for="f in [{ id: 'all', label: $t('standings.all') }, ...FAMILIES]"
             :key="f.id"
             role="tab"
             class="chip"
@@ -75,26 +75,26 @@
                 :class="{ on: badges.includes(a.id) }"
                 :disabled="busy"
                 :aria-pressed="badges.includes(a.id)"
-                :title="badges.includes(a.id) ? 'Retirer de mon profil' : 'Afficher sur mon profil'"
-                :aria-label="`${badges.includes(a.id) ? 'Retirer' : 'Afficher'} « ${a.title} » sur mon profil`"
+                :title="badges.includes(a.id) ? $t('achievementsPage.remove') : $t('achievementsPage.show')"
+                :aria-label="$t(badges.includes(a.id) ? 'achievementsPage.removeLabel' : 'achievementsPage.showLabel', { title: achievementTitle(a) })"
                 @click="toggleBadge(a)"
               >
                 <Icon name="star" :size="16" />
               </button>
             </div>
-            <div class="ach-title">{{ a.title }}</div>
-            <div class="muted small">{{ a.description }}</div>
+            <div class="ach-title">{{ achievementTitle(a) }}</div>
+            <div class="muted small">{{ achievementDescription(a) }}</div>
 
             <div class="ach-foot">
               <button v-if="a.unlocked && !a.claimed_at" class="btn claim" :disabled="busy" @click="claim(a)">
-                Récupérer {{ formatCoins(a.coins) }} <Icon name="coin" :size="14" class="coin" />
+                {{ $t('common.claim') }} {{ formatCoins(a.coins) }} <Icon name="coin" :size="14" class="coin" />
               </button>
-              <span v-else-if="a.claimed_at" class="done small"><Icon name="check" :size="14" /> Obtenu le {{ formatDate(a.claimed_at) }}</span>
+              <span v-else-if="a.claimed_at" class="done small"><Icon name="check" :size="14" /> {{ $t('achievementsPage.obtained', { date: formatDate(a.claimed_at) }) }}</span>
               <template v-else>
                 <span class="bar"><span :style="{ width: `${(a.progress / a.target) * 100}%` }"></span></span>
                 <span class="muted small progress">
                   <span class="mono">{{ formatCoins(a.progress) }} / {{ formatCoins(a.target) }}</span>
-                  · {{ formatCoins(a.coins) }} Pièces
+                  · {{ $t('common.coins', { n: formatCoins(a.coins) }, a.coins) }}
                 </span>
               </template>
             </div>
@@ -107,13 +107,16 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { intlLocale } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import AchievementBadge from '@/components/cards/AchievementBadge.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
-import { FAMILIES, TIER_LABEL } from '@/utils/achievements'
+import { FAMILIES, TIER_LABEL, achievementDescription, achievementTitle } from '@/utils/achievements'
 import { economyMessage, formatCoins } from '@/utils/cards'
 
 const col = useCollectionStore()
+const { t } = useI18n()
 const data = computed(() => col.achievements)
 const list = computed(() => data.value?.achievements ?? [])
 const badges = computed(() => data.value?.badges ?? [])
@@ -134,7 +137,7 @@ const familyCount = (id) => {
   return `${items.filter((a) => a.unlocked).length}/${items.length}`
 }
 
-const dateFormat = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
+const dateFormat = new Intl.DateTimeFormat(intlLocale(), { day: 'numeric', month: 'short', year: 'numeric' })
 const formatDate = (iso) => dateFormat.format(new Date(iso))
 
 const busy = ref(false)
@@ -158,7 +161,7 @@ async function run(action, success) {
 // Après une récompense : proposer d'afficher le succès sur le profil
 const suggest = ref(null)
 const claim = async (a) => {
-  await run(() => col.claimAchievement(a.id), (coins) => `« ${a.title} » : +${formatCoins(coins)} Pièces !`)
+  await run(() => col.claimAchievement(a.id), (coins) => t('achievementsPage.claimed', { title: achievementTitle(a), coins: formatCoins(coins) }))
   suggest.value = messageError.value ? null : a
 }
 
@@ -166,12 +169,12 @@ function toggleBadge(a) {
   const on = badges.value.includes(a.id)
   if (!on && badges.value.length >= 3) {
     messageError.value = true
-    message.value = '3 badges maximum : retire-en un avant d’en ajouter un autre.'
+    message.value = t('achievementsPage.max')
     return
   }
   const next = on ? badges.value.filter((id) => id !== a.id) : [...badges.value, a.id]
   suggest.value = null
-  run(() => col.setBadges(next), () => (on ? 'Badge retiré de ton profil.' : 'Badge ajouté à ton profil.'))
+  run(() => col.setBadges(next), () => (on ? t('achievementsPage.removed') : t('achievementsPage.added')))
 }
 
 async function load() {

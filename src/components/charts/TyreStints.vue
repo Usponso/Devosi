@@ -28,7 +28,7 @@
               width: pct(s.lapEnd - s.lapStart + 1),
               '--tyre': compoundColor(s.compound),
             }"
-            :title="`${COMPOUND_FR[s.compound] ?? s.compound} · tours ${s.lapStart}–${s.lapEnd}${s.tyreAge ? ` · pneus usés (${s.tyreAge} t.)` : ''}`"
+            :title="`${COMPOUND[s.compound] ?? s.compound} · ${$t('tyres.laps', { from: s.lapStart, to: s.lapEnd })}${s.tyreAge ? ` · ${$t('tyres.used', { n: s.tyreAge })}` : ''}`"
           >
             <span v-if="s.lapEnd - s.lapStart > totalLaps * 0.08" class="stint-laps mono">{{ s.lapEnd - s.lapStart + 1 }}</span>
           </div>
@@ -38,14 +38,15 @@
     </div>
 
     <div class="axis mono muted">
-      <span>Tour 1</span>
-      <span>Arrêts</span>
+      <span>{{ $t('race.lapN', { n: 1 }) }}</span>
+      <span>{{ $t('tyres.stops') }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { t } from '@/i18n'
 
 const props = defineProps({
   /** [{ number, code, color, pos, highlight, stints: [{ stint, compound, lapStart, lapEnd, tyreAge }] }] */
@@ -53,13 +54,7 @@ const props = defineProps({
   totalLaps: { type: Number, required: true },
 })
 
-const COMPOUND_FR = {
-  SOFT: 'Tendre',
-  MEDIUM: 'Medium',
-  HARD: 'Dur',
-  INTERMEDIATE: 'Intermédiaire',
-  WET: 'Pluie',
-}
+const COMPOUND = Object.fromEntries(['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET'].map((c) => [c, t(`tyres.${c}`)]))
 
 const COMPOUND_VAR = {
   SOFT: 'var(--tyre-soft)',

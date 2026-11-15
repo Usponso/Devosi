@@ -1,13 +1,13 @@
 <template>
   <div class="page shop-page">
     <header class="container page-head">
-      <div class="eyebrow">Cartes</div>
-      <h1 class="title-lg">Boutique</h1>
-      <p class="dim">Dépense tes Pièces pour ouvrir plus de packs.</p>
+      <div class="eyebrow">{{ $t('common.cardsSection') }}</div>
+      <h1 class="title-lg">{{ $t('shop.title') }}</h1>
+      <p class="dim">{{ $t('shop.intro') }}</p>
     </header>
 
     <div class="container body">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
 
       <template v-else>
         <!-- Porte-monnaie -->
@@ -15,7 +15,7 @@
           <Icon name="coin" :size="30" class="coin" />
           <div>
             <div class="wallet-amount mono" v-countup="col.coins"></div>
-            <div class="muted small">Pièces</div>
+            <div class="muted small">{{ $t('common.coinsWord') }}</div>
           </div>
         </section>
 
@@ -26,18 +26,18 @@
               <span class="pack">
                 <span class="pack-brand">DEVOSI</span>
                 <span class="pack-title">F1 PACK</span>
-                <span class="pack-sub">5 cartes</span>
+                <span class="pack-sub">{{ $t('packs.fiveCards') }}</span>
               </span>
             </div>
             <div class="item-body">
-              <h2 class="title-md">Pack de 5 cartes</h2>
+              <h2 class="title-md">{{ $t('shop.packTitle') }}</h2>
               <p class="muted small">
-                Ajouté à ta réserve ({{ available }}/{{ max }}), sans limite d'achats.
+                {{ $t('shop.packText', { available, max }) }}
               </p>
               <div class="item-buy">
                 <span class="price"><span class="mono">{{ formatCoins(shop.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
                 <button class="btn" :class="{ 'btn-ghost': !canBuy }" :disabled="busy || !canBuy" @click="buy">
-                  <Icon name="cart" :size="16" /> Acheter
+                  <Icon name="cart" :size="16" /> {{ $t('shop.buy') }}
                 </button>
               </div>
               <p v-if="!canBuy && col.status" class="muted small">{{ buyBlocker }}</p>
@@ -51,21 +51,19 @@
               <GpPack :name="gp.name" :circuit-id="gp.circuit" :season="gp.season" :round="gp.round" :width="96" />
             </div>
             <div class="item-body">
-              <span class="gp-tag"><Icon name="flag" :size="12" /> Week-end de course · encore {{ countdown(gp.ends_at) }}</span>
-              <h2 class="title-md">Pack {{ gp.name }}</h2>
+              <span class="gp-tag"><Icon name="flag" :size="12" /> {{ $t('packs.gpWeekend', { time: countdown(gp.ends_at) }) }}</span>
+              <h2 class="title-md">{{ $t('packs.gpTitle', { name: gp.name }) }}</h2>
               <p class="muted small">
-                5 cartes dont 2 liées au circuit (Grands Prix disputés là-bas, pilotes et écuries qui y ont gagné)
-                et 3 fois plus de chances d'avoir l'édition vainqueur. 1 offert par jour sur la page Packs ;
-                en vente sans limite jusqu'à la fin du week-end.
+                {{ $t('shop.gpText') }}
               </p>
               <div class="item-buy">
                 <span class="price"><span class="mono">{{ formatCoins(gp.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
                 <button class="btn" :class="{ 'btn-ghost': !canBuyGp }" :disabled="busy || !canBuyGp" @click="buyGp">
-                  <Icon name="cart" :size="16" /> Acheter
+                  <Icon name="cart" :size="16" /> {{ $t('shop.buy') }}
                 </button>
               </div>
               <p v-if="gp.packs" class="small">
-                {{ gp.packs }} pack{{ gp.packs > 1 ? 's' : '' }} GP à ouvrir. <router-link to="/packs" class="link-arrow">Ouvrir →</router-link>
+                {{ $t('shop.gpToOpen', gp.packs) }} <router-link to="/packs" class="link-arrow">{{ $t('shop.openLink') }}</router-link>
               </p>
               <p v-if="gpMessage" class="small" :class="gpError ? 'error' : 'accent'">{{ gpMessage }}</p>
             </div>
@@ -77,20 +75,18 @@
               <GpPack :name="gpNext.name" :circuit-id="gpNext.circuit" :season="gpNext.season" :round="gpNext.round" :width="96" locked />
             </div>
             <div class="item-body">
-              <span class="gp-tag"><Icon name="clock" :size="12" /> Prochainement</span>
-              <h2 class="title-md">Pack {{ gpNext.name }}</h2>
+              <span class="gp-tag"><Icon name="clock" :size="12" /> {{ $t('shop.soon') }}</span>
+              <h2 class="title-md">{{ $t('packs.gpTitle', { name: gpNext.name }) }}</h2>
               <div class="arrives">
-                <span class="muted small">Arrive dans</span>
+                <span class="muted small">{{ $t('shop.arrivesIn') }}</span>
                 <span class="mono arrives-clock">{{ countdown(gpNext.starts_at, true) }}</span>
               </div>
               <p class="muted small">
-                Disponible pendant tout le week-end de course, des premiers essais à la fin de la course :
-                1 pack offert chaque jour sur la page Packs, et jusqu'à 3 à acheter ici. 5 cartes dont 2 liées
-                au circuit, et 3 fois plus de chances d'avoir l'édition vainqueur.
+                {{ $t('shop.gpNextText') }}
               </p>
               <div class="item-buy">
                 <span class="price"><span class="mono">{{ formatCoins(gpNext.price) }}</span> <Icon name="coin" :size="16" class="coin" /></span>
-                <button class="btn btn-ghost" disabled><Icon name="lock" :size="16" /> Bientôt</button>
+                <button class="btn btn-ghost" disabled><Icon name="lock" :size="16" /> {{ $t('shop.soonBtn') }}</button>
               </div>
             </div>
           </article>
@@ -101,8 +97,8 @@
           <div class="promo-head">
             <Icon name="gift" :size="22" class="coin" />
             <div>
-              <h2 class="title-md">Code promo</h2>
-              <p class="muted small">Tu as un code ? Saisis-le pour recevoir des Pièces ou des packs bonus.</p>
+              <h2 class="title-md">{{ $t('shop.promo') }}</h2>
+              <p class="muted small">{{ $t('shop.promoText') }}</p>
             </div>
           </div>
           <form class="promo-form" @submit.prevent="redeem">
@@ -110,41 +106,41 @@
               v-model.trim="code"
               class="promo-input mono"
               maxlength="32"
-              placeholder="TONCODE"
+              :placeholder="$t('shop.promoPlaceholder')"
               autocomplete="off"
               autocapitalize="characters"
               spellcheck="false"
-              aria-label="Code promo"
+              :aria-label="$t('shop.promo')"
             />
-            <button class="btn" :disabled="redeeming || !code">Valider</button>
+            <button class="btn" :disabled="redeeming || !code">{{ $t('common.validate') }}</button>
           </form>
           <p v-if="codeMessage" class="small" :class="codeError ? 'error' : 'success'">{{ codeMessage }}</p>
         </section>
 
         <!-- Gagner des Pièces -->
         <section>
-          <h2 class="title-md section-title">Gagner des Pièces</h2>
+          <h2 class="title-md section-title">{{ $t('shop.earn') }}</h2>
           <div class="earn">
             <router-link to="/quetes" class="earn-tile card">
               <Icon name="trophy" :size="22" />
               <div>
-                <div class="earn-title">Quêtes du jour</div>
-                <div class="muted small">Jusqu'à 200 Pièces et 2 packs par jour</div>
+                <div class="earn-title">{{ $t('quests.title') }}</div>
+                <div class="muted small">{{ $t('shop.earnQuests') }}</div>
               </div>
               <span v-if="col.questsReady" class="earn-badge mono">{{ col.questsReady }}</span>
             </router-link>
             <router-link to="/atelier" class="earn-tile card">
               <Icon name="recycle" :size="22" />
               <div>
-                <div class="earn-title">Recycler des doublons</div>
-                <div class="muted small">De 5 à 2 000 Pièces par carte selon sa rareté</div>
+                <div class="earn-title">{{ $t('shop.earnRecycle') }}</div>
+                <div class="muted small">{{ $t('shop.earnRecycleText') }}</div>
               </div>
             </router-link>
             <router-link to="/collection" class="earn-tile card">
               <Icon name="album" :size="22" />
               <div>
-                <div class="earn-title">Compléter des albums</div>
-                <div class="muted small">Une récompense par album terminé</div>
+                <div class="earn-title">{{ $t('shop.earnAlbums') }}</div>
+                <div class="muted small">{{ $t('shop.earnAlbumsText') }}</div>
               </div>
             </router-link>
           </div>
@@ -156,12 +152,14 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import GpPack from '@/components/cards/GpPack.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { economyMessage, formatCoins } from '@/utils/cards'
 
 const col = useCollectionStore()
+const { t } = useI18n()
 const busy = ref(false)
 const message = ref('')
 const error = ref(false)
@@ -171,8 +169,8 @@ const max = computed(() => col.status?.max ?? 10)
 const shop = computed(() => col.status?.shop ?? { price: 150, daily: 3, left: 0 })
 const canBuy = computed(() => available.value < max.value && col.coins >= shop.value.price)
 const buyBlocker = computed(() => {
-  if (available.value >= max.value) return 'Ta réserve de packs est pleine : ouvre-en avant d’en acheter.'
-  return `Encore ${formatCoins(shop.value.price - col.coins)} Pièces à gagner.`
+  if (available.value >= max.value) return t('errors.BANK_FULL')
+  return t('shop.missing', { n: formatCoins(shop.value.price - col.coins) })
 })
 
 // Pack du week-end de course
@@ -197,8 +195,9 @@ function countdown(iso, seconds = false) {
   const h = String(Math.floor((s % 86400) / 3600)).padStart(2, '0')
   const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0')
   const sec = String(s % 60).padStart(2, '0')
-  if (seconds) return `${d ? `${d} j ` : ''}${h} h ${m} min ${sec} s`
-  return d ? `${d} j ${h} h` : `${h} h ${m} min`
+  const days = d ? t('shop.days', { n: d }) : ''
+  if (seconds) return `${days}${h} h ${m} min ${sec} s`
+  return d ? `${days}${h} h` : `${h} h ${m} min`
 }
 const canBuyGp = computed(() => gp.value && col.coins >= gp.value.price)
 const gpMessage = ref('')
@@ -209,7 +208,7 @@ async function buyGp() {
   gpError.value = false
   try {
     await col.buyGpPack()
-    gpMessage.value = 'Pack GP ajouté : ouvre-le depuis la page Packs.'
+    gpMessage.value = t('shop.gpAdded')
   } catch (err) {
     gpError.value = true
     gpMessage.value = economyMessage(err)
@@ -231,9 +230,9 @@ async function redeem() {
   try {
     const { coins, packs } = await col.redeemCode(code.value)
     const parts = []
-    if (packs) parts.push(`${packs} pack${packs > 1 ? 's' : ''} bonus`)
-    if (coins) parts.push(`${formatCoins(coins)} Pièces`)
-    codeMessage.value = `Code validé : +${parts.join(' et +')} !`
+    if (packs) parts.push(t('quests.bonusPacks', packs))
+    if (coins) parts.push(t('common.coins', { n: formatCoins(coins) }, coins))
+    codeMessage.value = t('shop.codeOk', { rewards: parts.join(t('shop.and')) })
     code.value = ''
   } catch (err) {
     codeError.value = true
@@ -248,7 +247,7 @@ async function buy() {
   error.value = false
   try {
     await col.buyPack()
-    message.value = 'Pack ajouté à ta réserve !'
+    message.value = t('shop.added')
   } catch (err) {
     error.value = true
     message.value = economyMessage(err)

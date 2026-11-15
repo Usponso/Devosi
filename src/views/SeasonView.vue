@@ -1,17 +1,16 @@
 <template>
   <div class="page season">
     <header class="container page-head">
-      <div class="eyebrow">Formule 1 · {{ store.races.length }} Grands Prix</div>
-      <h1 class="title-lg">Calendrier {{ store.seasonYear }}</h1>
+      <div class="eyebrow">{{ $t('season.eyebrow', { n: store.races.length }) }}</div>
+      <h1 class="title-lg">{{ $t('season.title', { year: store.seasonYear }) }}</h1>
       <p class="dim">
-        {{ store.completedRaces.length }} disputés · {{ store.upcomingRaces.length }} à venir ·
-        {{ sprintCount }} week-ends sprint
+        {{ $t('season.summary', { done: store.completedRaces.length, upcoming: store.upcomingRaces.length, sprints: sprintCount }) }}
       </p>
     </header>
 
     <!-- Frise : couleur de l'écurie gagnante -->
     <div class="container">
-      <div class="timeline" role="list" aria-label="Vainqueurs par manche">
+      <div class="timeline" role="list" :aria-label="$t('season.timeline')">
         <router-link
           v-for="(race, i) in store.races"
           :key="race.id"
@@ -23,7 +22,7 @@
           :title="`${shortRaceName(race.name)}${winnerOf(race) ? ' · ' + winnerOf(race).driverName : ''}`"
         >
           <span class="tl-bar"></span>
-          <span class="tl-code mono">{{ winnerOf(race)?.driver ?? (race.id === store.nextRace?.id ? 'NEXT' : '') }}</span>
+          <span class="tl-code mono">{{ winnerOf(race)?.driver ?? (race.id === store.nextRace?.id ? $t('season.nextShort') : '') }}</span>
           <span class="tl-round mono muted">{{ race.round }}</span>
         </router-link>
       </div>
@@ -51,7 +50,7 @@
         >
           <div class="rc-top">
             <span class="rc-round mono">{{ String(race.round).padStart(2, '0') }}</span>
-            <span v-if="race.id === store.nextRace?.id" class="badge badge-accent badge-live">Prochain</span>
+            <span v-if="race.id === store.nextRace?.id" class="badge badge-accent badge-live">{{ $t('season.next') }}</span>
             <span v-else-if="race.sprint" class="badge"><Icon name="bolt" :size="11" /> Sprint</span>
           </div>
           <div class="rc-circuit">
@@ -70,7 +69,7 @@
             <Icon name="trophy" :size="14" />
             <span>{{ winnerOf(race).driverName }}</span>
           </div>
-          <div v-else-if="race.completed" class="rc-winner muted">Résultats en attente</div>
+          <div v-else-if="race.completed" class="rc-winner muted">{{ $t('season.pending') }}</div>
         </router-link>
       </div>
     </div>
@@ -79,6 +78,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import Flag from '@/components/Flag.vue'
 import CircuitMap from '@/components/CircuitMap.vue'
@@ -88,10 +88,11 @@ import { formatWeekendRange, shortRaceName } from '@/utils/race'
 
 const store = useF1Store()
 
+const { t } = useI18n()
 const FILTERS = [
-  { val: 'all', label: 'Toutes' },
-  { val: 'upcoming', label: 'À venir' },
-  { val: 'completed', label: 'Disputées' },
+  { val: 'all', label: t('season.all') },
+  { val: 'upcoming', label: t('season.upcoming') },
+  { val: 'completed', label: t('season.completed') },
 ]
 
 const activeFilter = ref('all')

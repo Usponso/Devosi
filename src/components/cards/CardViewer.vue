@@ -10,13 +10,13 @@
       :aria-label="card.name"
     >
       <div class="viewer-bg" @click="close"></div>
-      <button class="v-close" aria-label="Fermer" @click="close"><Icon name="x" :size="22" /></button>
+      <button class="v-close" :aria-label="$t('common.close')" @click="close"><Icon name="x" :size="22" /></button>
 
       <div class="layout">
         <!-- Carte : glisser pour la faire pivoter, double-clic pour la retourner -->
         <div class="stage">
           <div class="stage-row">
-            <button v-if="hasList" class="nav" aria-label="Carte précédente" @click="go(-1)">
+            <button v-if="hasList" class="nav" :aria-label="$t('viewer.prev')" @click="go(-1)">
               <Icon name="chevron-right" :size="22" class="flip-x" />
             </button>
             <div
@@ -41,19 +41,19 @@
                 />
               </transition>
             </div>
-            <button v-if="hasList" class="nav" aria-label="Carte suivante" @click="go(1)">
+            <button v-if="hasList" class="nav" :aria-label="$t('viewer.next')" @click="go(1)">
               <Icon name="chevron-right" :size="22" />
             </button>
           </div>
 
           <div class="tools">
-            <button class="tool" @click="turn"><Icon name="swap" :size="16" /> Retourner</button>
-            <button class="tool" :disabled="!rx && !ry" @click="recenter"><Icon name="rotate" :size="16" /> Recentrer</button>
+            <button class="tool" @click="turn"><Icon name="swap" :size="16" /> {{ $t('viewer.turn') }}</button>
+            <button class="tool" :disabled="!rx && !ry" @click="recenter"><Icon name="rotate" :size="16" /> {{ $t('viewer.recenter') }}</button>
             <span v-if="hasList" class="mono muted counter">{{ index + 1 }} / {{ viewer.state.list.length }}</span>
           </div>
           <!-- Vitrail possédé en plusieurs exemplaires : chacun avec son numéro -->
           <div v-if="mySerials.length > 1" class="copies">
-            <span class="muted copies-label">Exemplaire {{ copy + 1 }} / {{ mySerials.length }}</span>
+            <span class="muted copies-label">{{ $t('viewer.copy', { n: copy + 1, total: mySerials.length }) }}</span>
             <div class="copy-chips">
               <button
                 v-for="(n, i) in mySerials"
@@ -67,7 +67,7 @@
               </button>
             </div>
           </div>
-          <p class="hint muted">Fais glisser la carte pour la faire pivoter</p>
+          <p class="hint muted">{{ $t('viewer.dragHint') }}</p>
         </div>
 
         <!-- Fiche -->
@@ -81,8 +81,8 @@
           </div>
           <div v-if="teamName" class="team-line" :style="{ '--tc': card.color }">
             <span class="team-dot"></span>
-            Écurie : <b>{{ teamName }}</b>
-            <span class="muted">(celle où il a couru le plus)</span>
+            {{ $t('viewer.team') }} <b>{{ teamName }}</b>
+            <span class="muted">{{ $t('viewer.teamHint') }}</span>
           </div>
 
           <div class="rarity-line">
@@ -93,16 +93,16 @@
           <!-- Vitrail numéroté : exemplaires distribués et numéros possédés -->
           <div v-if="card.printRun" class="print-run">
             <div class="pr-head">
-              <b>Tirage limité à {{ card.printRun }} exemplaires</b>
-              <span v-if="printGiven !== null" class="mono">{{ printGiven }} / {{ card.printRun }} distribués</span>
+              <b>{{ $t('viewer.printRun', { n: card.printRun }) }}</b>
+              <span v-if="printGiven !== null" class="mono">{{ $t('viewer.given', { n: printGiven, total: card.printRun }) }}</span>
             </div>
             <div v-if="printGiven !== null" class="pr-bar"><span :style="{ width: `${(printGiven / card.printRun) * 100}%` }"></span></div>
             <p v-if="mySerials.length" class="pr-mine">
-              {{ mySerials.length > 1 ? 'Tes exemplaires' : 'Ton exemplaire' }} :
-              <b class="mono">{{ mySerials.map((n) => `n° ${String(n).padStart(2, '0')}`).join(', ') }}</b>
+              {{ $t('viewer.yourCopies', mySerials.length) }}
+              <b class="mono">{{ mySerials.map((n) => $t('viewer.serialNo', { n: String(n).padStart(2, '0') })).join(', ') }}</b>
             </p>
             <p class="muted pr-note">
-              Chaque exemplaire porte son propre numéro. Les vitraux sortent d'environ 1 pack sur {{ GLASS_PACKS }} tant qu'il en reste, ne se fabriquent pas et ne se recyclent pas.
+              {{ $t('viewer.glassNote', { n: GLASS_PACKS }) }}
             </p>
           </div>
 
@@ -117,10 +117,10 @@
           <blockquote v-if="card.quote" class="quote">« {{ card.quote }} »</blockquote>
 
           <CardOwnerPanel v-if="col.owned.has(card.id)" :card="card" />
-          <p v-else-if="col.ready" class="missing muted"><Icon name="lock" :size="15" /> Pas encore dans ta collection</p>
+          <p v-else-if="col.ready" class="missing muted"><Icon name="lock" :size="15" /> {{ $t('viewer.missing') }}</p>
 
           <div v-if="albums.length" class="albums">
-            <div class="eyebrow">Dans les albums</div>
+            <div class="eyebrow">{{ $t('viewer.inAlbums') }}</div>
             <div class="album-chips">
               <router-link v-for="a in albums" :key="a.id" :to="`/collection/album/${a.id}`" class="album-chip" @click="close">
                 <Icon name="album" :size="13" /> {{ a.title }}
@@ -128,13 +128,13 @@
             </div>
           </div>
 
-          <p v-if="card.type === 'masterpiece'" class="credit muted">Peinture originale de la collection Devosi</p>
-          <p v-else-if="card.type === 'poster'" class="credit muted">Affiche originale de la collection Devosi</p>
-          <p v-else-if="card.type === 'stained_glass'" class="credit muted">Vitrail original de la collection Devosi</p>
-          <p v-else-if="card.type === 'playing_card'" class="credit muted">Carte à jouer originale de la collection Devosi</p>
+          <p v-if="card.type === 'masterpiece'" class="credit muted">{{ $t('viewer.creditPainting') }}</p>
+          <p v-else-if="card.type === 'poster'" class="credit muted">{{ $t('viewer.creditPoster') }}</p>
+          <p v-else-if="card.type === 'stained_glass'" class="credit muted">{{ $t('viewer.creditGlass') }}</p>
+          <p v-else-if="card.type === 'playing_card'" class="credit muted">{{ $t('viewer.creditPlaying') }}</p>
           <p v-else-if="card.photo" class="credit muted">
-            Photo : {{ card.photo.author }} ·
-            <a :href="card.photo.source" target="_blank" rel="noopener">{{ card.photo.license }}</a>, via Wikimedia Commons
+            {{ $t('viewer.photo', { author: card.photo.author }) }} ·
+            <a :href="card.photo.source" target="_blank" rel="noopener">{{ card.photo.license }}</a>{{ $t('viewer.viaCommons') }}
           </p>
         </aside>
       </div>
@@ -145,6 +145,8 @@
 <script setup>
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { intlLocale } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import F1Card from './F1Card.vue'
 import CardOwnerPanel from './CardOwnerPanel.vue'
@@ -156,6 +158,7 @@ import { driverTeamName } from '@/utils/cards'
 const viewer = useCardViewer()
 const col = useCollectionStore()
 const route = useRoute()
+const { t } = useI18n()
 
 const card = computed(() => viewer.state.card)
 const index = viewer.index
@@ -196,11 +199,11 @@ watch(
 const shownSerial = computed(() => mySerials.value[copy.value])
 
 const rarityOdds = computed(() => {
-  if (card.value?.printRun) return 'numéroté'
+  if (card.value?.printRun) return t('viewer.numbered')
   const r = RARITIES.find((x) => x.id === card.value?.rarity)
   if (!r) return ''
   const n = Math.round(100 / r.odds)
-  return n <= 1 ? 'la rareté la plus courante' : `1 carte sur ${n.toLocaleString('fr-FR')} environ`
+  return n <= 1 ? t('viewer.mostCommon') : t('viewer.oneIn', { n: n.toLocaleString(intlLocale()) })
 })
 
 const stats = computed(() => {
@@ -208,22 +211,22 @@ const stats = computed(() => {
   switch (card.value?.type) {
     case 'driver':
       return [
-        { label: 'Titres', value: s.titles },
-        { label: 'Victoires', value: s.wins },
-        { label: 'Podiums', value: s.podiums },
-        { label: 'Saisons', value: s.seasons },
+        { label: t('viewer.titles'), value: s.titles },
+        { label: t('detail.wins'), value: s.wins },
+        { label: t('detail.podiums'), value: s.podiums },
+        { label: t('detail.seasons'), value: s.seasons },
       ]
     case 'team':
       return [
-        { label: 'Titres', value: s.titles },
-        { label: 'Victoires', value: s.wins },
-        { label: 'Saisons', value: s.seasons },
+        { label: t('viewer.titles'), value: s.titles },
+        { label: t('detail.wins'), value: s.wins },
+        { label: t('detail.seasons'), value: s.seasons },
       ]
     case 'gp':
       return [
-        { label: 'Vainqueur', value: s.winner },
-        { label: 'Écurie', value: s.team },
-        { label: 'Manche', value: s.round },
+        { label: t('race.winner'), value: s.winner },
+        { label: t('cardType.team'), value: s.team },
+        { label: t('viewer.round'), value: s.round },
       ].filter((x) => x.value != null)
     default:
       return []

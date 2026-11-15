@@ -2,6 +2,7 @@
  * Statistiques dérivées des résultats de la saison (fonctions pures).
  * Les courses attendues sont au format interne : { round, name, completed, results, sprintResults, qualifyingResults, sprint }
  */
+import { t } from '@/i18n'
 
 const completedRaces = (races) => races.filter((r) => r.completed).sort((a, b) => a.round - b.round)
 
@@ -131,7 +132,7 @@ export function recentForm(driverId, races, n = 5) {
         round: race.round,
         name: race.name,
         pos: res?.classified ? res.pos : null,
-        label: res ? (res.classified ? `P${res.pos}` : 'AB') : '—',
+        label: res ? (res.classified ? `P${res.pos}` : t('results.dnf')) : '—',
         classified: Boolean(res?.classified),
         absent: !res,
       }

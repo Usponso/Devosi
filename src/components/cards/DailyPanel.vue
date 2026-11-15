@@ -5,17 +5,17 @@
       <div class="head">
         <Icon name="flame" :size="24" class="flame" :class="{ lit: daily.streak > 0 }" />
         <div class="title">
-          <b>{{ daily.streak > 0 ? `${daily.streak} jour${daily.streak > 1 ? 's' : ''} d'affilée` : 'Lance ta série' }}</b>
-          <span class="muted small">Série de connexion<template v-if="daily.best > 1"> · record {{ daily.best }} jours</template></span>
+          <b>{{ daily.streak > 0 ? $t('daily.inARow', daily.streak) : $t('daily.start') }}</b>
+          <span class="muted small">{{ $t('daily.loginStreak') }}<template v-if="daily.best > 1"> · {{ $t('daily.record', { n: daily.best }) }}</template></span>
         </div>
-        <span v-if="daily.jokers" class="joker" :title="`${daily.jokers} joker${daily.jokers > 1 ? 's' : ''} : protège${daily.jokers > 1 ? 'nt' : ''} ta série si tu rates un jour`">
+        <span v-if="daily.jokers" class="joker" :title="$t('daily.jokers', daily.jokers)">
           <Icon name="shield" :size="14" /> {{ daily.jokers }}
         </span>
       </div>
 
       <ol class="week">
         <li v-for="(reward, i) in REWARDS" :key="i" :class="dayClass(i + 1)">
-          <span class="d">J{{ i + 1 }}</span>
+          <span class="d">{{ $t('daily.dayShort', { n: i + 1 }) }}</span>
           <b v-if="reward"><span class="mono">{{ reward }}</span></b>
           <b v-else><Icon name="package" :size="14" /></b>
         </li>
@@ -23,7 +23,7 @@
 
       <button v-if="!daily.claimed" class="btn" :disabled="busy" @click="claim">
         <Icon :name="daily.day === 7 ? 'package' : 'coin'" :size="16" />
-        {{ daily.day === 7 ? 'Récupérer mon pack' : `Récupérer ${REWARDS[daily.day - 1]} Pièces` }}
+        {{ daily.day === 7 ? $t('daily.claimPack') : $t('daily.claimCoins', { n: REWARDS[daily.day - 1] }) }}
       </button>
       <p v-else class="small done-line"><Icon name="check" :size="14" /> {{ claimedLine }}</p>
       <p v-if="streakMessage" class="small" :class="streakError ? 'error' : 'accent'">{{ streakMessage }}</p>
@@ -34,7 +34,7 @@
       <div class="head">
         <Icon name="cards" :size="22" class="muted" />
         <div class="title">
-          <b>Carte mystère du jour</b>
+          <b>{{ $t('daily.mystery') }}</b>
           <span class="muted small">{{ mysteryHint }}</span>
         </div>
       </div>
@@ -52,7 +52,7 @@
             class="slot face"
             :class="{ spent: !daily.mystery }"
             :disabled="!daily.mystery || busy"
-            :aria-label="`Retourner la carte ${i}`"
+            :aria-label="$t('daily.flip', { n: i })"
             @click="flip(i - 1)"
           >
             <span class="back-logo"><span>D</span>EVOSI</span>
@@ -60,7 +60,7 @@
           </button>
         </template>
       </div>
-      <p class="muted small odds">Commune 78 % · Rare 18 % · Épique 3,5 % · Légendaire 0,5 %</p>
+      <p class="muted small odds">{{ $t('daily.odds') }}</p>
       <p v-if="mysteryError" class="small error">{{ mysteryError }}</p>
     </div>
   </section>
@@ -68,6 +68,7 @@
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import F1Card from './F1Card.vue'
 import { RARITY_LABEL, useCollectionStore } from '@/stores/collectionStore'
@@ -77,6 +78,7 @@ import { economyMessage } from '@/utils/cards'
 const REWARDS = [20, 30, 40, 50, 60, 80, 0]
 
 const col = useCollectionStore()
+const { t } = useI18n()
 const daily = computed(() => col.status?.daily ?? null)
 const busy = ref(false)
 const streakMessage = ref('')
@@ -93,9 +95,9 @@ function dayClass(n) {
 
 const claimedLine = computed(() => {
   const d = daily.value
-  if (d.day === 6) return 'Récupéré. Demain : un pack offert.'
-  if (d.day === 7) return 'Semaine complète ! Une nouvelle commence demain.'
-  return `Récupéré. Demain : ${REWARDS[d.day]} Pièces.`
+  if (d.day === 6) return t('daily.claimed6')
+  if (d.day === 7) return t('daily.claimed7')
+  return t('daily.claimed', { n: REWARDS[d.day] })
 })
 
 async function claim() {
@@ -104,9 +106,9 @@ async function claim() {
   streakError.value = false
   try {
     const r = await col.claimLoginStreak()
-    const parts = [r.pack ? '+1 pack bonus' : `+${r.coins} Pièces`]
-    if (r.pack) parts.push('et 1 joker')
-    if (r.jokers_used) parts.push(`(${r.jokers_used} joker${r.jokers_used > 1 ? 's' : ''} utilisé${r.jokers_used > 1 ? 's' : ''} pour sauver ta série)`)
+    const parts = [r.pack ? `+${t('quests.bonusPacks', 1)}` : `+${t('common.coins', r.coins)}`]
+    if (r.pack) parts.push(t('daily.andJoker'))
+    if (r.jokers_used) parts.push(t('daily.jokersUsed', r.jokers_used))
     streakMessage.value = parts.join(' ')
   } catch (err) {
     streakError.value = true
@@ -131,9 +133,9 @@ async function flip(slot) {
 const mysteryHint = computed(() => {
   if (reveal.value) {
     const won = reveal.value.cards[reveal.value.slot]
-    return `${won.name} (${RARITY_LABEL[won.rarity]}) rejoint ta collection. Les deux autres : ce que tu aurais pu avoir.`
+    return t('daily.won', { name: won.name, rarity: RARITY_LABEL[won.rarity] })
   }
-  return daily.value.mystery ? 'Retourne une carte : elle rejoint ta collection.' : `Déjà retournée aujourd’hui · nouvelle dans ${resetsIn.value}`
+  return daily.value.mystery ? t('daily.flipHint') : t('daily.flipped', { time: resetsIn.value })
 })
 
 // Compte à rebours jusqu'à minuit (heure du serveur)

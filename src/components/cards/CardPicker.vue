@@ -8,8 +8,8 @@
         :value="query"
         class="input"
         type="search"
-        placeholder="Rechercher"
-        aria-label="Rechercher une carte"
+        :placeholder="$t('common.search')"
+        :aria-label="$t('common.searchCard')"
         @input="$emit('update:query', $event.target.value)"
       />
     </div>
@@ -28,14 +28,16 @@
         <slot name="badge" :card="c" />
       </button>
     </div>
-    <p v-if="!filtered.length" class="muted small">Aucune carte.</p>
-    <button v-if="filtered.length > limit" class="btn btn-ghost more" @click="$emit('more')">Afficher plus</button>
+    <p v-if="!filtered.length" class="muted small">{{ $t('common.noCard') }}</p>
+    <button v-if="filtered.length > limit" class="btn btn-ghost more" @click="$emit('more')">{{ $t('common.showMore') }}</button>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import F1Card from '@/components/cards/F1Card.vue'
+import { CARD_TYPES } from '@/stores/collectionStore'
 
 /** Grille de cartes à choisir, avec recherche et filtre par type (cartes déjà triées) */
 const props = defineProps({
@@ -47,17 +49,11 @@ const props = defineProps({
   note: { type: String, default: '' },
 })
 defineEmits(['pick', 'more', 'update:query', 'update:type'])
+const { t } = useI18n()
 
 const TYPES = [
-  { id: 'all', label: 'Toutes' },
-  { id: 'driver', label: 'Pilotes' },
-  { id: 'team', label: 'Écuries' },
-  { id: 'gp', label: 'GP' },
-  { id: 'moment', label: 'Moments' },
-  { id: 'masterpiece', label: "Chefs-d'œuvre" },
-  { id: 'poster', label: 'Affiches' },
-  { id: 'stained_glass', label: 'Vitraux' },
-  { id: 'playing_card', label: 'Jeu de cartes' },
+  { id: 'all', label: t('season.all') },
+  ...CARD_TYPES.map((c) => (c.id === 'gp' ? { ...c, label: 'GP' } : c)),
 ]
 
 const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()

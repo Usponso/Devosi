@@ -3,10 +3,10 @@
     <header class="td-hero">
       <div class="td-glow" aria-hidden="true"></div>
       <div class="container td-hero-inner">
-        <router-link to="/teams" class="back muted">← Écuries</router-link>
+        <router-link to="/teams" class="back muted">{{ $t('detail.backTeams') }}</router-link>
         <div class="td-header">
           <div class="td-title">
-            <div class="eyebrow">P{{ team.position }} constructeurs · {{ store.seasonYear }}</div>
+            <div class="eyebrow">{{ $t('home.teamSub', { pos: team.position }) }} · {{ store.seasonYear }}</div>
             <h1 class="title-xl td-name">{{ team.name }}</h1>
             <div v-if="team.base" class="dim td-meta">
               <Flag :src="team.flag" :size="14" /> {{ team.base }}
@@ -14,7 +14,7 @@
           </div>
           <div class="td-points">
             <div class="mono td-pts" v-countup="team.points"></div>
-            <div class="eyebrow">Points</div>
+            <div class="eyebrow">{{ $t('duel.points') }}</div>
           </div>
         </div>
         <button
@@ -25,7 +25,7 @@
           @click="toggleFav"
         >
           <Icon :name="isFav ? 'check' : 'star'" :size="16" />
-          {{ isFav ? 'Mon écurie' : 'Définir comme mon écurie' }}
+          {{ isFav ? $t('nav.myTeam') : $t('detail.setFav') }}
         </button>
 
         <!-- La monoplace entre en scène -->
@@ -68,52 +68,52 @@
       <div class="td-grid">
         <section class="card">
           <div class="card-head">
-            <h2 class="title-md">Évolution des points</h2>
-            <span class="muted small">vs leader</span>
+            <h2 class="title-md">{{ $t('standings.chart') }}</h2>
+            <span class="muted small">{{ $t('detail.vsLeader') }}</span>
           </div>
           <LineChart
             v-if="progression.rounds.length > 1"
             :series="pointsSeries"
-            :x-labels="progression.rounds.map((r) => `M${r.round}`)"
+            :x-labels="progression.rounds.map((r) => $t('common.roundShort', { n: r.round }))"
             :height="260"
             :tooltip-title="(i) => progression.rounds[i]?.name"
-            aria-label="Points de l'écurie manche par manche"
+            :aria-label="$t('detail.teamChartLabel')"
           />
-          <p v-else class="empty">Pas encore assez de courses.</p>
+          <p v-else class="empty">{{ $t('detail.notEnough') }}</p>
         </section>
 
         <section v-if="drivers.length >= 2" class="card">
           <div class="card-head">
-            <h2 class="title-md">Duel interne</h2>
+            <h2 class="title-md">{{ $t('detail.internalDuel') }}</h2>
           </div>
           <TeammateDuel :a="drivers[0]" :b="drivers[1]" :duel="duel" :color="team.color" />
         </section>
       </div>
 
       <section class="tiles-section">
-        <h2 class="title-md section-title">Historique</h2>
+        <h2 class="title-md section-title">{{ $t('detail.history') }}</h2>
         <div class="tiles">
-          <StatTile label="Grands Prix" :value="career?.races" />
-          <StatTile label="Victoires" :value="career?.wins" />
-          <StatTile label="Podiums" :value="career?.podiums" />
-          <StatTile label="Poles" :value="career?.poles" />
-          <StatTile v-if="team.championships != null" label="Titres constructeurs" :value="team.championships" />
+          <StatTile :label="$t('detail.gps')" :value="career?.races" />
+          <StatTile :label="$t('detail.wins')" :value="career?.wins" />
+          <StatTile :label="$t('detail.podiums')" :value="career?.podiums" />
+          <StatTile :label="$t('detail.poles')" :value="career?.poles" />
+          <StatTile v-if="team.championships != null" :label="$t('detail.constructorTitles')" :value="team.championships" />
         </div>
       </section>
 
       <section v-if="team.principal" class="card td-info">
         <p class="dim">{{ team.bio }}</p>
         <dl class="info-grid">
-          <div><dt class="eyebrow">Directeur</dt><dd>{{ team.principal }}</dd></div>
-          <div><dt class="eyebrow">Moteur</dt><dd>{{ team.engine }}</dd></div>
-          <div><dt class="eyebrow">Base</dt><dd>{{ team.base }}</dd></div>
-          <div><dt class="eyebrow">Création</dt><dd class="mono">{{ team.founded }}</dd></div>
+          <div><dt class="eyebrow">{{ $t('detail.principal') }}</dt><dd>{{ team.principal }}</dd></div>
+          <div><dt class="eyebrow">{{ $t('detail.engine') }}</dt><dd>{{ team.engine }}</dd></div>
+          <div><dt class="eyebrow">{{ $t('detail.base') }}</dt><dd>{{ team.base }}</dd></div>
+          <div><dt class="eyebrow">{{ $t('detail.founded') }}</dt><dd class="mono">{{ team.founded }}</dd></div>
         </dl>
       </section>
     </div>
   </div>
 
-  <div v-else-if="!store.loading" class="container empty">Écurie introuvable pour cette saison.</div>
+  <div v-else-if="!store.loading" class="container empty">{{ $t('detail.teamNotFound') }}</div>
 </template>
 
 <script setup>

@@ -3,13 +3,13 @@
     <!-- Objectif Master set : les albums les plus proches de leur prochain palier -->
     <section v-if="goals.length" class="shelf-section master">
       <div class="master-head">
-        <h2 class="eyebrow section-title">Objectif Master set</h2>
+        <h2 class="eyebrow section-title">{{ $t('album.goal') }}</h2>
         <button v-if="allGoals.length > GOALS" class="link-arrow" @click="showAllGoals = !showAllGoals">
-          {{ showAllGoals ? 'Voir moins' : `Voir les ${allGoals.length} albums` }}
+          {{ showAllGoals ? $t('album.seeLess') : $t('album.seeAll', { n: allGoals.length }) }}
         </button>
       </div>
       <p class="muted small master-intro">
-        Une fois un album complété, passe toutes ses cartes en Chrome, puis en Or : des Pièces et le titre de l'album en lettres d'or.
+        {{ $t('album.goalIntro') }}
       </p>
       <div class="goals">
         <router-link v-for="g in goals" :key="g.album.id" :to="`/collection/album/${g.album.id}`" class="goal" :class="[g.cls, { locked: g.locked }]">
@@ -22,9 +22,9 @@
             <span class="mono small">{{ g.count }}/{{ g.total }}</span>
           </span>
           <span class="muted small">
-            <template v-if="g.locked"><Icon name="lock" :size="12" /> Album à compléter d'abord</template>
-            <template v-else-if="g.count === g.total"><span class="gold"><Icon name="coin" :size="12" /> {{ formatCoins(g.reward) }} Pièces à récupérer !</span></template>
-            <template v-else>{{ g.total - g.count }} carte{{ g.total - g.count > 1 ? 's' : '' }} à passer · {{ formatCoins(g.reward) }} Pièces</template>
+            <template v-if="g.locked"><Icon name="lock" :size="12" /> {{ $t('album.completeFirst') }}</template>
+            <template v-else-if="g.count === g.total"><span class="gold"><Icon name="coin" :size="12" /> {{ $t('album.coinsToClaim', { n: formatCoins(g.reward) }) }}</span></template>
+            <template v-else>{{ $t('album.toUpgrade', { n: g.total - g.count, coins: formatCoins(g.reward) }, g.total - g.count) }}</template>
           </span>
         </router-link>
       </div>
@@ -40,12 +40,12 @@
           class="cover"
           :class="{ complete: album.stats.complete, claimed: album.stats.claimed, 'tier-chrome': tierOf(album) === 1, 'tier-gold': tierOf(album) === 2 }"
         >
-          <span v-if="tierOf(album) === 2" class="ribbon gold">Master set</span>
-          <span v-else-if="tierOf(album) === 1" class="ribbon chrome">Set Chrome</span>
+          <span v-if="tierOf(album) === 2" class="ribbon gold">{{ $t('player.masterSet') }}</span>
+          <span v-else-if="tierOf(album) === 1" class="ribbon chrome">{{ $t('album.setChrome') }}</span>
           <span class="cover-art" :style="{ '--tc': coverCard(album)?.color ?? 'var(--accent)' }">
             <img v-if="coverCard(album)?.photo" :src="coverCard(album).photo.url" alt="" loading="lazy" />
             <span class="cover-band">
-              <span class="cover-count mono">{{ album.stats.total }} cartes</span>
+              <span class="cover-count mono">{{ $t('collection.count', album.stats.total) }}</span>
             </span>
           </span>
           <span class="cover-body">
@@ -58,21 +58,21 @@
             <!-- Master set : paliers Chrome et Or, une fois l'album complété -->
             <template v-if="album.stats.claimed && album.stats.master">
               <span class="cover-progress tier chrome">
-                <span class="tier-lbl">Chrome</span>
+                <span class="tier-lbl">{{ $t('finish.1') }}</span>
                 <span class="meter"><span :style="{ width: `${(album.stats.master.chrome / album.stats.total) * 100}%` }"></span></span>
                 <span class="mono small">{{ album.stats.master.chrome }}/{{ album.stats.total }}</span>
               </span>
               <span class="cover-progress tier gold">
-                <span class="tier-lbl">Or</span>
+                <span class="tier-lbl">{{ $t('finish.2') }}</span>
                 <span class="meter"><span :style="{ width: `${(album.stats.master.gold / album.stats.total) * 100}%` }"></span></span>
                 <span class="mono small">{{ album.stats.master.gold }}/{{ album.stats.total }}</span>
               </span>
             </template>
-            <span v-if="tierReady(album)" class="cover-reward small ready"><Icon name="coin" :size="14" /> Palier {{ tierReady(album) === 2 ? 'Or' : 'Chrome' }} à récupérer !</span>
+            <span v-if="tierReady(album)" class="cover-reward small ready"><Icon name="coin" :size="14" /> {{ $t('album.tierReady', { tier: $t(`finish.${tierReady(album)}`) }) }}</span>
             <span v-else class="cover-reward small" :class="{ ready: album.stats.complete && !album.stats.claimed }">
-              <template v-if="album.stats.claimed"><Icon name="check" :size="14" /> Complété</template>
-              <template v-else-if="album.stats.complete"><Icon name="coin" :size="14" /> {{ formatCoins(album.reward) }} Pièces à récupérer !</template>
-              <template v-else><Icon name="coin" :size="14" /> {{ formatCoins(album.reward) }} Pièces</template>
+              <template v-if="album.stats.claimed"><Icon name="check" :size="14" /> {{ $t('album.completed') }}</template>
+              <template v-else-if="album.stats.complete"><Icon name="coin" :size="14" /> {{ $t('album.coinsToClaim', { n: formatCoins(album.reward) }) }}</template>
+              <template v-else><Icon name="coin" :size="14" /> {{ $t('common.coins', { n: formatCoins(album.reward) }, album.reward) }}</template>
             </span>
           </span>
         </router-link>
@@ -83,11 +83,13 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { formatCoins } from '@/utils/cards'
 
 const col = useCollectionStore()
+const { t } = useI18n()
 
 const sections = computed(() => {
   const out = []
@@ -118,7 +120,7 @@ const allGoals = computed(() =>
         album,
         locked,
         cls: tier === 2 ? 'gold' : 'chrome',
-        label: tier === 2 ? 'Master set Or' : 'Set Chrome',
+        label: tier === 2 ? t('album.masterGold') : t('album.setChrome'),
         // Album pas encore complété : on montre sa complétion
         count: locked ? stats.owned : tier === 2 ? m.gold : m.chrome,
         total: stats.total,

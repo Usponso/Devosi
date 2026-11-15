@@ -3,26 +3,25 @@
 
   <div v-else class="page my-profile">
     <div class="container body">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
-      <p v-else-if="!col.ready" class="card empty muted">Chargement…</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
+      <p v-else-if="!col.ready" class="card empty muted">{{ $t('common.loading') }}</p>
 
       <!-- Invité ou compte sans pseudo : ce que le profil public apporte -->
       <section v-else class="card invite">
-        <div class="eyebrow">Mon profil</div>
-        <h1 class="title-lg">Crée ton profil public</h1>
+        <div class="eyebrow">{{ $t('account.profile') }}</div>
+        <h1 class="title-lg">{{ $t('profileInvite.title') }}</h1>
         <p class="dim">
-          {{ col.isGuest ? 'Sauvegarde ta collection avec ton email, choisis un pseudo' : 'Choisis un pseudo' }}
-          et ta page de joueur s'affiche dans le classement, visible par tes amis.
+          {{ col.isGuest ? $t('profileInvite.textGuest') : $t('profileInvite.text') }}
         </p>
         <ul class="perks">
-          <li><Icon name="user" :size="18" /> Un avatar tiré de tes cartes, dans le cadre de sa rareté</li>
-          <li><Icon name="star" :size="18" /> Ta vitrine : tes 5 plus belles cartes</li>
-          <li><Icon name="trophy" :size="18" /> Un titre et 3 badges de succès sous ton pseudo</li>
-          <li><Icon name="users" :size="18" /> Des amis et un classement entre vous</li>
-          <li><Icon name="coin" :size="18" /> 200 Pièces quand ton profil est complet</li>
+          <li><Icon name="user" :size="18" /> {{ $t('profileInvite.perk1') }}</li>
+          <li><Icon name="star" :size="18" /> {{ $t('profileInvite.perk2') }}</li>
+          <li><Icon name="trophy" :size="18" /> {{ $t('profileInvite.perk3') }}</li>
+          <li><Icon name="users" :size="18" /> {{ $t('profileInvite.perk4') }}</li>
+          <li><Icon name="coin" :size="18" /> {{ $t('profileInvite.perk5') }}</li>
         </ul>
         <button class="btn" @click="accountOpen = true">
-          <Icon name="save" :size="16" /> {{ col.isGuest ? 'Sauvegarder ma collection' : 'Choisir un pseudo' }}
+          <Icon name="save" :size="16" /> {{ col.isGuest ? $t('profileInvite.saveBtn') : $t('account.pickUsername') }}
         </button>
       </section>
     </div>

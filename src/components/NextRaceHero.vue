@@ -9,9 +9,9 @@
       <div class="hero-main">
         <div class="hero-tags">
           <span class="badge badge-accent" :class="{ 'badge-live': isLive }">
-            {{ isLive ? 'Week-end en cours' : 'Prochain Grand Prix' }}
+            {{ isLive ? $t('hero.live') : $t('hero.next') }}
           </span>
-          <span class="badge mono">Manche {{ race.round }}/{{ totalRounds }}</span>
+          <span class="badge mono">{{ $t('common.round', { n: `${race.round}/${totalRounds}` }) }}</span>
           <span v-if="race.sprint" class="badge"><Icon name="bolt" :size="12" /> Sprint</span>
         </div>
 
@@ -27,12 +27,12 @@
         </div>
 
         <div v-if="session" class="hero-countdown">
-          <div class="eyebrow">{{ sessionLive ? "Fin estimée dans" : "Départ dans" }} · <span class="accent">{{ session.label }}</span></div>
+          <div class="eyebrow">{{ sessionLive ? $t('hero.endsIn') : $t('hero.startsIn') }} · <span class="accent">{{ session.label }}</span></div>
           <Countdown :target="sessionLive ? session.end : session.start" @elapsed="tick" />
         </div>
 
         <router-link :to="`/season/${race.id}`" class="btn hero-cta">
-          Programme et infos <Icon name="arrow-right" :size="16" />
+          {{ $t('hero.schedule') }} <Icon name="arrow-right" :size="16" />
         </router-link>
       </div>
 
@@ -43,8 +43,8 @@
 
         <div class="card hero-panel">
           <div class="card-head">
-            <span class="eyebrow">Programme du week-end</span>
-            <span class="muted panel-hint">heure locale</span>
+            <span class="eyebrow">{{ $t('hero.weekend') }}</span>
+            <span class="muted panel-hint">{{ $t('hero.localTime') }}</span>
           </div>
           <WeekendSchedule :race="race" :weather="weather" />
         </div>
@@ -55,13 +55,13 @@
             <span class="eyebrow">
               <span v-if="lastSession.status === 'live'" class="accent">● </span>{{ lastSession.label }}
             </span>
-            <router-link :to="`/season/${race.id}`" class="link-arrow">Classement complet →</router-link>
+            <router-link :to="`/season/${race.id}`" class="link-arrow">{{ $t('home.fullStandings') }}</router-link>
           </div>
           <SessionResults :rows="lastSession.rows" :status="lastSession.status" :limit="5" />
         </div>
 
         <div v-if="winners.length" class="hero-winners">
-          <span class="eyebrow">Derniers vainqueurs ici</span>
+          <span class="eyebrow">{{ $t('hero.winners') }}</span>
           <div class="winners-list">
             <router-link
               v-for="w in winners"

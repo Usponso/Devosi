@@ -1,5 +1,5 @@
 <template>
-  <nav class="tabbar" aria-label="Navigation">
+  <nav class="tabbar" :aria-label="$t('nav.mobile')">
     <router-link
       v-for="item in NAV_ITEMS"
       :key="item.to"
@@ -9,13 +9,13 @@
     >
       <span v-if="item.featured" class="featured-icon">
         <Icon :name="item.icon" :size="20" />
-        <span v-if="packBadge" class="tab-badge mono" :aria-label="`${packBadge} packs ou récompenses en attente`">{{ packBadge }}</span>
+        <span v-if="packBadge" class="tab-badge mono" :aria-label="$t('nav.packsPending', packBadge)">{{ packBadge }}</span>
       </span>
       <span v-else class="tab-icon">
         <Icon :name="item.icon" :size="22" />
         <span v-if="item.badge === 'predictions' && col.raceRewardsReady" class="tab-dot"></span>
       </span>
-      <span :class="{ 'featured-label': item.featured }">{{ item.short ?? item.label }}</span>
+      <span :class="{ 'featured-label': item.featured }">{{ $t(item.short ?? item.label) }}</span>
     </router-link>
   </nav>
 </template>

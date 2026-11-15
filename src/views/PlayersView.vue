@@ -1,28 +1,28 @@
 <template>
   <div class="page players">
     <header class="container page-head">
-      <div class="eyebrow">Collection</div>
+      <div class="eyebrow">{{ $t('players.eyebrow') }}</div>
       <div class="head-row">
-        <h1 class="title-lg">Joueurs</h1>
+        <h1 class="title-lg">{{ $t('players.title') }}</h1>
       </div>
       <p class="dim">
-        Classement par score de collection : chaque carte distincte rapporte des points selon sa rareté
-        (Commune 1, Rare 3, Épique 10, Légendaire 25, Mythique 100). Une finition multiplie les points de la
-        carte : <b class="f-chrome">Chrome ×2</b> (5 exemplaires), <b class="f-gold">Or ×3</b> (10 exemplaires).
-        Les doublons ne comptent pas tant qu'ils ne servent pas à une finition.
+        <i18n-t keypath="players.intro" scope="global">
+          <template #chrome><b class="f-chrome">{{ $t('players.chrome') }}</b></template>
+          <template #gold><b class="f-gold">{{ $t('players.gold') }}</b></template>
+        </i18n-t>
       </p>
     </header>
 
     <div class="container">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
 
       <template v-else>
         <div class="view-tabs" role="tablist">
           <button role="tab" class="view-tab" :class="{ active: tab === 'all' }" :aria-selected="tab === 'all'" @click="tab = 'all'">
-            <Icon name="trophy" :size="16" /> Classement général
+            <Icon name="trophy" :size="16" /> {{ $t('players.general') }}
           </button>
           <button role="tab" class="view-tab" :class="{ active: tab === 'friends' }" :aria-selected="tab === 'friends'" @click="tab = 'friends'">
-            <Icon name="users" :size="16" /> Amis
+            <Icon name="users" :size="16" /> {{ $t('account.friends') }}
             <span v-if="col.friendRequests" class="badge mono">{{ col.friendRequests }}</span>
           </button>
         </div>
@@ -30,12 +30,12 @@
         <!-- Amis : demandes reçues et envoyées -->
         <template v-if="tab === 'friends'">
           <p v-if="!col.isPlayer" class="card empty">
-            Sauvegarde ta collection et choisis un pseudo pour ajouter des amis.
-            <router-link to="/collection" class="link-arrow">Ma collection →</router-link>
+            {{ $t('errors.PROFILE_REQUIRED') }}
+            <router-link to="/collection" class="link-arrow">{{ $t('players.myCollection') }}</router-link>
           </p>
           <template v-else>
             <section v-if="col.friends?.incoming.length" class="card requests">
-              <h2 class="title-sm">Demandes reçues</h2>
+              <h2 class="title-sm">{{ $t('players.incoming') }}</h2>
               <div v-for="p in col.friends.incoming" :key="p.username" class="request">
                 <router-link :to="`/joueurs/${p.username}`" class="request-player">
                   <PlayerAvatar :card-id="p.avatar" :finish="p.avatar_finish" :username="p.username" :team="p.team" :size="40" />
@@ -45,7 +45,7 @@
               </div>
             </section>
             <section v-if="col.friends?.outgoing.length" class="card requests">
-              <h2 class="title-sm">Demandes envoyées</h2>
+              <h2 class="title-sm">{{ $t('players.outgoing') }}</h2>
               <div v-for="p in col.friends.outgoing" :key="p.username" class="request">
                 <router-link :to="`/joueurs/${p.username}`" class="request-player">
                   <PlayerAvatar :card-id="p.avatar" :finish="p.avatar_finish" :username="p.username" :team="p.team" :size="40" />
@@ -55,7 +55,7 @@
               </div>
             </section>
             <p v-if="col.friends && !col.friends.friends.length" class="muted hint">
-              Tu n'as pas encore d'amis : recherche un pseudo dans le classement général et ouvre son profil pour l'ajouter.
+              {{ $t('players.noFriends') }}
             </p>
           </template>
         </template>
@@ -65,18 +65,19 @@
             v-model.trim="query"
             class="search"
             type="search"
-            placeholder="Rechercher un pseudo"
-            aria-label="Rechercher un pseudo"
+            :placeholder="$t('players.search')"
+            :aria-label="$t('players.search')"
           />
           <p v-if="tab === 'all' && !col.isPlayer" class="muted small">
-            Pour apparaître ici, sauvegarde ta collection et choisis un pseudo depuis
-            <router-link to="/collection" class="link-arrow">ta collection</router-link>.
+            <i18n-t keypath="players.appear" scope="global">
+              <template #link><router-link to="/collection" class="link-arrow">{{ $t('players.yourCollection') }}</router-link></template>
+            </i18n-t>
           </p>
         </div>
 
         <section v-if="tab === 'all' || col.isPlayer" class="card board">
           <div class="board-head">
-            <span>Rang</span><span>Joueur</span><span class="c-showcase">Vitrine</span><span class="c-num">Cartes</span><span class="c-num">Score</span>
+            <span>{{ $t('player.rank') }}</span><span>{{ $t('players.player') }}</span><span class="c-showcase">{{ $t('profileEditor.tabs.showcase') }}</span><span class="c-num">{{ $t('nav.cards') }}</span><span class="c-num">{{ $t('players.scoreCol') }}</span>
           </div>
           <ol class="board-list">
             <li v-for="p in players" :key="p.username">
@@ -99,15 +100,15 @@
                   </span>
                 </span>
                 <span class="mono c-num">{{ p.owned }}</span>
-                <span class="mono c-num score">{{ p.score.toLocaleString('fr-FR') }}</span>
+                <span class="mono c-num score">{{ formatCoins(p.score) }}</span>
               </router-link>
             </li>
           </ol>
           <p v-if="!players.length && !loading" class="empty">
-            {{ query ? 'Aucun joueur ne correspond à cette recherche.' : tab === 'friends' ? 'Aucun ami pour le moment.' : 'Aucun joueur public pour le moment.' }}
+            {{ query ? $t('players.noMatch') : tab === 'friends' ? $t('players.noFriendsYet') : $t('players.noPlayers') }}
           </p>
           <div v-if="hasMore" class="more">
-            <button class="btn btn-ghost" :disabled="loading" @click="load(true)">Afficher plus</button>
+            <button class="btn btn-ghost" :disabled="loading" @click="load(true)">{{ $t('common.showMore') }}</button>
           </div>
         </section>
       </template>
@@ -122,7 +123,7 @@ import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import FriendButton from '@/components/cards/FriendButton.vue'
 import PlayerAvatar from '@/components/cards/PlayerAvatar.vue'
-import { albumTitle } from '@/utils/cards'
+import { albumTitle, formatCoins } from '@/utils/cards'
 import { useCollectionStore } from '@/stores/collectionStore'
 import { fetchLeaderboard } from '@/services/collection'
 

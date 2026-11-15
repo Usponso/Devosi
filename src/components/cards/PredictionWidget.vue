@@ -2,19 +2,20 @@
   <router-link v-if="race && closesAt" v-reveal to="/pronostics" class="prediction-widget">
     <span class="pr-icon" aria-hidden="true"><Icon name="flag" :size="22" /></span>
     <span class="pr-text">
-      <span class="eyebrow">Pronostics · {{ gpNameFr(race.name) }}</span>
-      <strong class="pr-title">{{ open ? 'Qui sera sur le podium ?' : 'Pronostics fermés, place à la course' }}</strong>
+      <span class="eyebrow">{{ $t('nav.predictions') }} · {{ $i18n.locale === 'fr' ? gpNameFr(race.name) : race.name }}</span>
+      <strong class="pr-title">{{ open ? $t('predWidget.who') : $t('predWidget.closed') }}</strong>
       <span class="muted pr-sub">
-        <template v-if="open">Podium et pole avant les qualifs · fermeture dans {{ closesIn }}</template>
-        <template v-else>Résultats et points dans l'heure qui suit l'arrivée</template>
+        <template v-if="open">{{ $t('predWidget.sub', { time: closesIn }) }}</template>
+        <template v-else>{{ $t('predictions.resultsSoon') }}</template>
       </span>
     </span>
-    <span class="btn pr-cta" :class="{ 'btn-ghost': !open }">{{ open ? 'Pronostiquer' : 'Voir' }}</span>
+    <span class="btn pr-cta" :class="{ 'btn-ghost': !open }">{{ open ? $t('predWidget.cta') : $t('widget.see') }}</span>
   </router-link>
 </template>
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { t } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import { useF1Store } from '@/stores/f1Store'
 import { toDate } from '@/utils/race'
@@ -35,7 +36,7 @@ const closesIn = computed(() => {
   const min = Math.max(0, Math.ceil((closesAt.value - now.value) / 60000))
   const d = Math.floor(min / 1440)
   const h = Math.floor((min % 1440) / 60)
-  return d ? `${d} j ${h} h` : `${h} h ${String(min % 60).padStart(2, '0')}`
+  return d ? t('packs.daysHours', { d, h }) : `${h} h ${String(min % 60).padStart(2, '0')}`
 })
 
 onMounted(() => (timer = setInterval(() => (now.value = Date.now()), 30000)))

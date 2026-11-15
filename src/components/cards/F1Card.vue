@@ -37,7 +37,7 @@
             </div>
           </div>
           <span class="pt-tape t1"></span><span class="pt-tape t2"></span><span class="pt-tape t3"></span><span class="pt-tape t4"></span>
-          <span class="pt-foot">Manche {{ card.poster.round }} · #{{ String(card.n).padStart(4, '0') }}</span>
+          <span class="pt-foot">{{ $t('common.round', { n: card.poster.round }) }} · #{{ String(card.n).padStart(4, '0') }}</span>
           <span class="pt-rarity">{{ RARITY_LABEL[card.rarity] }}</span>
         </div>
         <!-- Vitrail et carte à jouer : l'illustration contient déjà son cadre et son titre -->
@@ -66,7 +66,7 @@
               <CircuitMap v-if="hasPhoto && hasCircuit" :circuit-id="card.circuitId" small class="art-circuit badge" />
               <span v-if="card.number" class="art-number">{{ card.number }}</span>
               <span class="years">{{ yearsLabel }}</span>
-              <span v-if="editionLabel" class="edition-stamp">Vainqueur<br />{{ editionLabel }}</span>
+              <span v-if="editionLabel" class="edition-stamp">{{ $t('race.winner') }}<br />{{ editionLabel }}</span>
             </div>
 
             <div class="name">{{ card.name }}</div>
@@ -89,7 +89,7 @@
         </div>
         <div v-if="holo && !locked" class="holo"></div>
         <div v-if="finish && !locked" class="sheen"></div>
-        <span v-if="isNew" class="new">Nouveau</span>
+        <span v-if="isNew" class="new">{{ $t('f1card.new') }}</span>
         <!-- Exemplaires : dans le pied des cartes classiques, sur l'image pour les séries pleine carte -->
         <span v-if="count > 1 && (isMasterpiece || isPoster || isFullArt)" class="count">×{{ count }}</span>
       </div>
@@ -113,6 +113,7 @@
 import { computed, ref } from 'vue'
 import CircuitMap from '@/components/CircuitMap.vue'
 import { RARITY_LABEL, TYPE_LABEL, useCollectionStore } from '@/stores/collectionStore'
+import { t } from '@/i18n'
 import { driverTeamName } from '@/utils/cards'
 import { getNationalityLabel } from '@/data/nationalities'
 import circuits from '@/data/circuits.json'
@@ -148,7 +149,7 @@ function zoom() {
   viewer.open(props.card, { list: props.zoomList ?? [], finishes: props.zoomFinishes, finish: props.finish })
 }
 
-const FINISH_LABEL = { 1: 'Chrome', 2: 'Or' }
+const FINISH_LABEL = { 1: t('finish.1'), 2: t('finish.2') }
 
 const root = ref(null)
 const photoFailed = ref(false)
@@ -214,15 +215,15 @@ const stats = computed(() => {
   switch (props.card.type) {
     case 'driver':
       return [
-        { label: 'titres', value: s.titles },
-        { label: 'vict.', value: s.wins },
-        { label: 'podiums', value: s.podiums },
+        { label: t('f1card.titles'), value: s.titles },
+        { label: t('f1card.wins'), value: s.wins },
+        { label: t('f1card.podiums'), value: s.podiums },
       ]
     case 'team':
       return [
-        { label: 'titres', value: s.titles },
-        { label: 'vict.', value: s.wins },
-        { label: 'saisons', value: s.seasons },
+        { label: t('f1card.titles'), value: s.titles },
+        { label: t('f1card.wins'), value: s.wins },
+        { label: t('f1card.seasons'), value: s.seasons },
       ]
     case 'gp':
       return [{ label: s.team, value: s.winner }]

@@ -1,61 +1,60 @@
 <template>
   <div class="page predictions-page">
     <header class="container page-head">
-      <nav class="subnav" aria-label="Jeux du week-end">
-        <router-link to="/pronostics" class="subnav-link">Pronostics</router-link>
+      <nav class="subnav" :aria-label="$t('predictions.subnav')">
+        <router-link to="/pronostics" class="subnav-link">{{ $t('nav.predictions') }}</router-link>
         <router-link to="/pronostics/ecurie" class="subnav-link">
-          Écurie du week-end <span v-if="col.fantasyReady" class="subnav-dot" aria-label="Récompense à récupérer"></span>
+          {{ $t('predictions.fantasy') }} <span v-if="col.fantasyReady" class="subnav-dot" :aria-label="$t('predictions.rewardReady')"></span>
         </router-link>
       </nav>
-      <div class="eyebrow">Saison {{ data?.season ?? '' }}</div>
-      <h1 class="title-lg">Pronostics</h1>
-      <p class="dim">Avant chaque Grand Prix, pronostique le podium et la pole. Tes points te rapportent des Pièces, des packs et peut-être l'édition vainqueur.</p>
+      <div class="eyebrow">{{ $t('home.season', { year: data?.season ?? '' }) }}</div>
+      <h1 class="title-lg">{{ $t('nav.predictions') }}</h1>
+      <p class="dim">{{ $t('predictions.intro') }}</p>
     </header>
 
     <div class="container body">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
       <p v-else-if="error && !data" class="card empty">
-        Impossible de charger les pronostics. <button class="link-arrow" @click="load">Réessayer</button>
+        {{ $t('predictions.loadError') }} <button class="link-arrow" @click="load">{{ $t('common.retry') }}</button>
       </p>
-      <p v-else-if="!data" class="card empty muted">Chargement…</p>
+      <p v-else-if="!data" class="card empty muted">{{ $t('common.loading') }}</p>
 
       <template v-else>
         <!-- Prochaine course -->
         <section v-if="next" class="card next">
           <div class="next-head">
             <div class="next-title">
-              <div class="eyebrow">Manche {{ next.round }} · {{ next.open ? 'Pronostics ouverts' : 'Pronostics fermés' }}</div>
+              <div class="eyebrow">{{ $t('common.round', { n: next.round }) }} · {{ next.open ? $t('predictions.open') : $t('predictions.closed') }}</div>
               <h2 class="title-md">{{ next.name }}</h2>
               <p class="muted small">
-                Qualifs {{ formatDate(next.quali_at) }} · Course {{ formatDate(next.race_at) }}
+                {{ $t('predictions.when', { quali: formatDate(next.quali_at), race: formatDate(next.race_at) }) }}
               </p>
             </div>
             <CircuitMap :circuit-id="next.circuit" small class="next-map" />
           </div>
 
           <p v-if="next.open" class="closing">
-            <Icon name="clock" :size="14" /> Fermeture dans <b class="mono">{{ closesIn }}</b> · au début des qualifs
+            <Icon name="clock" :size="14" /> <i18n-t keypath="predictions.closesIn" scope="global"><template #time><b class="mono">{{ closesIn }}</b></template></i18n-t>
           </p>
 
           <!-- Récompense du bon vainqueur -->
           <div class="edition-promo">
             <Icon name="star" :size="18" />
             <p>
-              <b>Trouve le vainqueur, reçois sa carte en édition limitée.</b>
-              Si ton P1 gagne la course, tu reçois sa carte avec un tampon doré « Vainqueur », en récupérant tes gains après la course.
-              Les autres joueurs ne peuvent la trouver que dans les packs, pendant 7 jours.
+              <b>{{ $t('predictions.promoTitle') }}</b>
+              {{ $t('predictions.promoText') }}
             </p>
           </div>
 
           <!-- Formulaire -->
           <form v-if="next.open" class="picks" @submit.prevent="save">
             <div class="pick-group">
-              <div class="pick-label">Podium (ordre exact)</div>
+              <div class="pick-label">{{ $t('predictions.podium') }}</div>
               <label v-for="(slot, i) in PODIUM" :key="slot" class="pick">
                 <span class="pos mono">P{{ i + 1 }}</span>
                 <span class="dot" :style="{ background: driverColor(form[slot]) }"></span>
-                <select v-model="form[slot]" :aria-label="`Pilote en P${i + 1}`">
-                  <option value="" disabled>Choisir un pilote</option>
+                <select v-model="form[slot]" :aria-label="$t('predictions.driverAt', { pos: i + 1 })">
+                  <option value="" disabled>{{ $t('predictions.pickDriver') }}</option>
                   <option v-for="d in drivers" :key="d.id" :value="d.id" :disabled="takenElsewhere(slot, d.id)">
                     {{ d.name }}{{ d.team ? ` · ${d.team}` : '' }}
                   </option>
@@ -63,30 +62,30 @@
               </label>
             </div>
             <div class="pick-group">
-              <div class="pick-label">Pole position</div>
+              <div class="pick-label">{{ $t('predictions.pole') }}</div>
               <label class="pick">
                 <span class="pos mono"><Icon name="timer" :size="14" /></span>
                 <span class="dot" :style="{ background: driverColor(form.pole) }"></span>
-                <select v-model="form.pole" aria-label="Poleman">
-                  <option value="" disabled>Choisir un pilote</option>
+                <select v-model="form.pole" :aria-label="$t('predictions.poleman')">
+                  <option value="" disabled>{{ $t('predictions.pickDriver') }}</option>
                   <option v-for="d in drivers" :key="d.id" :value="d.id">{{ d.name }}{{ d.team ? ` · ${d.team}` : '' }}</option>
                 </select>
               </label>
               <ul class="scale muted small">
-                <li>Pilote à la bonne place : <b>10 pts</b></li>
-                <li>Sur le podium, mauvaise place : <b>4 pts</b></li>
-                <li>Pole exacte : <b>10 pts</b> · Podium parfait : <b>+15</b></li>
-                <li>1 pt = 5 Pièces · podium parfait = 1 pack</li>
-                <li>Bon vainqueur = sa carte en édition vainqueur</li>
+                <li>{{ $t('predictions.scale1') }} <b>{{ $t('common.pts', { n: 10 }) }}</b></li>
+                <li>{{ $t('predictions.scale2') }} <b>{{ $t('common.pts', { n: 4 }) }}</b></li>
+                <li>{{ $t('predictions.scale3') }} <b>{{ $t('common.pts', { n: 10 }) }}</b> · {{ $t('predictions.scale3b') }} <b>+15</b></li>
+                <li>{{ $t('predictions.scale4') }}</li>
+                <li>{{ $t('predictions.scale5') }}</li>
               </ul>
             </div>
             <div class="picks-foot">
               <span class="muted small">
-                <template v-if="next.mine">Pronostic enregistré, modifiable jusqu'à la fermeture.</template>
-                <template v-else>{{ next.players }} joueur{{ next.players > 1 ? 's ont' : ' a' }} déjà pronostiqué.</template>
+                <template v-if="next.mine">{{ $t('predictions.saved') }}</template>
+                <template v-else>{{ $t('predictions.players', next.players) }}</template>
               </span>
               <button class="btn" :disabled="saving || !complete || !dirty">
-                {{ saving ? 'Enregistrement…' : next.mine ? 'Modifier mon pronostic' : 'Valider mon pronostic' }}
+                {{ saving ? $t('predictions.saving') : next.mine ? $t('predictions.edit') : $t('predictions.submit') }}
               </button>
             </div>
             <p v-if="message" class="small" :class="messageError ? 'error' : 'success'">{{ message }}</p>
@@ -95,27 +94,27 @@
           <!-- Fermé : en attente des résultats -->
           <div v-else class="closed">
             <template v-if="next.mine">
-              <div class="pick-label">Ton pronostic</div>
+              <div class="pick-label">{{ $t('predictions.yours') }}</div>
               <ul class="lines">
                 <li v-for="(slot, i) in PODIUM" :key="slot"><span class="pos mono">P{{ i + 1 }}</span>{{ driverName(next.mine[slot]) }}</li>
-                <li><span class="pos mono">Pole</span>{{ driverName(next.mine.pole) }}</li>
+                <li><span class="pos mono">{{ $t('race.pole') }}</span>{{ driverName(next.mine.pole) }}</li>
               </ul>
-              <p class="muted small">Résultats et points dans l'heure qui suit l'arrivée.</p>
+              <p class="muted small">{{ $t('predictions.resultsSoon') }}</p>
             </template>
-            <p v-else class="muted">Tu n'as pas pronostiqué cette course. Rendez-vous au prochain Grand Prix !</p>
+            <p v-else class="muted">{{ $t('predictions.missed') }}</p>
           </div>
         </section>
-        <section v-else class="card empty muted">La saison est terminée : rendez-vous l'an prochain pour de nouveaux pronostics.</section>
+        <section v-else class="card empty muted">{{ $t('predictions.seasonOver') }}</section>
 
         <!-- Gains récupérés -->
         <transition name="pop">
           <section v-if="claimed" class="card claimed">
             <div class="claimed-text">
-              <div class="title-md">+{{ formatCoins(claimed.coins) }} Pièces<template v-if="claimed.packs"> et +{{ claimed.packs }} pack bonus</template></div>
-              <p v-if="claimed.edition" class="muted">Tu avais trouvé le vainqueur : l'édition vainqueur rejoint ta collection.</p>
+              <div class="title-md">+{{ $t('common.coins', { n: formatCoins(claimed.coins) }, claimed.coins) }}<template v-if="claimed.packs"> {{ $t('predictions.andPacks', { n: claimed.packs }) }}</template></div>
+              <p v-if="claimed.edition" class="muted">{{ $t('predictions.editionWon') }}</p>
             </div>
             <F1Card v-if="claimed.edition" :card="claimed.edition" :is-new="claimed.edition.isNew" class="claimed-card" />
-            <button class="link-arrow" @click="claimed = null">Fermer</button>
+            <button class="link-arrow" @click="claimed = null">{{ $t('common.close') }}</button>
           </section>
         </transition>
 
@@ -123,15 +122,15 @@
           <!-- Mes résultats -->
           <section class="card history">
             <div class="section-head">
-              <h2 class="title-md">Mes résultats {{ data.season }}</h2>
-              <span class="total"><b class="mono">{{ data.total }}</b> pts<template v-if="data.rank"> · {{ data.rank }}<sup>e</sup> / {{ data.players }}</template></span>
+              <h2 class="title-md">{{ $t('predictions.myResults', { year: data.season }) }}</h2>
+              <span class="total"><b class="mono">{{ data.total }}</b> {{ $t('common.ptsUnit') }}<template v-if="data.rank"> · {{ $t('predictions.rank', { rank: data.rank, n: data.players }) }}</template></span>
             </div>
-            <p v-if="!played.length" class="muted small">Tes courses pronostiquées apparaîtront ici avec tes points.</p>
+            <p v-if="!played.length" class="muted small">{{ $t('predictions.noneYet') }}</p>
             <ul v-else class="races">
               <li v-for="race in played" :key="race.round" class="race" :class="{ ready: race.mine.points != null && !race.mine.claimed }">
                 <div class="race-head">
                   <span class="race-name">{{ race.name }}</span>
-                  <span class="race-points mono">{{ race.mine.points }} pts</span>
+                  <span class="race-points mono">{{ $t('common.pts', { n: race.mine.points }) }}</span>
                 </div>
                 <ul class="lines compact">
                   <li v-for="line in breakdown(race)" :key="line.label" :class="{ hit: line.points > 0 }">
@@ -142,11 +141,11 @@
                   </li>
                 </ul>
                 <button v-if="!race.mine.claimed && !race.mine.points" class="btn btn-ghost claim" :disabled="busy" @click="claim(race)">
-                  Pas de point cette fois · OK
+                  {{ $t('predictions.noPoints') }}
                 </button>
                 <button v-else-if="!race.mine.claimed" class="btn claim" :disabled="busy" @click="claim(race)">
-                  Récupérer {{ formatCoins(race.mine.points * 5) }} <Icon name="coin" :size="14" class="coin" />
-                  <template v-if="isPerfect(race)"> + 1 pack</template>
+                  {{ $t('common.claim') }} {{ formatCoins(race.mine.points * 5) }} <Icon name="coin" :size="14" class="coin" />
+                  <template v-if="isPerfect(race)"> {{ $t('predictions.plusPack') }}</template>
                 </button>
               </li>
             </ul>
@@ -155,15 +154,15 @@
           <!-- Classement -->
           <section class="card ranking">
             <div class="section-head">
-              <h2 class="title-md">Classement de la saison</h2>
+              <h2 class="title-md">{{ $t('predictions.ranking') }}</h2>
               <div class="tabs" role="tablist">
-                <button role="tab" :aria-selected="!friendsTab" :class="{ on: !friendsTab }" @click="friendsTab = false">Général</button>
-                <button role="tab" :aria-selected="friendsTab" :class="{ on: friendsTab }" @click="friendsTab = true">Amis</button>
+                <button role="tab" :aria-selected="!friendsTab" :class="{ on: !friendsTab }" @click="friendsTab = false">{{ $t('predictions.general') }}</button>
+                <button role="tab" :aria-selected="friendsTab" :class="{ on: friendsTab }" @click="friendsTab = true">{{ $t('account.friends') }}</button>
               </div>
             </div>
-            <p v-if="!col.isPlayer" class="muted small hint">Sauvegarde ta collection et choisis un pseudo pour apparaître au classement.</p>
-            <p v-if="rankingLoading && !ranking.length" class="muted small">Chargement…</p>
-            <p v-else-if="!ranking.length" class="muted small">Aucun point marqué pour l'instant.</p>
+            <p v-if="!col.isPlayer" class="muted small hint">{{ $t('predictions.needProfile') }}</p>
+            <p v-if="rankingLoading && !ranking.length" class="muted small">{{ $t('common.loading') }}</p>
+            <p v-else-if="!ranking.length" class="muted small">{{ $t('predictions.noPointsYet') }}</p>
             <ol v-else class="rows">
               <li v-for="p in ranking" :key="p.username" class="row" :class="{ me: p.is_me }">
                 <span class="rank mono">{{ p.rank }}</span>
@@ -171,11 +170,11 @@
                   <PlayerAvatar :card-id="p.avatar" :finish="p.avatar_finish" :username="p.username" :team="p.team" :size="32" />
                   <span class="who-name">{{ p.username }}</span>
                 </router-link>
-                <span class="muted small perfect" :title="'Podiums parfaits'">{{ p.perfect ? `${p.perfect} parfait${p.perfect > 1 ? 's' : ''}` : '' }}</span>
+                <span class="muted small perfect" :title="$t('predictions.perfectTitle')">{{ p.perfect ? $t('predictions.perfect', p.perfect) : '' }}</span>
                 <span class="pts mono">{{ p.points }}</span>
               </li>
             </ol>
-            <p class="muted small rewards"><Icon name="gift" :size="14" /> Fin de saison : 10, 6 et 3 packs pour le top 3.</p>
+            <p class="muted small rewards"><Icon name="gift" :size="14" /> {{ $t('predictions.seasonRewards') }}</p>
           </section>
         </div>
       </template>
@@ -185,6 +184,8 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { intlLocale } from '@/i18n'
 import Icon from '@/components/Icon.vue'
 import CircuitMap from '@/components/CircuitMap.vue'
 import F1Card from '@/components/cards/F1Card.vue'
@@ -197,6 +198,7 @@ import { economyMessage, formatCoins } from '@/utils/cards'
 const PODIUM = ['p1', 'p2', 'p3']
 
 const col = useCollectionStore()
+const { t } = useI18n()
 const data = computed(() => col.predictions)
 const next = computed(() => data.value?.next ?? null)
 const played = computed(() => (data.value?.history ?? []).filter((r) => r.mine))
@@ -244,7 +246,7 @@ async function save() {
   messageError.value = false
   try {
     await col.savePrediction(next.value.season, next.value.round, { ...form })
-    message.value = 'Pronostic enregistré !'
+    message.value = t('predictions.savedMsg')
   } catch (err) {
     messageError.value = true
     message.value = economyMessage(err)
@@ -261,10 +263,10 @@ const closesIn = computed(() => {
   const min = Math.max(0, Math.ceil((new Date(next.value.quali_at).getTime() - (now.value + col.clockOffset)) / 60000))
   const d = Math.floor(min / 1440)
   const h = Math.floor((min % 1440) / 60)
-  return d ? `${d} j ${String(h).padStart(2, '0')} h` : `${h} h ${String(min % 60).padStart(2, '0')}`
+  return d ? t('packs.daysHours', { d, h: String(h).padStart(2, '0') }) : `${h} h ${String(min % 60).padStart(2, '0')}`
 })
 
-const dateFormat = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+const dateFormat = new Intl.DateTimeFormat(intlLocale(), { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
 const formatDate = (iso) => dateFormat.format(new Date(iso))
 
 /** Détail des points d'une course (même barème que public._prediction_points) */
@@ -278,11 +280,11 @@ function breakdown(race) {
       label: `P${i + 1}`,
       pick,
       points: actual === i ? 10 : actual >= 0 ? 4 : 0,
-      actual: actual === i ? '' : actual >= 0 ? `P${actual + 1}` : 'hors podium',
+      actual: actual === i ? '' : actual >= 0 ? `P${actual + 1}` : t('predictions.offPodium'),
     }
   })
-  lines.push({ label: 'Pole', pick: mine.pole, points: mine.pole === result.pole ? 10 : 0, actual: mine.pole === result.pole ? '' : driverName(result.pole) })
-  if (isPerfect(race)) lines.push({ label: 'Bonus', pick: null, points: 15, actual: 'podium parfait' })
+  lines.push({ label: t('race.pole'), pick: mine.pole, points: mine.pole === result.pole ? 10 : 0, actual: mine.pole === result.pole ? '' : driverName(result.pole) })
+  if (isPerfect(race)) lines.push({ label: t('predictions.bonus'), pick: null, points: 15, actual: t('predictions.perfectPodium') })
   return lines
 }
 

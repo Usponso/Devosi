@@ -88,6 +88,7 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { t, intlLocale } from '@/i18n'
 
 const props = defineProps({
   /** [{ id, label, color, values: (number|null)[], highlight?: boolean, dashed?: boolean }] */
@@ -99,9 +100,9 @@ const props = defineProps({
   yMin: { type: Number, default: null },
   yMax: { type: Number, default: null },
   endLabels: { type: Boolean, default: true },
-  formatY: { type: Function, default: (v) => Math.round(v).toLocaleString('fr-FR') },
+  formatY: { type: Function, default: (v) => Math.round(v).toLocaleString(intlLocale()) },
   tooltipTitle: { type: Function, default: null },
-  ariaLabel: { type: String, default: 'Graphique' },
+  ariaLabel: { type: String, default: () => t('common.chart') },
 })
 
 const wrap = ref(null)

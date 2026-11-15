@@ -1,3 +1,5 @@
+import { locale } from '@/i18n'
+
 /** Tables de correspondance nationalités / pays → codes drapeaux (flagcdn.com) et libellés FR */
 
 /** Drapeaux par nationalité */
@@ -127,6 +129,7 @@ export function getCountryFlag(country, raceName) {
   return flagUrl(code)
 }
 
+/** Nationalité affichée : en français, ou telle quelle en anglais (les clés sont déjà en anglais) */
 export function getNationalityLabel(nationality) {
-  return NATIONALITY_FR[nationality] ?? nationality
+  return locale() === 'fr' ? NATIONALITY_FR[nationality] ?? nationality : nationality
 }

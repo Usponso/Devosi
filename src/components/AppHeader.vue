@@ -1,12 +1,12 @@
 <template>
   <header class="header" :class="{ scrolled }">
     <div class="container header-inner">
-      <router-link to="/" class="logo" aria-label="Devosi, accueil">
+      <router-link to="/" class="logo" :aria-label="$t('nav.homeLink')">
         <span class="logo-d">D</span>evosi
         <span class="logo-stripe" aria-hidden="true"></span>
       </router-link>
 
-      <nav class="nav" aria-label="Navigation principale">
+      <nav class="nav" :aria-label="$t('nav.main')">
         <router-link
           v-for="item in NAV_ITEMS"
           :key="item.to"
@@ -16,19 +16,19 @@
         >
           <template v-if="item.featured">
             <Icon :name="item.icon" :size="15" />
-            <span class="featured-label">{{ item.label }}</span>
-            <span v-if="packBadge" class="nav-badge mono" :aria-label="`${packBadge} packs ou récompenses en attente`">{{ packBadge }}</span>
+            <span class="featured-label">{{ $t(item.label) }}</span>
+            <span v-if="packBadge" class="nav-badge mono" :aria-label="$t('nav.packsPending', packBadge)">{{ packBadge }}</span>
           </template>
           <template v-else>
-            {{ item.label }}
-            <span v-if="item.badge === 'predictions' && col.raceRewardsReady" class="nav-dot" :aria-label="`${col.raceRewardsReady} récompenses de pronostics ou d'écurie à récupérer`"></span>
+            {{ $t(item.label) }}
+            <span v-if="item.badge === 'predictions' && col.raceRewardsReady" class="nav-dot" :aria-label="$t('nav.predictionRewards')"></span>
           </template>
         </router-link>
       </nav>
 
       <div class="header-tools">
         <label class="season" :class="{ loading: store.loading }">
-          <span class="sr-only">Saison</span>
+          <span class="sr-only">{{ $t('nav.season') }}</span>
           <select :value="selectedValue" :disabled="store.loading" @change="onSeasonChange">
             <option value="current">{{ currentYear }}</option>
             <option v-for="year in seasonYears" :key="year" :value="year">{{ year }}</option>
@@ -38,7 +38,7 @@
 
         <button class="team-chip" :aria-label="chipLabel" @click="prefs.pickerOpen = true">
           <span class="team-dot"></span>
-          <span class="team-chip-name">{{ prefs.favoriteTeam?.name ?? 'Mon écurie' }}</span>
+          <span class="team-chip-name">{{ prefs.favoriteTeam?.name ?? $t('nav.myTeam') }}</span>
         </button>
 
         <AccountMenu />
@@ -50,6 +50,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Icon from './Icon.vue'
 import AccountMenu from './AccountMenu.vue'
 import { NAV_ITEMS, isNavActive } from './navItems'
@@ -58,6 +59,7 @@ import { usePrefsStore } from '@/stores/prefsStore'
 import { usePackBadge } from '@/composables/usePackBadge'
 import { useCollectionStore } from '@/stores/collectionStore'
 
+const { t } = useI18n()
 const store = useF1Store()
 const prefs = usePrefsStore()
 const packBadge = usePackBadge()
@@ -76,7 +78,7 @@ const selectedValue = computed(() =>
   store.season === 'current' || String(store.season) === String(currentYear) ? 'current' : store.season,
 )
 
-const chipLabel = computed(() => `Écurie favorite : ${prefs.favoriteTeam?.name ?? 'aucune'}. Changer`)
+const chipLabel = computed(() => t('nav.favoriteTeam', { team: prefs.favoriteTeam?.name ?? t('nav.none') }))
 
 const isActive = (item) => isNavActive(item, route.path)
 

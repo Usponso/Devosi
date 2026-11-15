@@ -77,7 +77,7 @@
         <span>{{ raceName }}</span>
       </div>
       <div class="hud-winner">
-        <div class="eyebrow hud-label">Vainqueur</div>
+        <div class="eyebrow hud-label">{{ $t('race.winner') }}</div>
         <div class="hud-name">{{ winner.driverName }}</div>
         <div class="hud-team">{{ winner.constructor }}</div>
       </div>
@@ -89,7 +89,7 @@
     <div ref="flash" class="flash" aria-hidden="true"></div>
     <div ref="blackout" class="blackout" aria-hidden="true"></div>
 
-    <button class="skip" @click.stop="finish">Passer</button>
+    <button class="skip" @click.stop="finish">{{ $t('common.skip') }}</button>
   </div>
 </template>
 

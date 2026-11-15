@@ -1,16 +1,16 @@
 <template>
   <div class="page quests-page">
     <header class="container page-head">
-      <div class="eyebrow">Cartes</div>
-      <h1 class="title-lg">Quêtes</h1>
-      <p class="dim">4 quêtes par jour pour gagner des Pièces et des packs bonus. Termine-les toutes pour faire grandir ta série.</p>
+      <div class="eyebrow">{{ $t('common.cardsSection') }}</div>
+      <h1 class="title-lg">{{ $t('quests.page') }}</h1>
+      <p class="dim">{{ $t('quests.pageText') }}</p>
     </header>
 
     <div class="container">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
       <section v-else class="card panel">
         <QuestsPanel v-if="col.ready" />
-        <p v-else class="muted">Chargement…</p>
+        <p v-else class="muted">{{ $t('common.loading') }}</p>
       </section>
     </div>
   </div>

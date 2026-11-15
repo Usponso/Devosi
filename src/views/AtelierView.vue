@@ -1,30 +1,30 @@
 <template>
   <div class="page atelier">
     <header class="container page-head">
-      <div class="eyebrow">Cartes · doublons</div>
+      <div class="eyebrow">{{ $t('atelier.eyebrow') }}</div>
       <div class="head-row">
-        <h1 class="title-lg">Atelier</h1>
+        <h1 class="title-lg">{{ $t('atelier.title') }}</h1>
       </div>
 
       <div class="wallet card">
         <Icon name="coin" :size="28" class="wallet-icon" />
         <div>
           <div class="wallet-amount mono">{{ formatCoins(col.coins) }}</div>
-          <div class="muted small">Pièces · à dépenser en fabrication ou à la <router-link to="/boutique" class="link-arrow">boutique</router-link></div>
+          <div class="muted small"><i18n-t keypath="atelier.wallet" scope="global"><template #shop><router-link to="/boutique" class="link-arrow">{{ $t('atelier.shop') }}</router-link></template></i18n-t></div>
         </div>
         <div class="wallet-dups">
           <span class="mono">{{ formatCoins(totalDuplicates) }}</span>
-          <span class="muted small">doublon{{ totalDuplicates > 1 ? 's' : '' }}</span>
+          <span class="muted small">{{ $t('atelier.duplicates', totalDuplicates) }}</span>
         </div>
       </div>
     </header>
 
     <div class="container">
       <p v-if="!col.configured" class="card empty">
-        La collection n'est pas encore configurée (Supabase). Renseigne <code>.env.local</code> pour l'activer.
+        {{ $t('common.notConfigured') }}
       </p>
       <p v-else-if="col.error && !col.status" class="card empty">
-        Impossible de charger ta collection pour le moment. <button class="link-arrow" @click="col.init()">Réessayer</button>
+        {{ $t('packs.loadError') }} <button class="link-arrow" @click="col.init()">{{ $t('common.retry') }}</button>
       </p>
 
       <template v-else>
@@ -42,8 +42,8 @@
 
         <!-- 1. Recycler -->
         <section v-if="tab === 'recycle'" class="card panel">
-          <h2 class="title-md">Recycler mes doublons</h2>
-          <p class="dim">Chaque doublon rapporte des Pièces selon sa rareté. Ton dernier exemplaire n'est jamais recyclé.</p>
+          <h2 class="title-md">{{ $t('atelier.recycleTitle') }}</h2>
+          <p class="dim">{{ $t('atelier.recycleText') }}</p>
 
           <div class="dup-table">
             <button
@@ -56,13 +56,13 @@
             >
               <span class="check"><Icon v-if="recycleRarities.has(r.id)" name="check" :size="14" /></span>
               <span class="dup-label">{{ r.label }}</span>
-              <span class="mono muted">+{{ r.recycle }} / doublon</span>
+              <span class="mono muted">{{ $t('atelier.perDuplicate', { n: r.recycle }) }}</span>
               <span class="mono">{{ recyclable[r.id].copies }} × → <b>{{ formatCoins(recyclable[r.id].value) }}</b></span>
             </button>
           </div>
 
           <div class="keep-row">
-            <span class="small dim">Garder</span>
+            <span class="small dim">{{ $t('atelier.keep') }}</span>
             <div class="tabs">
               <button v-for="k in KEEP_OPTIONS" :key="k.value" class="tab" :class="{ active: keep === k.value }" @click="keep = k.value">
                 {{ k.label }}
@@ -78,27 +78,27 @@
               @click="confirmRecycle ? recycleAll() : (confirmRecycle = true)"
             >
               <Icon name="recycle" :size="16" />
-              <template v-if="!recycleTotal.copies">Aucun doublon à recycler</template>
-              <template v-else-if="confirmRecycle">Confirmer : {{ recycleTotal.copies }} cartes → +{{ formatCoins(recycleTotal.value) }}</template>
-              <template v-else>Recycler {{ recycleTotal.copies }} doublon{{ recycleTotal.copies > 1 ? 's' : '' }} · +{{ formatCoins(recycleTotal.value) }}</template>
+              <template v-if="!recycleTotal.copies">{{ $t('atelier.noDuplicates') }}</template>
+              <template v-else-if="confirmRecycle">{{ $t('atelier.confirm', { n: recycleTotal.copies, coins: formatCoins(recycleTotal.value) }) }}</template>
+              <template v-else>{{ $t('atelier.recycleBtn', { n: recycleTotal.copies, coins: formatCoins(recycleTotal.value) }, recycleTotal.copies) }}</template>
             </button>
-            <button v-if="confirmRecycle" class="btn btn-ghost" @click="confirmRecycle = false">Annuler</button>
+            <button v-if="confirmRecycle" class="btn btn-ghost" @click="confirmRecycle = false">{{ $t('common.cancel') }}</button>
           </div>
-          <p class="small muted">Pour recycler une carte précise ou l'améliorer en Chrome / Or, ouvre-la depuis <router-link to="/collection" class="link-arrow">ta collection</router-link>.</p>
+          <p class="small muted"><i18n-t keypath="atelier.recycleHint" scope="global"><template #link><router-link to="/collection" class="link-arrow">{{ $t('players.yourCollection') }}</router-link></template></i18n-t></p>
         </section>
 
         <!-- 3. Fabriquer -->
         <section v-else-if="tab === 'craft'" class="card panel">
-          <h2 class="title-md">Fabriquer une carte</h2>
-          <p class="dim">Choisis une carte qui te manque et fabrique-la avec tes Pièces.</p>
+          <h2 class="title-md">{{ $t('atelier.craftTitle') }}</h2>
+          <p class="dim">{{ $t('atelier.craftText') }}</p>
 
           <div class="craft-filters">
             <input
               v-model.trim="craftQuery"
               class="search"
               type="search"
-              placeholder="Pilote, écurie, Grand Prix, moment, année…"
-              aria-label="Rechercher une carte à fabriquer"
+              :placeholder="$t('atelier.craftPlaceholder')"
+              :aria-label="$t('atelier.craftSearch')"
             />
             <div class="rarity-chips">
               <button
@@ -110,18 +110,18 @@
               >{{ r.label }} · {{ formatCoins(r.craft) }}</button>
             </div>
             <label class="owned-toggle small">
-              <input v-model="craftShowOwned" type="checkbox" /> Afficher les cartes obtenues
+              <input v-model="craftShowOwned" type="checkbox" /> {{ $t('atelier.showOwned') }}
             </label>
           </div>
 
-          <p v-if="!craftSearching" class="small muted">Tape au moins 2 lettres ou choisis une rareté pour voir les cartes.</p>
+          <p v-if="!craftSearching" class="small muted">{{ $t('atelier.typeHint') }}</p>
           <p v-else-if="!craftResults.length" class="small muted">
-            {{ craftShowOwned ? 'Aucune carte ne correspond.' : 'Aucune carte manquante ne correspond.' }}
+            {{ craftShowOwned ? $t('atelier.noMatch') : $t('atelier.noMissing') }}
           </p>
           <ul v-else class="craft-list">
             <li v-for="card in craftResults" :key="card.id" class="craft-row" :class="[`r-${card.rarity}`, { owned: col.owned.has(card.id) }]">
               <span class="mono muted">#{{ String(card.n).padStart(4, '0') }}</span>
-              <button class="thumb" :aria-label="`Voir la carte ${card.name}`" @click="viewer.open(card, { list: craftResults })">
+              <button class="thumb" :aria-label="$t('atelier.viewCard', { name: card.name })" @click="viewer.open(card, { list: craftResults })">
                 <img v-if="card.photo" :src="card.photo.url" alt="" loading="lazy" />
                 <span v-else>{{ card.name.slice(0, 1) }}</span>
               </button>
@@ -131,22 +131,21 @@
               </span>
               <span class="rarity-tag">{{ RARITY_LABEL[card.rarity] }}</span>
               <span v-if="col.owned.has(card.id)" class="owned-tag">
-                <Icon name="check" :size="14" /> Obtenue<template v-if="col.owned.get(card.id) > 1"> ×{{ col.owned.get(card.id) }}</template>
+                <Icon name="check" :size="14" /> {{ $t('atelier.owned') }}<template v-if="col.owned.get(card.id) > 1"> ×{{ col.owned.get(card.id) }}</template>
               </span>
               <button v-else class="btn" :class="{ 'btn-ghost': col.coins < RARITY_VALUE[card.rarity].craft }" :disabled="busy || col.coins < RARITY_VALUE[card.rarity].craft" @click="craft(card)">
                 <Icon name="hammer" :size="14" /> {{ formatCoins(RARITY_VALUE[card.rarity].craft) }}
               </button>
             </li>
           </ul>
-          <p v-if="craftMore" class="small muted">… et {{ craftMore }} autres : affine ta recherche.</p>
+          <p v-if="craftMore" class="small muted">{{ $t('atelier.more', { n: craftMore }) }}</p>
         </section>
 
         <!-- 4. Vitesse supérieure -->
         <section v-else class="card panel">
-          <h2 class="title-md">Vitesse supérieure</h2>
+          <h2 class="title-md">{{ $t('atelier.tradeTitle') }}</h2>
           <p class="dim">
-            Sacrifie {{ TRADE_UP_COST }} doublons d'une rareté pour tirer une carte au hasard de la rareté supérieure.
-            Les cartes que tu as en plus grand nombre partent en premier, et ton dernier exemplaire est toujours conservé.
+            {{ $t('atelier.tradeText', { n: TRADE_UP_COST }) }}
           </p>
           <div class="trade-grid">
             <div v-for="t in tradeUps" :key="t.from.id" class="trade-tile" :class="{ ready: t.ready }">
@@ -160,7 +159,7 @@
                 <span class="mono small muted">{{ t.copies }}/{{ TRADE_UP_COST }}</span>
               </div>
               <button class="btn" :class="{ 'btn-ghost': !t.ready }" :disabled="busy || !t.ready" @click="tradeUp(t.from.id)">
-                <Icon name="gauge" :size="16" /> Passer la vitesse
+                <Icon name="gauge" :size="16" /> {{ $t('atelier.shift') }}
               </button>
             </div>
           </div>
@@ -178,11 +177,11 @@
             <span v-for="i in TRADE_UP_COST" :key="i" class="merge-card" :class="`bg-${reveal.from}`" :style="{ '--i': i - 1 }"></span>
           </div>
           <template v-else>
-            <button class="reveal-card" :aria-label="reveal.flipped ? reveal.card.name : 'Retourner la carte'" @click="reveal.flipped = true">
+            <button class="reveal-card" :aria-label="reveal.flipped ? reveal.card.name : $t('atelier.flip')" @click="reveal.flipped = true">
               <F1Card :card="reveal.card" :face-down="!reveal.flipped" :is-new="reveal.flipped && reveal.card.isNew" />
             </button>
-            <p class="muted small">{{ reveal.flipped ? (reveal.card.isNew ? 'Nouvelle carte !' : 'Doublon : il pourra servir à l\'atelier.') : 'Touche la carte pour la retourner' }}</p>
-            <button v-if="reveal.flipped" class="btn" @click="closeReveal">Continuer</button>
+            <p class="muted small">{{ reveal.flipped ? (reveal.card.isNew ? $t('atelier.newCard') : $t('atelier.duplicate')) : $t('packs.tapFlip') }}</p>
+            <button v-if="reveal.flipped" class="btn" @click="closeReveal">{{ $t('packs.continue') }}</button>
           </template>
         </div>
       </div>
@@ -193,6 +192,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import { useCardViewer } from '@/composables/useCardViewer'
@@ -209,14 +209,15 @@ import { packSounds } from '@/utils/packSounds'
 import { usePrefsStore } from '@/stores/prefsStore'
 
 const col = useCollectionStore()
+const { t } = useI18n()
 const viewer = useCardViewer()
 const route = useRoute()
 const router = useRouter()
 
 const TABS = [
-  { id: 'recycle', label: 'Recycler', icon: 'recycle' },
-  { id: 'craft', label: 'Fabriquer', icon: 'hammer' },
-  { id: 'trade', label: 'Vitesse supérieure', icon: 'gauge' },
+  { id: 'recycle', label: t('atelier.tabRecycle'), icon: 'recycle' },
+  { id: 'craft', label: t('atelier.tabCraft'), icon: 'hammer' },
+  { id: 'trade', label: t('atelier.tradeTitle'), icon: 'gauge' },
 ]
 const tab = ref(TABS.some((t) => t.id === route.query.tab) ? route.query.tab : 'recycle')
 function setTab(id) {
@@ -250,9 +251,9 @@ const totalDuplicates = computed(() => Object.values(col.duplicates).reduce((sum
 // 1. Recyclage
 // ---------------------------------------------------------------------------
 const KEEP_OPTIONS = [
-  { value: 1, label: '1 exemplaire', hint: 'Tous les doublons sont recyclés.' },
-  { value: 2, label: '2', hint: 'Un doublon de chaque carte est mis de côté.' },
-  { value: 5, label: '5 (Chrome)', hint: "Garde de quoi passer chaque carte en Chrome (5 exemplaires)." },
+  { value: 1, label: t('atelier.keep1'), hint: t('atelier.keep1Hint') },
+  { value: 2, label: '2', hint: t('atelier.keep2Hint') },
+  { value: 5, label: t('atelier.keep5'), hint: t('atelier.keep5Hint') },
   { value: 10, label: '10 (Or)', hint: "Garde de quoi passer chaque carte en Or (10 exemplaires)." },
 ]
 const keep = ref(1)
@@ -290,7 +291,7 @@ const recycleAll = () =>
   run(async () => {
     confirmRecycle.value = false
     const gained = await col.recycleAll(keep.value, [...recycleRarities.value])
-    return `Recyclage terminé : +${formatCoins(gained)} Pièces`
+    return t('atelier.recycled', { n: formatCoins(gained) })
   })
 
 // ---------------------------------------------------------------------------

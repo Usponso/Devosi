@@ -433,20 +433,35 @@ img {
   }
 }
 
-/* Titre d'un Master set Or : badge doré qui brille (comme les finitions Or) */
+/* Titres de Master set : Chrome argenté, Or doré, avec un reflet qui défile en continu.
+   Dégradé horizontal périodique (même couleur aux deux bouts) répété, décalé d'exactement
+   une tuile par cycle : la boucle ne se voit pas. */
+.title-chrome,
 .title-master {
-  color: #1a1206 !important;
-  background: linear-gradient(110deg, #a07414, #ffe9a0 30%, #c8962c 45%, #fff3c4 60%, #a07414 80%) !important;
-  background-size: 250% 100% !important;
+  background-size: 200% 100% !important;
+  background-repeat: repeat-x !important;
   border-color: transparent !important;
-  box-shadow: 0 0 14px rgb(232 193 90 / 0.45);
-  animation: title-master-shine 4s linear infinite;
+  animation: title-shine 5s linear infinite;
 }
 
-@keyframes title-master-shine {
-  to { background-position: -250% 0; }
+.title-chrome {
+  color: #1d2329 !important;
+  background-image: linear-gradient(90deg, #8e98a3, #c9d0d7 18%, #f6f8fa 30%, #aab3bc 45%, #e4e8ec 62%, #9aa3ad 80%, #8e98a3) !important;
+  box-shadow: 0 0 12px rgb(200 210 220 / 0.3);
+}
+
+.title-master {
+  color: #1a1206 !important;
+  background-image: linear-gradient(90deg, #a07414, #d9ad48 18%, #fff3c4 30%, #c8962c 45%, #ffe9a0 62%, #b8862a 80%, #a07414) !important;
+  box-shadow: 0 0 14px rgb(232 193 90 / 0.45);
+}
+
+@keyframes title-shine {
+  from { background-position: 0 0; }
+  to { background-position: -200% 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .title-chrome,
   .title-master { animation: none; }
 }

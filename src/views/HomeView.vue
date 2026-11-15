@@ -5,13 +5,13 @@
     <!-- Saison terminée : le champion -->
     <section v-else-if="champion" class="season-over">
       <div class="container">
-        <div class="eyebrow">Saison {{ store.seasonYear }} terminée</div>
+        <div class="eyebrow">{{ $t('home.seasonOver', { year: store.seasonYear }) }}</div>
         <h1 class="title-xl champion-name">
-          <span class="muted">Champion</span><br />{{ champion.name }}
+          <span class="muted">{{ $t('home.champion') }}</span><br />{{ champion.name }}
         </h1>
         <div class="dim champion-meta">
           <Flag :src="champion.flag" :size="16" /> {{ champion.team }} ·
-          <span class="mono">{{ champion.points }} pts · {{ champion.wins }} victoires</span>
+          <span class="mono">{{ $t('common.pts', { n: champion.points }) }} · {{ $t('describe.wins', champion.wins) }}</span>
         </div>
       </div>
     </section>
@@ -20,7 +20,7 @@
       <!-- Progression de la saison -->
       <section class="season-progress" v-reveal>
         <div class="sp-head">
-          <span class="eyebrow">Saison {{ store.seasonYear }}</span>
+          <span class="eyebrow">{{ $t('home.season', { year: store.seasonYear }) }}</span>
           <span class="mono muted">{{ store.completedRaces.length }}/{{ store.races.length }} GP</span>
         </div>
         <div class="sp-track">
@@ -44,8 +44,8 @@
         <!-- Classement pilotes -->
         <section class="card" v-reveal>
           <div class="card-head">
-            <h2 class="title-md">Pilotes</h2>
-            <router-link to="/standings" class="link-arrow">Classement complet →</router-link>
+            <h2 class="title-md">{{ $t('nav.drivers') }}</h2>
+            <router-link to="/standings" class="link-arrow">{{ $t('home.fullStandings') }}</router-link>
           </div>
           <ol class="mini-standings">
             <li v-for="d in topDrivers" :key="d.id">
@@ -60,7 +60,7 @@
                   <span class="ms-name"><span class="ms-first">{{ d.givenName }}</span> {{ d.familyName }}</span>
                   <span class="meter"><span :style="{ width: `${(d.points / leaderPoints) * 100}%`, background: d.color }"></span></span>
                 </span>
-                <span class="ms-gap mono muted">{{ d.position === 1 ? 'Leader' : `−${leaderPoints - d.points}` }}</span>
+                <span class="ms-gap mono muted">{{ d.position === 1 ? $t('home.leader') : `−${leaderPoints - d.points}` }}</span>
                 <span class="ms-pts mono" v-countup="d.points"></span>
               </router-link>
             </li>
@@ -70,27 +70,30 @@
         <!-- Lutte pour le titre -->
         <section class="card title-fight" v-reveal="80">
           <div class="card-head">
-            <h2 class="title-md">Lutte pour le titre</h2>
-            <router-link to="/standings" class="link-arrow">Évolution →</router-link>
+            <h2 class="title-md">{{ $t('home.titleFight') }}</h2>
+            <router-link to="/standings" class="link-arrow">{{ $t('home.evolution') }}</router-link>
           </div>
           <template v-if="contention">
             <p v-if="contention.decided" class="tf-verdict">
               <Icon name="trophy" :size="18" class="accent" />
-              <strong>{{ contention.contenders[0].name }}</strong>&nbsp;est champion du monde.
+              <i18n-t keypath="home.isChampion" scope="global"><template #name><strong>{{ contention.contenders[0].name }}</strong></template></i18n-t>
             </p>
             <p v-else class="tf-verdict dim">
-              Encore <strong class="mono">{{ contention.maxRemaining }} pts</strong> en jeu sur
-              {{ contention.racesLeft }} GP<template v-if="contention.sprintsLeft"> et {{ contention.sprintsLeft }} sprints</template>.
+              <i18n-t :keypath="contention.sprintsLeft ? 'home.stillInPlaySprints' : 'home.stillInPlay'" scope="global">
+                <template #pts><strong class="mono">{{ $t('common.pts', { n: contention.maxRemaining }) }}</strong></template>
+                <template #races>{{ contention.racesLeft }}</template>
+                <template #sprints>{{ contention.sprintsLeft }}</template>
+              </i18n-t>
             </p>
             <LineChart
               v-if="progression.rounds.length > 1"
               :series="titleSeries"
               :x-labels="progressionLabels"
               :height="190"
-              aria-label="Évolution des points des prétendants au titre"
+              :aria-label="$t('home.chartLabel')"
             />
             <div class="tf-contenders">
-              <span class="eyebrow">Encore en course</span>
+              <span class="eyebrow">{{ $t('home.contenders') }}</span>
               <div class="tf-chips">
                 <router-link
                   v-for="c in contention.contenders.slice(0, 8)"
@@ -108,8 +111,8 @@
         <!-- Dernier Grand Prix -->
         <section v-if="lastRace" class="card last-race" v-reveal="160">
           <div class="card-head">
-            <h2 class="title-md">Dernier GP</h2>
-            <router-link :to="`/season/${lastRace.id}`" class="link-arrow">Résultats →</router-link>
+            <h2 class="title-md">{{ $t('home.lastGp') }}</h2>
+            <router-link :to="`/season/${lastRace.id}`" class="link-arrow">{{ $t('home.results') }}</router-link>
           </div>
           <div class="lr-name">
             <Flag :src="lastRace.flag" :size="14" />
@@ -133,12 +136,12 @@
           <div class="lr-facts">
             <div v-if="topMover" class="lr-fact">
               <Icon name="chart" :size="16" class="accent" />
-              <span>Remontée : <strong>{{ topMover.driver }}</strong> P{{ topMover.grid }} → P{{ topMover.pos }}</span>
+              <span>{{ $t('home.mover') }} <strong>{{ topMover.driver }}</strong> P{{ topMover.grid }} → P{{ topMover.pos }}</span>
               <span class="gain-up mono">+{{ topMover.gained }}</span>
             </div>
             <div v-if="fastestLap" class="lr-fact">
               <Icon name="timer" :size="16" class="accent" />
-              <span>Meilleur tour : <strong>{{ fastestLap.driver }}</strong></span>
+              <span>{{ $t('home.fastestLap') }} <strong>{{ fastestLap.driver }}</strong></span>
               <span class="mono muted">{{ fastestLap.fastestLap.time }}</span>
             </div>
           </div>
@@ -148,8 +151,8 @@
         <section class="card my-team" v-reveal="80">
           <template v-if="favTeam">
             <div class="card-head">
-              <h2 class="title-md">Mon écurie</h2>
-              <router-link :to="`/teams/${favTeam.id}`" class="link-arrow">Fiche →</router-link>
+              <h2 class="title-md">{{ $t('nav.myTeam') }}</h2>
+              <router-link :to="`/teams/${favTeam.id}`" class="link-arrow">{{ $t('home.teamPage') }}</router-link>
             </div>
             <router-link :to="`/teams/${favTeam.id}`" class="mt-car" :style="{ '--tc': favTeam.color }" aria-hidden="true" tabindex="-1">
               <CarImage :team-id="favTeam.id" :season="store.seasonYear" :width="900" />
@@ -157,9 +160,9 @@
             <div class="mt-summary">
               <div>
                 <div class="mt-name">{{ favTeam.name }}</div>
-                <div class="muted mt-sub">P{{ favTeam.position }} constructeurs · {{ favTeam.wins }} victoire{{ favTeam.wins > 1 ? 's' : '' }}</div>
+                <div class="muted mt-sub">{{ $t('home.teamSub', { pos: favTeam.position }) }} · {{ $t('describe.wins', favTeam.wins) }}</div>
               </div>
-              <div class="mt-pts mono"><span v-countup="favTeam.points"></span><small>pts</small></div>
+              <div class="mt-pts mono"><span v-countup="favTeam.points"></span><small>{{ $t('common.ptsUnit') }}</small></div>
             </div>
             <div v-for="d in favDrivers" :key="d.id" class="mt-driver">
               <router-link :to="`/drivers/${d.id}`" class="mt-driver-name">
@@ -177,17 +180,17 @@
           </template>
           <div v-else class="mt-empty">
             <Icon name="shield" :size="32" class="accent" />
-            <h2 class="title-md">Choisis ton écurie</h2>
-            <p class="muted">Ses couleurs habillent l'app, et ses pilotes, leur duel et leur forme s'affichent ici.</p>
-            <button class="btn" @click="prefs.pickerOpen = true">Choisir</button>
+            <h2 class="title-md">{{ $t('home.pickTeam') }}</h2>
+            <p class="muted">{{ $t('home.pickTeamText') }}</p>
+            <button class="btn" @click="prefs.pickerOpen = true">{{ $t('home.pick') }}</button>
           </div>
         </section>
 
         <!-- Constructeurs -->
         <section class="card" v-reveal="160">
           <div class="card-head">
-            <h2 class="title-md">Constructeurs</h2>
-            <router-link to="/standings?tab=teams" class="link-arrow">Détails →</router-link>
+            <h2 class="title-md">{{ $t('home.constructors') }}</h2>
+            <router-link to="/standings?tab=teams" class="link-arrow">{{ $t('home.details') }}</router-link>
           </div>
           <ol class="teams-bars">
             <li v-for="t in store.teamStandings" :key="t.id">
@@ -207,6 +210,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import Flag from '@/components/Flag.vue'
 import NextRaceHero from '@/components/NextRaceHero.vue'
@@ -229,6 +233,7 @@ import {
 } from '@/utils/stats'
 import { formatShortDate, shortRaceName } from '@/utils/race'
 
+const { t } = useI18n()
 const store = useF1Store()
 const prefs = usePrefsStore()
 
@@ -258,7 +263,7 @@ const contention = computed(() =>
 )
 
 const progression = computed(() => pointsProgression(store.races, 'driver'))
-const progressionLabels = computed(() => progression.value.rounds.map((r) => `M${r.round}`))
+const progressionLabels = computed(() => progression.value.rounds.map((r) => t('common.roundShort', { n: r.round })))
 
 const titleSeries = computed(() => {
   const ids = new Set(contention.value.contenders.slice(0, 5).map((c) => c.id))

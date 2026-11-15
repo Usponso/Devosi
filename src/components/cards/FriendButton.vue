@@ -1,21 +1,21 @@
 <template>
   <div v-if="status !== 'self'" class="friend-button">
     <template v-if="status === 'incoming'">
-      <button class="btn" :disabled="busy" @click="act('accept')"><Icon name="user-check" :size="16" /> Accepter</button>
-      <button class="btn btn-ghost" :disabled="busy" @click="act('decline')">Refuser</button>
+      <button class="btn" :disabled="busy" @click="act('accept')"><Icon name="user-check" :size="16" /> {{ $t('friend.accept') }}</button>
+      <button class="btn btn-ghost" :disabled="busy" @click="act('decline')">{{ $t('friend.decline') }}</button>
     </template>
     <template v-else-if="status === 'friends'">
-      <span class="state"><Icon name="user-check" :size="16" /> Ami</span>
-      <button class="link-quiet" :disabled="busy" @click="act('remove')">Retirer</button>
+      <span class="state"><Icon name="user-check" :size="16" /> {{ $t('friend.friend') }}</span>
+      <button class="link-quiet" :disabled="busy" @click="act('remove')">{{ $t('friend.remove') }}</button>
     </template>
     <template v-else-if="status === 'outgoing'">
-      <span class="state muted"><Icon name="clock" :size="16" /> Demande envoyée</span>
-      <button class="link-quiet" :disabled="busy" @click="act('remove')">Annuler</button>
+      <span class="state muted"><Icon name="clock" :size="16" /> {{ $t('friend.sent') }}</span>
+      <button class="link-quiet" :disabled="busy" @click="act('remove')">{{ $t('common.cancel') }}</button>
     </template>
-    <button v-else class="btn" :disabled="busy" @click="act('add')"><Icon name="user-plus" :size="16" /> Ajouter en ami</button>
+    <button v-else class="btn" :disabled="busy" @click="act('add')"><Icon name="user-plus" :size="16" /> {{ $t('friend.add') }}</button>
     <p v-if="error" class="error">
       {{ error }}
-      <router-link v-if="needsProfile" to="/collection" class="link-arrow">Ma collection →</router-link>
+      <router-link v-if="needsProfile" to="/collection" class="link-arrow">{{ $t('players.myCollection') }}</router-link>
     </p>
   </div>
 </template>

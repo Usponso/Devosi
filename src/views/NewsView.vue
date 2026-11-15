@@ -1,9 +1,9 @@
 <template>
   <div class="news-page">
     <div class="page-hero container">
-      <div class="page-hero-label badge badge-gray">Formule 1</div>
-      <h1 class="page-hero-title font-display">Actualités</h1>
-      <p class="page-hero-sub text-dim">Les dernières nouvelles du paddock</p>
+      <div class="page-hero-label badge badge-gray">{{ $t('news.f1') }}</div>
+      <h1 class="page-hero-title font-display">{{ $t('news.title') }}</h1>
+      <p class="page-hero-sub text-dim">{{ $t('news.sub') }}</p>
     </div>
 
     <div class="container">
@@ -26,7 +26,7 @@
             <div class="fc-summary text-dim">{{ article.summary }}</div>
             <div class="fc-footer">
               <span class="text-muted" style="font-size:12px">{{ formatDate(article.date) }}</span>
-              <span class="text-red" style="font-size:13px;font-weight:600">Lire →</span>
+              <span class="text-red" style="font-size:13px;font-weight:600">{{ $t('news.read') }}</span>
             </div>
           </div>
         </div>
@@ -34,7 +34,7 @@
 
       <!-- All news -->
       <div class="news-section">
-        <h2 class="news-section-title font-display">Toutes les news</h2>
+        <h2 class="news-section-title font-display">{{ $t('news.all') }}</h2>
         <div class="news-list">
           <div
             v-for="article in store.news"
@@ -60,12 +60,13 @@
 
 <script setup>
 import { useF1Store } from '@/stores/f1Store'
+import { intlLocale } from '@/i18n'
 
 const store = useF1Store()
 
 const formatDate = (dateStr) => {
   const d = new Date(dateStr)
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+  return d.toLocaleDateString(intlLocale(), { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 const getCatBadge = (cat) => {

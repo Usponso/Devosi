@@ -1,7 +1,7 @@
 <template>
   <div class="page album-page">
     <header class="container page-head">
-      <router-link to="/collection" class="link-arrow back">← Mon classeur</router-link>
+      <router-link to="/collection" class="link-arrow back">{{ $t('album.back') }}</router-link>
       <template v-if="album">
         <div class="eyebrow">{{ album.section }}</div>
         <div class="head-row">
@@ -15,19 +15,18 @@
         <div class="progress card" :class="{ complete: stats.complete }">
           <div class="progress-num">
             <span class="mono big">{{ stats.owned }}</span>
-            <span class="muted">/ {{ stats.total }} cartes · {{ Math.floor((stats.owned / stats.total) * 100) }} %</span>
+            <span class="muted">{{ $t('album.progress', { total: stats.total, pct: Math.floor((stats.owned / stats.total) * 100) }) }}</span>
           </div>
           <span class="meter"><span :style="{ width: `${(stats.owned / stats.total) * 100}%` }"></span></span>
           <div class="reward">
             <template v-if="stats.claimed">
-              <span class="done"><Icon name="check" :size="16" /> Album complété · {{ formatCoins(album.reward) }} Pièces récupérées</span>
+              <span class="done"><Icon name="check" :size="16" /> {{ $t('album.claimedLine', { n: formatCoins(album.reward) }) }}</span>
             </template>
             <button v-else-if="stats.complete" class="btn claim" :disabled="busy" @click="claim">
-              <Icon name="coin" :size="16" /> Récupérer {{ formatCoins(album.reward) }} Pièces
+              <Icon name="coin" :size="16" /> {{ $t('daily.claimCoins', { n: formatCoins(album.reward) }) }}
             </button>
             <span v-else class="muted small">
-              <Icon name="coin" :size="14" class="gold" /> {{ formatCoins(album.reward) }} Pièces une fois l'album complet ·
-              encore {{ stats.total - stats.owned }} carte{{ stats.total - stats.owned > 1 ? 's' : '' }}
+              <Icon name="coin" :size="14" class="gold" /> {{ $t('album.rewardLine', { n: formatCoins(album.reward), left: stats.total - stats.owned }, stats.total - stats.owned) }}
             </span>
           </div>
           <p v-if="message" class="small" :class="messageError ? 'error' : 'gold'">{{ message }}</p>
@@ -38,20 +37,20 @@
           <div v-for="t in tiers" :key="t.tier" class="tier card" :class="[t.cls, { claimed: t.claimed, locked: !unlocked }]">
             <div class="tier-top">
               <span class="tier-name">{{ t.name }}</span>
-              <span v-if="!unlocked" class="tier-state"><Icon name="lock" :size="12" /> Album à compléter</span>
-              <span v-else-if="t.claimed" class="tier-state ok"><Icon name="check" :size="13" /> Récupéré</span>
-              <span v-else-if="t.count === stats.total" class="tier-state ready">À récupérer</span>
-              <span v-else class="tier-state">{{ stats.total - t.count }} à passer</span>
+              <span v-if="!unlocked" class="tier-state"><Icon name="lock" :size="12" /> {{ $t('album.toComplete') }}</span>
+              <span v-else-if="t.claimed" class="tier-state ok"><Icon name="check" :size="13" /> {{ $t('quests.claimed') }}</span>
+              <span v-else-if="t.count === stats.total" class="tier-state ready">{{ $t('album.toClaim') }}</span>
+              <span v-else class="tier-state">{{ $t('album.leftToUpgrade', { n: stats.total - t.count }) }}</span>
             </div>
             <div class="progress-num"><span class="mono big">{{ t.count }}</span><span class="muted">/ {{ stats.total }} {{ t.what }}</span></div>
             <span class="meter"><span :style="{ width: `${(t.count / stats.total) * 100}%` }"></span></span>
             <div class="tier-reward">
-              <span><Icon name="coin" :size="13" class="gold" /> {{ formatCoins(t.reward) }} Pièces</span>
-              <span v-if="t.tier === 2" class="gold-tag">Titre en lettres d'or</span>
+              <span><Icon name="coin" :size="13" class="gold" /> {{ $t('common.coins', { n: formatCoins(t.reward) }, t.reward) }}</span>
+              <span v-if="t.tier === 2" class="gold-tag">{{ $t('album.goldTitle') }}</span>
             </div>
-            <p v-if="!unlocked" class="muted small tier-hint">Se débloque une fois l'album complété : {{ t.hint }}</p>
+            <p v-if="!unlocked" class="muted small tier-hint">{{ $t('album.unlockHint', { hint: t.hint }) }}</p>
             <button v-if="unlocked && !t.claimed && t.count === stats.total" class="btn claim" :disabled="busy" @click="claimTier(t.tier)">
-              <Icon name="coin" :size="16" /> Récupérer {{ formatCoins(t.reward) }} Pièces
+              <Icon name="coin" :size="16" /> {{ $t('daily.claimCoins', { n: formatCoins(t.reward) }) }}
             </button>
           </div>
         </div>
@@ -59,7 +58,7 @@
     </header>
 
     <div v-if="!album" class="container">
-      <p class="card empty">Cet album n'existe pas. <router-link to="/collection" class="link-arrow">Retour au classeur</router-link></p>
+      <p class="card empty">{{ $t('album.notFound') }} <router-link to="/collection" class="link-arrow">{{ $t('album.backBinder') }}</router-link></p>
     </div>
 
     <div v-else class="container">
@@ -71,14 +70,14 @@
             {{ f.label }} <span class="mono">{{ filterCount(f.id) }}</span>
           </button>
         </div>
-        <p v-if="!cards.length" class="muted empty-filter">Aucune carte dans ce filtre.</p>
+        <p v-if="!cards.length" class="muted empty-filter">{{ $t('album.emptyFilter') }}</p>
 
         <div class="pager">
-          <button class="btn btn-ghost" :disabled="page === 0" aria-label="Page précédente" @click="go(page - 1)">
+          <button class="btn btn-ghost" :disabled="page === 0" :aria-label="$t('album.prevPage')" @click="go(page - 1)">
             <Icon name="chevron-right" :size="16" class="flip" />
           </button>
-          <span class="mono small">Page {{ page + 1 }} / {{ pageCount }}</span>
-          <button class="btn btn-ghost" :disabled="page >= pageCount - 1" aria-label="Page suivante" @click="go(page + 1)">
+          <span class="mono small">{{ $t('album.page', { n: page + 1, total: pageCount }) }}</span>
+          <button class="btn btn-ghost" :disabled="page >= pageCount - 1" :aria-label="$t('album.nextPage')" @click="go(page + 1)">
             <Icon name="chevron-right" :size="16" />
           </button>
         </div>
@@ -98,7 +97,7 @@
               </div>
               <!-- Vers la finition suivante : exemplaires possédés / nécessaires -->
               <span v-if="filter !== 'all' && nextFinish(card)" class="to-finish" :class="{ ready: isReady(card) }">
-                {{ col.owned.get(card.id) }} / {{ nextFinish(card).copies }} vers {{ nextFinish(card).label }}
+                {{ $t('album.towards', { n: col.owned.get(card.id), total: nextFinish(card).copies, finish: nextFinish(card).label }) }}
               </span>
             </div>
           </div>
@@ -122,6 +121,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import F1Card from '@/components/cards/F1Card.vue'
 import CoinBalance from '@/components/cards/CoinBalance.vue'
@@ -133,6 +133,7 @@ const PER_PAGE = 12
 
 const col = useCollectionStore()
 const route = useRoute()
+const { t } = useI18n()
 
 const album = computed(() => col.albums.find((a) => a.id === route.params.id) ?? null)
 const stats = computed(() => col.albumStats.get(album.value?.id) ?? { owned: 0, total: 0 })
@@ -146,15 +147,15 @@ const tiers = computed(() => {
   const m = master.value
   if (!m) return []
   return [
-    { tier: 1, name: 'Set Chrome', what: 'en Chrome ou mieux', cls: 'chrome', count: m.chrome, claimed: m.tier >= 1, reward: album.value.reward, hint: 'toutes ses cartes en Chrome ou mieux.' },
-    { tier: 2, name: 'Master set Or', what: 'en Or', cls: 'gold', count: m.gold, claimed: m.tier >= 2, reward: album.value.reward * 2, hint: 'toutes ses cartes en Or.' },
+    { tier: 1, name: t('album.setChrome'), what: t('album.inChrome'), cls: 'chrome', count: m.chrome, claimed: m.tier >= 1, reward: album.value.reward, hint: t('album.hintChrome') },
+    { tier: 2, name: t('album.masterGold'), what: t('album.inGold'), cls: 'gold', count: m.gold, claimed: m.tier >= 2, reward: album.value.reward * 2, hint: t('album.hintGold') },
   ]
 })
 
 const FILTERS = [
-  { id: 'all', label: 'Tout l’album' },
-  { id: 'todo', label: 'À passer en Or' },
-  { id: 'ready', label: 'Prêtes à améliorer' },
+  { id: 'all', label: t('album.filterAll') },
+  { id: 'todo', label: t('album.filterTodo') },
+  { id: 'ready', label: t('album.filterReady') },
 ]
 const filter = ref('all')
 const finishOf = (card) => col.finishes.get(card.id) ?? 0
@@ -195,8 +196,8 @@ async function claimTier(tier) {
   try {
     const reward = await col.claimAlbumTier(album.value.id, tier)
     message.value = tier === 2
-      ? `+${formatCoins(reward)} Pièces ! Master set Or : le titre de cet album s'affiche maintenant en lettres d'or.`
-      : `+${formatCoins(reward)} Pièces ! Set Chrome complété, place à l'Or.`
+      ? t('album.goldDone', { n: formatCoins(reward) })
+      : t('album.chromeDone', { n: formatCoins(reward) })
   } catch (err) {
     messageError.value = true
     message.value = economyMessage(err)
@@ -210,7 +211,7 @@ async function claim() {
   messageError.value = false
   try {
     const reward = await col.claimAlbum(album.value.id)
-    message.value = `+${formatCoins(reward)} Pièces ! Bravo, l'album est complet.`
+    message.value = t('album.albumDone', { n: formatCoins(reward) })
   } catch (err) {
     messageError.value = true
     message.value = economyMessage(err)

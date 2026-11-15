@@ -1,9 +1,9 @@
 <template>
   <div class="page collection">
     <header class="container page-head">
-      <div class="eyebrow">Cartes</div>
+      <div class="eyebrow">{{ $t('common.cardsSection') }}</div>
       <div class="head-row">
-        <h1 class="title-lg">Ma collection</h1>
+        <h1 class="title-lg">{{ $t('account.collection') }}</h1>
       </div>
 
       <!-- Complétion -->
@@ -23,24 +23,24 @@
     </header>
 
     <div class="container">
-      <p v-if="!col.configured" class="card empty">La collection n'est pas encore configurée.</p>
+      <p v-if="!col.configured" class="card empty">{{ $t('common.notConfigured') }}</p>
 
       <template v-else>
         <!-- Vitrine -->
         <section class="showcase card">
           <div class="showcase-head">
             <div>
-              <h2 class="title-md">Ma vitrine</h2>
+              <h2 class="title-md">{{ $t('profileEditor.single.showcase') }}</h2>
               <p class="muted small">
-                <template v-if="col.isGuest">Sauvegarde ta collection et choisis un pseudo pour rendre ta vitrine publique.</template>
-                <template v-else-if="!col.profile?.username">Choisis un pseudo pour rendre ta vitrine publique.</template>
-                <template v-else>Tes 5 cartes préférées, visibles par tous les joueurs.</template>
+                <template v-if="col.isGuest">{{ $t('collection.showcaseGuest') }}</template>
+                <template v-else-if="!col.profile?.username">{{ $t('collection.showcaseNoName') }}</template>
+                <template v-else>{{ $t('collection.showcaseText') }}</template>
               </p>
             </div>
             <div class="showcase-actions">
-              <button class="btn btn-ghost" @click="editorOpen = true"><Icon name="edit" :size="16" /> Modifier ma vitrine</button>
-              <router-link v-if="col.profile?.username" to="/profil" class="link-arrow">Voir mon profil →</router-link>
-              <button v-else class="link-arrow" @click="accountOpen = true">{{ col.isGuest ? 'Sauvegarder ma collection →' : 'Choisir un pseudo →' }}</button>
+              <button class="btn btn-ghost" @click="editorOpen = true"><Icon name="edit" :size="16" /> {{ $t('player.editShowcase') }}</button>
+              <router-link v-if="col.profile?.username" to="/profil" class="link-arrow">{{ $t('collection.seeProfile') }}</router-link>
+              <button v-else class="link-arrow" @click="accountOpen = true">{{ col.isGuest ? $t('collection.saveLink') : $t('collection.pickLink') }}</button>
             </div>
           </div>
           <div class="showcase-slots">
@@ -50,7 +50,7 @@
               </div>
               <button v-else class="slot empty-slot" @click="editorOpen = true">
                 <Icon name="plus" :size="20" />
-                <span class="muted">Ajouter une carte</span>
+                <span class="muted">{{ $t('player.addCard') }}</span>
               </button>
             </template>
           </div>
@@ -59,8 +59,8 @@
         <!-- Éditions vainqueur (pronostics et packs après chaque GP) -->
         <section v-if="editionCards.length" class="editions card">
           <div class="editions-head">
-            <h2 class="title-md"><Icon name="star" :size="18" class="gold" /> Éditions vainqueur</h2>
-            <span class="muted small">{{ editionCards.length }} obtenue{{ editionCards.length > 1 ? 's' : '' }} · distribuées 7 jours après chaque GP</span>
+            <h2 class="title-md"><Icon name="star" :size="18" class="gold" /> {{ $t('collection.editions') }}</h2>
+            <span class="muted small">{{ $t('collection.editionsText', editionCards.length) }}</span>
           </div>
           <div class="editions-row">
             <F1Card v-for="c in editionCards" :key="`${c.edition.season}-${c.edition.round}`" :card="c" :zoom-list="editionCards" class="edition-card" />
@@ -70,11 +70,11 @@
         <!-- Classeur ou liste complète -->
         <div class="tabs view-tabs" role="tablist">
           <button class="tab" role="tab" :aria-selected="view === 'albums'" :class="{ active: view === 'albums' }" @click="setView('albums')">
-            <Icon name="album" :size="15" /> Classeur
+            <Icon name="album" :size="15" /> {{ $t('collection.binder') }}
             <span v-if="col.albumsToClaim" class="claim-dot mono">{{ col.albumsToClaim }}</span>
           </button>
           <button class="tab" role="tab" :aria-selected="view === 'cards'" :class="{ active: view === 'cards' }" @click="setView('cards')">
-            <Icon name="cards" :size="15" /> Toutes les cartes
+            <Icon name="cards" :size="15" /> {{ $t('collection.allCards') }}
           </button>
         </div>
 
@@ -84,7 +84,7 @@
         <!-- Filtres -->
         <div class="filters">
           <div class="tabs">
-            <button class="tab" :class="{ active: type === 'all' }" @click="type = 'all'">Tout</button>
+            <button class="tab" :class="{ active: type === 'all' }" @click="type = 'all'">{{ $t('collection.everything') }}</button>
             <button v-for="t in CARD_TYPES" :key="t.id" class="tab" :class="{ active: type === t.id }" @click="type = t.id">
               {{ t.label }}
             </button>
@@ -101,27 +101,27 @@
             </div>
             <label class="owned-toggle">
               <input v-model="ownedOnly" type="checkbox" :disabled="searching" />
-              Possédées
+              {{ $t('collection.ownedOnly') }}
             </label>
-            <input v-model.trim="query" class="search" type="search" placeholder="Rechercher dans mes cartes" aria-label="Rechercher dans mes cartes" />
+            <input v-model.trim="query" class="search" type="search" :placeholder="$t('collection.search')" :aria-label="$t('collection.search')" />
           </div>
         </div>
 
         <div class="results-row">
           <p class="muted results">
-            {{ filtered.length }} carte{{ filtered.length > 1 ? 's' : '' }}
-            <template v-if="searching"> · recherche, raretés et doublons limités aux cartes possédées</template>
+            {{ $t('collection.count', filtered.length) }}
+            <template v-if="searching"> · {{ $t('collection.searchNote') }}</template>
           </p>
           <label class="sort">
-            <span class="muted">Doublons</span>
-            <select v-model.number="minDuplicates" aria-label="Filtrer par nombre de doublons">
+            <span class="muted">{{ $t('collection.duplicates') }}</span>
+            <select v-model.number="minDuplicates" :aria-label="$t('collection.dupFilter')">
               <option v-for="o in DUPLICATE_FILTERS" :key="o.min" :value="o.min">{{ o.label }}</option>
             </select>
             <Icon name="chevron-down" :size="14" class="sort-chevron" />
           </label>
           <label class="sort">
-            <span class="muted">Trier par</span>
-            <select v-model="sort" aria-label="Trier les cartes">
+            <span class="muted">{{ $t('collection.sortBy') }}</span>
+            <select v-model="sort" :aria-label="$t('collection.sortLabel')">
               <option v-for="o in SORTS" :key="o.id" :value="o.id">{{ o.label }}</option>
             </select>
             <Icon name="chevron-down" :size="14" class="sort-chevron" />
@@ -134,7 +134,7 @@
             :key="card.id"
             class="cell"
             :class="{ owned: col.owned.has(card.id) }"
-            :aria-label="col.owned.has(card.id) ? card.name : `Carte ${card.n} non découverte`"
+            :aria-label="col.owned.has(card.id) ? card.name : $t('collection.undiscovered', { n: card.n })"
           >
             <F1Card
               :card="card"
@@ -147,7 +147,7 @@
           </div>
         </div>
         <div ref="sentinel" class="sentinel"></div>
-        <p v-if="!filtered.length && !col.loading" class="empty">Aucune carte ne correspond à ces filtres.</p>
+        <p v-if="!filtered.length && !col.loading" class="empty">{{ $t('collection.noMatch') }}</p>
         </template>
       </template>
     </div>
@@ -170,9 +170,11 @@ import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import AccountDialog from '@/components/cards/AccountDialog.vue'
 import AlbumShelf from '@/components/cards/AlbumShelf.vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { CARD_TYPES, RARITIES, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 
 const col = useCollectionStore()
+const { t } = useI18n()
 
 /** Éditions vainqueur possédées, la plus récente d'abord */
 const editionCards = computed(() =>
@@ -187,11 +189,11 @@ const ownedOnly = ref(false)
 const query = ref('')
 // Doublons : exemplaires en plus du premier (finitions à 5 et 10 exemplaires)
 const DUPLICATE_FILTERS = [
-  { min: 0, label: 'Tous' },
-  { min: 1, label: 'Au moins 1' },
-  { min: 2, label: 'Au moins 2' },
-  { min: 4, label: '4 et plus (Chrome)' },
-  { min: 9, label: '9 et plus (Or)' },
+  { min: 0, label: t('standings.all') },
+  { min: 1, label: t('collection.atLeast', { n: 1 }) },
+  { min: 2, label: t('collection.atLeast', { n: 2 }) },
+  { min: 4, label: t('collection.plusChrome') },
+  { min: 9, label: t('collection.plusGold') },
 ]
 const minDuplicates = ref(0)
 const duplicatesOf = (c) => Math.max(0, (col.owned.get(c.id) ?? 0) - 1)
@@ -247,10 +249,10 @@ const filtered = computed(() => {
 
 // Tri (mémorisé sur l'appareil) : numéro, plus récentes, rareté
 const SORTS = [
-  { id: 'number', label: 'Numéro' },
-  { id: 'recent', label: 'Plus récentes' },
-  { id: 'rarity', label: 'Rareté' },
-  { id: 'duplicates', label: 'Doublons' },
+  { id: 'number', label: t('collection.sortNumber') },
+  { id: 'recent', label: t('collection.sortRecent') },
+  { id: 'rarity', label: t('packs.rarity') },
+  { id: 'duplicates', label: t('collection.duplicates') },
 ]
 const SORT_KEY = 'devosi:collection-sort'
 const sort = ref(readSort())

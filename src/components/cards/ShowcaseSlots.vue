@@ -7,7 +7,7 @@
       :class="{ placeholder: drag?.id === id }"
       tabindex="0"
       role="listitem"
-      :aria-label="`${byId.get(id)?.name}, place ${i + 1} sur 5. Flèches gauche et droite pour la déplacer.`"
+      :aria-label="$t('showcase.slot', { name: byId.get(id)?.name, pos: i + 1 })"
       @pointerdown="press($event, id)"
       @keydown.left.prevent="shift(id, -1)"
       @keydown.right.prevent="shift(id, 1)"
@@ -17,7 +17,7 @@
       <button
         class="sc-remove"
         :disabled="busy"
-        :aria-label="`Retirer ${byId.get(id)?.name} de la vitrine`"
+        :aria-label="$t('showcase.remove', { name: byId.get(id)?.name })"
         @pointerdown.stop
         @click.stop="$emit('remove', id)"
       >

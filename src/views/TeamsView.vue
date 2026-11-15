@@ -1,8 +1,8 @@
 <template>
   <div class="page teams">
     <header class="container page-head">
-      <div class="eyebrow">Saison {{ store.seasonYear }} · {{ store.teams.length }} écuries</div>
-      <h1 class="title-lg">Écuries</h1>
+      <div class="eyebrow">{{ $t('drivers.teamsEyebrow', { year: store.seasonYear, n: store.teams.length }) }}</div>
+      <h1 class="title-lg">{{ $t('nav.teams') }}</h1>
     </header>
 
     <div class="container team-list">
@@ -20,7 +20,7 @@
         <div class="tc-main">
           <div class="tc-name">
             {{ team.name }}
-            <span v-if="team.id === prefs.favoriteTeamId" class="badge badge-accent"><Icon name="star" :size="11" /> Mon écurie</span>
+            <span v-if="team.id === prefs.favoriteTeamId" class="badge badge-accent"><Icon name="star" :size="11" /> {{ $t('nav.myTeam') }}</span>
           </div>
           <div class="tc-drivers">
             <span v-for="d in store.getDriversByTeam(team.id)" :key="d.id" class="tc-driver">
@@ -37,9 +37,9 @@
         </div>
 
         <div class="tc-stats">
-          <div><span class="mono">{{ team.wins }}</span><small>vic.</small></div>
-          <div><span class="mono">{{ team.podiums }}</span><small>pod.</small></div>
-          <div class="tc-points"><span class="mono" v-countup="team.points"></span><small>pts</small></div>
+          <div><span class="mono">{{ team.wins }}</span><small>{{ $t('drivers.wins') }}</small></div>
+          <div><span class="mono">{{ team.podiums }}</span><small>{{ $t('drivers.podiums') }}</small></div>
+          <div class="tc-points"><span class="mono" v-countup="team.points"></span><small>{{ $t('common.ptsUnit') }}</small></div>
         </div>
 
         <div class="tc-meter meter">

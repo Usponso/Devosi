@@ -3,11 +3,11 @@
     <div class="pc-head">
       <div class="pc-title">
         <Icon name="user-check" :size="18" />
-        <span>Profil complété à <b class="mono">{{ completion.percent }} %</b></span>
+        <span><i18n-t keypath="completion.title" scope="global"><template #pct><b class="mono">{{ completion.percent }} %</b></template></i18n-t></span>
       </div>
       <div class="pc-bar-wrap">
         <span class="pc-bar"><span :style="{ width: `${completion.percent}%` }"></span></span>
-        <span class="muted small">+{{ completion.reward }} Pièces à 100 %</span>
+        <span class="muted small">{{ $t('completion.reward', { n: completion.reward }) }}</span>
       </div>
     </div>
 
@@ -27,7 +27,7 @@
 
     <div v-if="done" class="pc-claim">
       <button class="btn" :disabled="busy" @click="claim">
-        Récupérer {{ completion.reward }} <Icon name="coin" :size="15" class="coin" />
+        {{ $t('common.claim') }} {{ completion.reward }} <Icon name="coin" :size="15" class="coin" />
       </button>
     </div>
     <p v-if="message" class="small" :class="messageError ? 'error' : 'success'">{{ message }}</p>
@@ -35,6 +35,7 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 import Icon from '@/components/Icon.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
@@ -44,17 +45,18 @@ import { economyMessage } from '@/utils/cards'
 defineEmits(['edit'])
 
 const col = useCollectionStore()
+const { t } = useI18n()
 const completion = computed(() => col.profile?.completion ?? null)
 const done = computed(() => completion.value?.percent >= 100)
 
 const steps = computed(() => {
   const c = completion.value
   return [
-    { id: 'username', label: 'Pseudo', done: c.username },
-    { id: 'avatar', label: 'Avatar', done: c.avatar, tab: 'avatar' },
-    { id: 'team', label: 'Écurie', done: c.team, tab: 'team' },
-    { id: 'showcase', label: `Vitrine ${c.showcase}/5`, done: c.showcase >= 5, tab: 'showcase' },
-    { id: 'badges', label: `Badges ${c.badges}/3`, done: c.badges >= 3, tab: 'badges' },
+    { id: 'username', label: t('completion.username'), done: c.username },
+    { id: 'avatar', label: t('profileEditor.tabs.avatar'), done: c.avatar, tab: 'avatar' },
+    { id: 'team', label: t('profileEditor.tabs.team'), done: c.team, tab: 'team' },
+    { id: 'showcase', label: `${t('profileEditor.tabs.showcase')} ${c.showcase}/5`, done: c.showcase >= 5, tab: 'showcase' },
+    { id: 'badges', label: `${t('profileEditor.tabs.badges')} ${c.badges}/3`, done: c.badges >= 3, tab: 'badges' },
   ]
 })
 
@@ -67,7 +69,7 @@ async function claim() {
   messageError.value = false
   try {
     const coins = await col.claimProfileReward()
-    message.value = `Profil complet : +${coins} Pièces !`
+    message.value = t('completion.done', { n: coins })
   } catch (err) {
     messageError.value = true
     message.value = economyMessage(err)

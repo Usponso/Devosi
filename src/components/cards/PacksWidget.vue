@@ -8,23 +8,25 @@
     </span>
 
     <span class="pw-text">
-      <span class="eyebrow">Cartes à collectionner</span>
+      <span class="eyebrow">{{ $t('widget.eyebrow') }}</span>
       <strong class="pw-title">{{ title }}</strong>
       <span class="muted pw-sub">{{ subtitle }}</span>
     </span>
 
     <span class="btn pw-cta" :class="{ 'btn-ghost': !available }">
-      {{ available ? 'Ouvrir' : 'Voir' }} <Icon name="cards" :size="16" />
+      {{ available ? $t('widget.open') : $t('widget.see') }} <Icon name="cards" :size="16" />
     </span>
   </router-link>
 </template>
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Icon from '@/components/Icon.vue'
 import { useCollectionStore } from '@/stores/collectionStore'
 
 const col = useCollectionStore()
+const { t } = useI18n()
 
 const ready = ref(false)
 const hasSession = ref(false)
@@ -44,16 +46,16 @@ const countdown = computed(() => {
 })
 
 const title = computed(() => {
-  if (!hasSession.value) return 'Un pack de bienvenue et 3 packs offerts'
-  if (!available.value) return 'Aucun pack disponible'
-  return `${available.value} pack${available.value > 1 ? 's' : ''} à ouvrir`
+  if (!hasSession.value) return t('widget.welcome')
+  if (!available.value) return t('widget.none')
+  return t('account.packsToOpen', available.value)
 })
 
 const subtitle = computed(() => {
-  if (!hasSession.value) return 'Pilotes, écuries, Grands Prix et moments de légende depuis 1950'
-  if (col.questsReady) return `${col.questsReady} quête${col.questsReady > 1 ? 's' : ''} terminée${col.questsReady > 1 ? 's' : ''} : récupère ta récompense`
-  if ((col.status?.available ?? 0) >= max.value) return 'Réserve pleine : ouvre-les pour continuer à en recevoir'
-  return countdown.value ? `Prochain pack dans ${countdown.value}` : '1 pack offert toutes les 30 min'
+  if (!hasSession.value) return t('widget.welcomeSub')
+  if (col.questsReady) return t('widget.quests', col.questsReady)
+  if ((col.status?.available ?? 0) >= max.value) return t('widget.full')
+  return countdown.value ? `${t('packs.nextIn')} ${countdown.value}` : t('widget.every')
 })
 
 async function tick() {

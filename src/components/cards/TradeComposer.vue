@@ -4,11 +4,11 @@
       <div class="cp-who">
         <Icon name="swap" :size="20" />
         <div>
-          <h2 class="title-md">Échange avec {{ friend }}</h2>
-          <p class="muted small">1 à 5 cartes de chaque côté, sans Pièces. Ton ami a 48 h pour répondre.</p>
+          <h2 class="title-md">{{ $t('composer.title', { user: friend }) }}</h2>
+          <p class="muted small">{{ $t('composer.intro') }}</p>
         </div>
       </div>
-      <button class="link-arrow" @click="$emit('close')">Annuler</button>
+      <button class="link-arrow" @click="$emit('close')">{{ $t('common.cancel') }}</button>
     </div>
 
     <p v-if="loadError" class="error small">{{ loadError }}</p>
@@ -17,20 +17,20 @@
       <!-- Ce que je donne -->
       <div class="side">
         <div class="side-head">
-          <span class="side-title">Je donne</span>
+          <span class="side-title">{{ $t('composer.give') }}</span>
           <span class="muted small mono">{{ give.length }} / {{ MAX }}</span>
         </div>
         <div class="picked">
-          <button v-for="c in giveCards" :key="c.id" class="picked-card" :aria-label="`Retirer ${c.name}`" @click="toggle(give, c.id)">
+          <button v-for="c in giveCards" :key="c.id" class="picked-card" :aria-label="$t('composer.remove', { name: c.name })" @click="toggle(give, c.id)">
             <F1Card :card="c" :interactive="false" :zoomable="false" />
             <span class="remove"><Icon name="x" :size="12" /></span>
           </button>
           <span v-for="i in MAX - give.length" :key="`g${i}`" class="slot"></span>
         </div>
         <p v-if="lastCopies.length" class="warn small">
-          <Icon name="star" :size="13" /> Dernier exemplaire : {{ lastCopies.map((c) => c.name).join(', ') }}
+          <Icon name="star" :size="13" /> {{ $t('composer.lastCopy', { names: lastCopies.map((c) => c.name).join(', ') }) }}
         </p>
-        <CardPicker v-model:query="myQuery" v-model:type="myType" :cards="myPool" :selected="give" :limit="myLimit" note="Ma collection · doublons d'abord" @pick="(id) => toggle(give, id)" @more="myLimit += 40">
+        <CardPicker v-model:query="myQuery" v-model:type="myType" :cards="myPool" :selected="give" :limit="myLimit" :note="$t('composer.myNote')" @pick="(id) => toggle(give, id)" @more="myLimit += 40">
           <template #badge="{ card }">
             <span class="count mono">×{{ col.owned.get(card.id) }}</span>
           </template>
@@ -40,55 +40,55 @@
       <!-- Ce que je demande -->
       <div class="side">
         <div class="side-head">
-          <span class="side-title">Je demande</span>
+          <span class="side-title">{{ $t('composer.ask') }}</span>
           <span class="muted small mono">{{ take.length }} / {{ MAX }}</span>
         </div>
         <div class="picked">
-          <button v-for="c in takeCards" :key="c.id" class="picked-card" :aria-label="`Retirer ${c.name}`" @click="toggle(take, c.id)">
+          <button v-for="c in takeCards" :key="c.id" class="picked-card" :aria-label="$t('composer.remove', { name: c.name })" @click="toggle(take, c.id)">
             <F1Card :card="c" :interactive="false" :zoomable="false" />
             <span class="remove"><Icon name="x" :size="12" /></span>
           </button>
           <span v-for="i in MAX - take.length" :key="`t${i}`" class="slot"></span>
         </div>
-        <p v-if="!theirCards" class="muted small">Chargement de sa collection…</p>
-        <CardPicker v-else v-model:query="theirQuery" v-model:type="theirType" :cards="theirPool" :selected="take" :limit="theirLimit" note="Sa collection · celles qui te manquent, puis ses doublons d'abord" @pick="(id) => toggle(take, id)" @more="theirLimit += 40">
+        <p v-if="!theirCards" class="muted small">{{ $t('composer.loadingTheirs') }}</p>
+        <CardPicker v-else v-model:query="theirQuery" v-model:type="theirType" :cards="theirPool" :selected="take" :limit="theirLimit" :note="$t('composer.theirNote')" @pick="(id) => toggle(take, id)" @more="theirLimit += 40">
           <template #badge="{ card }">
             <span class="count mono" :class="{ single: theirCount.get(card.id) === 1 }">×{{ theirCount.get(card.id) }}</span>
-            <span v-if="!col.owned.has(card.id)" class="count new">Il te la manque</span>
+            <span v-if="!col.owned.has(card.id)" class="count new">{{ $t('composer.missing') }}</span>
           </template>
         </CardPicker>
         <p v-if="theirLastCopies.length" class="warn small">
-          <Icon name="star" :size="13" /> Son dernier exemplaire : {{ theirLastCopies.map((c) => c.name).join(', ') }}. Il risque de refuser.
+          <Icon name="star" :size="13" /> {{ $t('composer.theirLast', { names: theirLastCopies.map((c) => c.name).join(', ') }) }}
         </p>
-        <p class="muted small">Les éditions vainqueur ne s'échangent pas. 3 échanges par semaine au maximum avec un même ami.</p>
+        <p class="muted small">{{ $t('composer.rules') }}</p>
       </div>
     </div>
 
     <!-- Équilibre : même règle que le serveur (aucun côté ne vaut plus du double de l'autre) -->
     <div v-if="give.length && take.length" class="balance" :class="{ bad: !balanced }">
       <div class="balance-row">
-        <span>Tu donnes <b class="mono">{{ giveValue }}</b> {{ giveValue > 1 ? 'pts' : 'pt' }}</span>
+        <span><i18n-t keypath="composer.giveValue" :plural="giveValue" scope="global"><template #n><b class="mono">{{ giveValue }}</b></template></i18n-t></span>
         <span class="balance-bar" aria-hidden="true">
           <span class="bar-give" :style="{ width: `${(giveValue / (giveValue + takeValue)) * 100}%` }"></span>
           <span class="bar-take"></span>
         </span>
-        <span>Tu reçois <b class="mono">{{ takeValue }}</b> {{ takeValue > 1 ? 'pts' : 'pt' }}</span>
+        <span><i18n-t keypath="composer.takeValue" :plural="takeValue" scope="global"><template #n><b class="mono">{{ takeValue }}</b></template></i18n-t></span>
       </div>
       <p class="small">
-        <template v-if="balanced">Échange équilibré.</template>
+        <template v-if="balanced">{{ $t('composer.balanced') }}</template>
         <template v-else>
-          Trop déséquilibré : aucun côté ne peut valoir plus du double de l'autre.
-          {{ giveValue < takeValue ? `Ajoute au moins ${Math.ceil(takeValue / 2) - giveValue} pts de ton côté.` : `Demande au moins ${Math.ceil(giveValue / 2) - takeValue} pts de plus.` }}
+          {{ $t('composer.unbalanced') }}
+          {{ giveValue < takeValue ? $t('composer.addMore', { n: Math.ceil(takeValue / 2) - giveValue }) : $t('composer.askMore', { n: Math.ceil(giveValue / 2) - takeValue }) }}
         </template>
       </p>
     </div>
 
     <div class="cp-foot">
       <span class="muted small">
-        <template v-if="col.trades">{{ col.trades.pending_sent }} proposition{{ col.trades.pending_sent > 1 ? 's' : '' }} en attente sur {{ col.trades.max_pending }}</template>
+        <template v-if="col.trades">{{ $t('composer.pending', { n: col.trades.pending_sent, max: col.trades.max_pending }, col.trades.pending_sent) }}</template>
       </span>
       <button class="btn" :disabled="sending || !give.length || !take.length || !balanced" @click="send">
-        <Icon name="swap" :size="16" /> {{ sending ? 'Envoi…' : 'Envoyer la proposition' }}
+        <Icon name="swap" :size="16" /> {{ sending ? $t('composer.sending') : $t('composer.send') }}
       </button>
     </div>
     <p v-if="message" class="small" :class="messageError ? 'error' : 'success'">{{ message }}</p>

@@ -2,12 +2,12 @@
   <div v-if="visible" class="invite">
     <span class="bell"><Icon name="bell" :size="22" /></span>
     <span class="text">
-      <b>Ne rate plus rien</b>
-      <span class="muted">Réserve pleine, pronostics qui ferment, échanges reçus… On te prévient, et tu choisis quoi.</span>
+      <b>{{ $t('install.notifTitle') }}</b>
+      <span class="muted">{{ $t('install.notifText') }}</span>
     </span>
     <span class="actions">
-      <button class="btn btn-ghost" @click="dismiss">Plus tard</button>
-      <button class="btn" @click="settingsOpen = true">{{ installFirst ? "Installer l'appli" : 'Activer les notifications' }}</button>
+      <button class="btn btn-ghost" @click="dismiss">{{ $t('common.later') }}</button>
+      <button class="btn" @click="settingsOpen = true">{{ installFirst ? $t('install.installApp') : $t('install.enableNotif') }}</button>
     </span>
     <NotificationSettings :open="settingsOpen" @close="onClose" />
   </div>

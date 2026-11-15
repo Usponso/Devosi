@@ -4,7 +4,7 @@
       <div class="dd-glow" aria-hidden="true"></div>
       <span class="dd-number" aria-hidden="true">{{ driver.number || '' }}</span>
       <div class="container dd-hero-inner">
-        <router-link to="/drivers" class="back muted">← Pilotes</router-link>
+        <router-link to="/drivers" class="back muted">{{ $t('detail.backDrivers') }}</router-link>
         <div class="dd-header">
           <DriverAvatar :driver="driver" :size="148" class="dd-avatar" />
           <div class="dd-title">
@@ -19,12 +19,12 @@
             </h1>
             <div class="dd-meta dim">
               <Flag :src="driver.flag" :size="14" /> {{ driver.nationality }}
-              <template v-if="driver.dob"> · {{ age(driver.dob) }} ans</template>
+              <template v-if="driver.dob"> · {{ $t('detail.age', { n: age(driver.dob) }) }}</template>
             </div>
           </div>
           <div class="dd-points">
             <div class="mono dd-pts" v-countup="driver.points"></div>
-            <div class="eyebrow">Points {{ store.seasonYear }} · P{{ driver.position }}</div>
+            <div class="eyebrow">{{ $t('detail.points', { year: store.seasonYear, pos: driver.position }) }}</div>
           </div>
         </div>
       </div>
@@ -33,21 +33,21 @@
     <div class="container dd-body">
       <!-- Saison -->
       <section class="section-tight">
-        <h2 class="title-md section-title">Saison {{ store.seasonYear }}</h2>
+        <h2 class="title-md section-title">{{ $t('home.season', { year: store.seasonYear }) }}</h2>
         <div class="tiles">
-          <StatTile label="Victoires" :value="season.wins" />
-          <StatTile label="Podiums" :value="season.podiums" />
-          <StatTile label="Poles" :value="season.poles" />
-          <StatTile label="Meilleurs tours" :value="season.fastestLaps" />
-          <StatTile label="Moy. arrivée" :value="season.avgFinish" :decimals="1" :sub="season.bestFinish ? `Meilleur : P${season.bestFinish}` : ''" />
-          <StatTile label="Places gagnées" :value="season.gained" :sub="`${season.dnf} abandon${season.dnf > 1 ? 's' : ''}`" />
+          <StatTile :label="$t('detail.wins')" :value="season.wins" />
+          <StatTile :label="$t('detail.podiums')" :value="season.podiums" />
+          <StatTile :label="$t('detail.poles')" :value="season.poles" />
+          <StatTile :label="$t('detail.fastestLaps')" :value="season.fastestLaps" />
+          <StatTile :label="$t('duel.avgFinish')" :value="season.avgFinish" :decimals="1" :sub="season.bestFinish ? $t('detail.best', { pos: season.bestFinish }) : ''" />
+          <StatTile :label="$t('detail.gained')" :value="season.gained" :sub="$t('detail.dnf', season.dnf)" />
         </div>
       </section>
 
       <div class="dd-grid">
         <section class="card">
           <div class="card-head">
-            <h2 class="title-md">Résultats par manche</h2>
+            <h2 class="title-md">{{ $t('detail.byRound') }}</h2>
             <span v-if="teammate" class="muted small legend">
               <i class="lg-solid"></i>{{ driver.shortName }} <i class="lg-dash"></i>{{ teammate.shortName }}
             </span>
@@ -63,15 +63,15 @@
             :end-labels="false"
             :format-y="(v) => `P${v}`"
             :tooltip-title="(i) => completed[i]?.name"
-            aria-label="Position finale à chaque Grand Prix"
+            :aria-label="$t('detail.byRoundLabel')"
           />
-          <p v-else class="empty">Pas encore assez de courses.</p>
+          <p v-else class="empty">{{ $t('detail.notEnough') }}</p>
         </section>
 
         <section v-if="teammate" class="card">
           <div class="card-head">
-            <h2 class="title-md">Duel coéquipier</h2>
-            <span class="muted small">{{ duel.rounds }} GP ensemble</span>
+            <h2 class="title-md">{{ $t('detail.teammateDuel') }}</h2>
+            <span class="muted small">{{ $t('detail.together', { n: duel.rounds }) }}</span>
           </div>
           <TeammateDuel :a="driver" :b="teammate" :duel="duel" :color="driver.color" />
         </section>
@@ -79,30 +79,31 @@
 
       <!-- Carrière -->
       <section class="section-tight">
-        <h2 class="title-md section-title">Carrière</h2>
+        <h2 class="title-md section-title">{{ $t('detail.career') }}</h2>
         <div class="tiles">
-          <StatTile label="Saisons" :value="career?.seasons" />
-          <StatTile label="Grands Prix" :value="career?.races" />
-          <StatTile label="Victoires" :value="career?.wins" :sub="winRate" />
-          <StatTile label="Podiums" :value="career?.podiums" />
-          <StatTile label="Poles" :value="career?.poles" />
-          <StatTile label="Meilleurs tours" :value="career?.fastestLaps" />
+          <StatTile :label="$t('detail.seasons')" :value="career?.seasons" />
+          <StatTile :label="$t('detail.gps')" :value="career?.races" />
+          <StatTile :label="$t('detail.wins')" :value="career?.wins" :sub="winRate" />
+          <StatTile :label="$t('detail.podiums')" :value="career?.podiums" />
+          <StatTile :label="$t('detail.poles')" :value="career?.poles" />
+          <StatTile :label="$t('detail.fastestLaps')" :value="career?.fastestLaps" />
         </div>
       </section>
 
       <section v-if="driver.bio" class="card bio">
         <p class="dim">{{ driver.bio }}</p>
-        <a v-if="driver.url" :href="driver.url" target="_blank" rel="noopener" class="link-arrow">Wikipédia →</a>
+        <a v-if="driver.url" :href="driver.url" target="_blank" rel="noopener" class="link-arrow">{{ $t('detail.wikipedia') }}</a>
       </section>
     </div>
   </div>
 
-  <div v-else-if="!store.loading" class="container empty">Pilote introuvable pour cette saison.</div>
+  <div v-else-if="!store.loading" class="container empty">{{ $t('detail.driverNotFound') }}</div>
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Flag from '@/components/Flag.vue'
 import DriverAvatar from '@/components/DriverAvatar.vue'
 import StatTile from '@/components/StatTile.vue'
@@ -115,6 +116,7 @@ import { age } from '@/utils/race'
 
 const route = useRoute()
 const store = useF1Store()
+const { t } = useI18n()
 
 const driver = computed(() => store.getDriverById(route.params.id))
 const teammate = computed(() =>
@@ -125,7 +127,7 @@ const season = computed(() => driverSeasonStats(route.params.id, store.races))
 const duel = computed(() => (teammate.value ? teammateDuel(driver.value.id, teammate.value.id, store.races) : null))
 
 const completed = computed(() => store.completedRaces)
-const roundLabels = computed(() => completed.value.map((r) => `M${r.round}`))
+const roundLabels = computed(() => completed.value.map((r) => t('common.roundShort', { n: r.round })))
 const maxPosition = computed(() => Math.max(20, ...completed.value.map((r) => r.results.length)))
 
 const resultsSeries = computed(() => {
@@ -159,7 +161,7 @@ watch(
 )
 
 const winRate = computed(() =>
-  career.value?.races ? `${Math.round((career.value.wins / career.value.races) * 100)} % des GP` : '',
+  career.value?.races ? t('detail.winRate', { n: Math.round((career.value.wins / career.value.races) * 100) }) : '',
 )
 </script>
 

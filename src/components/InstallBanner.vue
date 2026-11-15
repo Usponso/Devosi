@@ -2,19 +2,19 @@
   <div v-if="visible" class="install-banner">
     <img src="/icons/icon-192.png" alt="" class="app-icon" />
     <span class="text">
-      <b>Installe l'appli Devosi</b>
-      <span class="muted">Plein écran, accès en un geste depuis ton écran d'accueil, et notifications.</span>
+      <b>{{ $t('install.title') }}</b>
+      <span class="muted">{{ $t('install.text') }}</span>
     </span>
     <span class="actions">
-      <button class="btn btn-ghost" @click="dismiss">Plus tard</button>
-      <button class="btn" @click="onInstall">Installer</button>
+      <button class="btn btn-ghost" @click="dismiss">{{ $t('common.later') }}</button>
+      <button class="btn" @click="onInstall">{{ $t('install.install') }}</button>
     </span>
 
     <!-- iPhone : étapes manuelles -->
     <ol v-if="showSteps" class="steps">
-      <li><span class="num">1</span> Touche <b>Partager</b> en bas de Safari</li>
-      <li><span class="num">2</span> Choisis <b>Sur l'écran d'accueil</b></li>
-      <li><span class="num">3</span> Ouvre Devosi depuis l'icône</li>
+      <li><span class="num">1</span> <i18n-t keypath="notif.iosStep1" scope="global"><template #share><b>{{ $t('notif.share') }}</b></template></i18n-t></li>
+      <li><span class="num">2</span> <i18n-t keypath="notif.iosStep2" scope="global"><template #home><b>{{ $t('notif.homeScreen') }}</b></template></i18n-t></li>
+      <li><span class="num">3</span> {{ $t('install.step3') }}</li>
     </ol>
   </div>
 </template>
