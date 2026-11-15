@@ -47,6 +47,7 @@
             <div class="tier-reward">
               <span><Icon name="coin" :size="13" class="gold" /> {{ $t('common.coins', { n: formatCoins(t.reward) }, t.reward) }}</span>
               <span v-if="t.tier === 2" class="gold-tag">{{ $t('album.goldTitle') }}</span>
+              <span v-else class="chrome-tag">{{ $t('album.chromeTitle') }}</span>
             </div>
             <p v-if="!unlocked" class="muted small tier-hint">{{ $t('album.unlockHint', { hint: t.hint }) }}</p>
             <button v-if="unlocked && !t.claimed && t.count === stats.total" class="btn claim" :disabled="busy" @click="claimTier(t.tier)">
@@ -321,6 +322,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .tier-reward { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
 .tier-reward > span:first-child { display: inline-flex; align-items: center; gap: 5px; }
 .gold-tag { padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 900; color: #1a1206; background: linear-gradient(110deg, #c8962c, #ffe9a0 50%, #c8962c); }
+.chrome-tag { padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 900; color: #1d2329; background: linear-gradient(110deg, #9aa3ad, #f4f7fa 50%, #9aa3ad); }
 .tier .claim { align-self: flex-start; }
 .tier.locked { opacity: 0.75; }
 .tier.locked .tier-state { display: inline-flex; align-items: center; gap: 4px; }
