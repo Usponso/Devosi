@@ -53,4 +53,5 @@ export default {
   LINEUP_INVALID: 'Pick 2 drivers, 1 team and 1 Legend, all different.',
   NOT_OWNED: 'One of these cards is no longer in your collection.',
   GENERIC: 'Something went wrong, try again.',
+  TITLE_STYLE_LOCKED: "This title style isn't unlocked yet.",
 }

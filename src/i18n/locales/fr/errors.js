@@ -53,4 +53,5 @@ export default {
   LINEUP_INVALID: 'Choisis 2 pilotes, 1 écurie et 1 Légende, toutes différentes.',
   NOT_OWNED: 'Une de ces cartes n’est plus dans ta collection.',
   GENERIC: 'Une erreur est survenue, réessaie.',
+  TITLE_STYLE_LOCKED: 'Ce style de titre n’est pas encore débloqué.',
 }

@@ -15,4 +15,7 @@ export default {
   teamText: 'Ton profil public prend les couleurs de ton écurie.',
   noTeam: 'Aucune',
   showcaseFull: 'Ta vitrine est pleine : retire d’abord une carte.',
+  style: 'Style du titre',
+  styles: { 0: 'Normal', 1: 'Argenté', 2: 'Or' },
+  styleLocked: { 1: 'Récupère le Set Chrome de cet album pour débloquer ce style', 2: 'Récupère le Master set Or de cet album pour débloquer ce style' },
 }

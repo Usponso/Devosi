@@ -165,7 +165,7 @@ import AchievementBadge from '@/components/cards/AchievementBadge.vue'
 import ProfileEditor from '@/components/cards/ProfileEditor.vue'
 import ProfileCompletion from '@/components/cards/ProfileCompletion.vue'
 import { PICKABLE_TEAMS, getTeamColor } from '@/data/teams'
-import { albumTitle } from '@/utils/cards'
+import { TITLE_STYLE_CLASS, albumTitle, titleStyleOf } from '@/utils/cards'
 import { achievementTitle } from '@/utils/achievements'
 import { RARITIES, RARITY_LABEL, useCollectionStore } from '@/stores/collectionStore'
 import { fetchPlayer } from '@/services/collection'
@@ -217,10 +217,10 @@ function closeEditor() {
 
 /** Palier Master set d'un album du joueur (0, 1 Chrome, 2 Or) */
 const albumTier = (id) => player.value?.album_tiers?.[id] ?? 0
-const titleClass = computed(() => {
-  const tier = player.value?.title ? albumTier(player.value.title) : 0
-  return tier >= 2 ? 'title-master' : tier === 1 ? 'title-chrome' : null
-})
+// Style choisi par le joueur, sans dépasser le palier Master set qu'il a récupéré
+const titleClass = computed(() =>
+  player.value?.title ? TITLE_STYLE_CLASS[titleStyleOf(albumTier(player.value.title), player.value.title_style)] ?? null : null,
+)
 
 const completedAlbums = computed(() =>
   (player.value?.albums ?? []).map((id) => col.albums.find((a) => a.id === id)).filter(Boolean),

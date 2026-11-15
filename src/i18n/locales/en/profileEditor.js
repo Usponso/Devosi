@@ -15,4 +15,7 @@ export default {
   teamText: 'Your public profile takes on your team’s colours.',
   noTeam: 'None',
   showcaseFull: 'Your showcase is full: remove a card first.',
+  style: 'Title style',
+  styles: { 0: 'Normal', 1: 'Silver', 2: 'Gold' },
+  styleLocked: { 1: "Claim this album's Chrome set to unlock this style", 2: "Claim this album's Gold master set to unlock this style" },
 }

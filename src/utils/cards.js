@@ -15,6 +15,15 @@ export const gpLabel = (name) => (name && locale() === 'en' ? gpNameEn(name) : n
 /** Nom court d'un Grand Prix : « GP de Monaco » → « Monaco », « Monaco GP » → « Monaco » */
 export const gpShort = (name) => (name ?? '').replace(/^GP (de |du |des |d’|d')?/, '').replace(/ GP$/, '')
 
+/**
+ * Style affiché d'un titre : le style choisi (`style`, null = le meilleur) sans dépasser le
+ * palier Master set récupéré (`tier`) ; 0 normal, 1 argenté, 2 or
+ */
+export const titleStyleOf = (tier, style) => Math.min(tier ?? 0, style ?? 2)
+
+/** Classe CSS du badge de titre selon son style */
+export const TITLE_STYLE_CLASS = { 1: 'title-chrome', 2: 'title-master' }
+
 /** 1 234 Pièces */
 export const formatCoins = (n) => (n ?? 0).toLocaleString(intlLocale())
 

@@ -164,6 +164,8 @@ export const saveShowcase = (cardIds) => rpc('set_showcase', { p_cards: cardIds 
 /** Avatar (carte possédée), titre (album complété) et écurie : null pour retirer */
 export const saveAvatar = (cardId) => rpc('set_avatar', { p_card: cardId })
 export const saveTitle = (albumId) => rpc('set_title', { p_album: albumId })
+/** Style du titre : 0 normal, 1 argenté, 2 or, null le meilleur débloqué — erreur `TITLE_STYLE_LOCKED` */
+export const saveTitleStyle = (style) => rpc('set_title_style', { p_style: style })
 export const saveTeam = (teamId) => rpc('set_team', { p_team: teamId })
 
 /**

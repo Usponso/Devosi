@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { usePrefsStore } from '@/stores/prefsStore'
 // Libellés traduits au chargement du module : changer de langue recharge la page
 import { locale, t } from '@/i18n'
+import { TITLE_STYLE_CLASS, titleStyleOf } from '@/utils/cards'
 import {
   cancelTrade,
   fetchTrades,
@@ -50,6 +51,7 @@ import {
   saveTeam,
   saveShowInTicker,
   saveTitle,
+  saveTitleStyle,
   sendFriendRequest,
   openPack,
   openWelcomePack,
@@ -405,6 +407,11 @@ export const useCollectionStore = defineStore('collection', {
       this.profile = await saveTitle(albumId)
     },
 
+    /** Style de mon titre : 0 normal, 1 argenté, 2 or, null le meilleur débloqué */
+    async setTitleStyle(style) {
+      this.profile = await saveTitleStyle(style)
+    },
+
     /** Apparaître (ou non) dans le bandeau « En direct » */
     async setShowInTicker(show) {
       this.profile = await saveShowInTicker(show)
@@ -684,13 +691,18 @@ export const useCollectionStore = defineStore('collection', {
 
     /** Titre d'album affiché en lettres d'or : son Master set Or est récupéré */
     isMasterTitle(albumId) {
-      return (this.albumTiers.get(albumId) ?? 0) >= 2
+      return this.titleStyle(albumId) >= 2
     },
 
-    /** Classe du badge de titre : argenté (Master set Chrome) ou doré (Master set Or) */
-    titleClass(albumId) {
+    /** Style affiché d'un de mes titres : celui choisi pour mon titre actuel, sinon le meilleur débloqué */
+    titleStyle(albumId) {
       const tier = this.albumTiers.get(albumId) ?? 0
-      return tier >= 2 ? 'title-master' : tier === 1 ? 'title-chrome' : null
+      return titleStyleOf(tier, albumId === this.profile?.title ? this.profile?.title_style : null)
+    },
+
+    /** Classe du badge de titre : argenté (Set Chrome) ou doré (Master set Or), selon le style choisi */
+    titleClass(albumId) {
+      return TITLE_STYLE_CLASS[this.titleStyle(albumId)] ?? null
     },
 
     /** Récupère la récompense d'un album complet ; renvoie les Pièces gagnées */

@@ -94,6 +94,27 @@
         <!-- Titre -->
         <section v-else-if="tab === 'title'" class="panel">
           <p class="muted small">{{ $t('profileEditor.titleText') }}</p>
+          <!-- Style du titre actuel : ceux débloqués par le Master set de son album -->
+          <div v-if="profile.title" class="style-row">
+            <span class="small muted">{{ $t('profileEditor.style') }}</span>
+            <div class="style-picks" role="radiogroup" :aria-label="$t('profileEditor.style')">
+              <button
+                v-for="s in TITLE_STYLES"
+                :key="s"
+                class="style-pick"
+                role="radio"
+                :class="{ selected: shownStyle === s, locked: s > titleTier }"
+                :aria-checked="shownStyle === s"
+                :disabled="busy || s > titleTier"
+                :title="s > titleTier ? $t(`profileEditor.styleLocked.${s}`) : ''"
+                @click="saveStyle(s)"
+              >
+                <span class="title-badge" :class="TITLE_STYLE_CLASS[s]">
+                  <Icon v-if="s > titleTier" name="lock" :size="12" />{{ $t(`profileEditor.styles.${s}`) }}
+                </span>
+              </button>
+            </div>
+          </div>
           <div class="title-list">
             <button class="title-pick" :class="{ selected: !profile.title }" :disabled="busy" @click="save('title', null)">
               <span>{{ $t('profileEditor.noTitle') }}</span>
@@ -180,7 +201,7 @@ import ShowcaseSlots from '@/components/cards/ShowcaseSlots.vue'
 import { PICKABLE_TEAMS } from '@/data/teams'
 import { CARD_TYPES, RARITY_RANK, useCollectionStore } from '@/stores/collectionStore'
 import { usePrefsStore } from '@/stores/prefsStore'
-import { albumTitle, economyMessage } from '@/utils/cards'
+import { TITLE_STYLE_CLASS, albumTitle, economyMessage } from '@/utils/cards'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -261,6 +282,25 @@ const titles = computed(() =>
     }
   }).sort((a, b) => b.unlocked - a.unlocked),
 )
+
+// Style du titre : 0 normal, 1 argenté (Set Chrome), 2 or (Master set Or)
+const TITLE_STYLES = [0, 1, 2]
+const titleTier = computed(() => col.albumTiers.get(profile.value.title) ?? 0)
+const shownStyle = computed(() => col.titleStyle(profile.value.title))
+
+async function saveStyle(style) {
+  if (style === shownStyle.value) return
+  busy.value = true
+  error.value = ''
+  try {
+    // Le meilleur style débloqué redevient le choix par défaut (null)
+    await col.setTitleStyle(style === titleTier.value ? null : style)
+  } catch (err) {
+    error.value = economyMessage(err)
+  } finally {
+    busy.value = false
+  }
+}
 
 // Badges : succès débloqués, ceux affichés en premier
 const badges = computed(() => col.profile?.badges ?? [])
@@ -405,6 +445,31 @@ function close() {
 
 .preview-text { min-width: 0; }
 .preview-text .title-md { word-break: break-word; }
+
+.style-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.style-picks {
+  display: flex;
+  gap: 6px;
+}
+
+.style-pick {
+  padding: 3px;
+  border: 1px solid transparent;
+  border-radius: 99px;
+  background: none;
+  cursor: pointer;
+}
+
+.style-pick.selected { border-color: var(--accent); }
+.style-pick.locked { cursor: not-allowed; opacity: 0.45; filter: grayscale(0.7); }
+.style-pick .title-badge { display: inline-flex; align-items: center; gap: 4px; margin-top: 0; }
 
 .title-badge {
   display: inline-block;
