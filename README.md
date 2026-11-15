@@ -52,6 +52,21 @@ select code, coins, packs, uses, max_uses, expires_at, note from public.promo_co
 update public.promo_codes set expires_at = now() where code = 'BIENVENUE';
 ```
 
+Guide complet des codes promo : `docs/codes-promo.md`.
+
+**Pseudos offensants** : au choix du pseudo, le serveur refuse ceux qui contiennent un mot de la table `public.banned_words` (français et anglais, chiffres façon leet et lettres répétées reconnus ; les mots courts ne sont bloqués que seuls, pour laisser passer `Connor` ou `cockpit`). La liste se modifie depuis l'éditeur SQL du dashboard Supabase :
+
+```sql
+-- Ajouter un mot (minuscules, sans accents) : n'importe où dans le pseudo, ou seulement comme mot entier
+insert into public.banned_words (word, whole) values ('nouveaumot', false);
+-- Retirer un mot
+delete from public.banned_words where word = 'motatort';
+-- Pseudos déjà pris qui contiennent un mot interdit
+select username from public.profiles where username is not null and public._username_offensive(username);
+```
+
+Guide complet (tester un pseudo, renommer un joueur) : `docs/pseudos-offensants.md`.
+
 **Quêtes du jour** (onglet Quêtes, `/quetes`) : 4 quêtes renouvelées à minuit UTC (2 faciles à 50 Pièces, 1 moyenne à 100 Pièces, 1 difficile qui rapporte un pack), avec 1 relance par jour. Les 4 terminées donnent un pack de plus et un jour de série ; au 7e jour de série, un pack spécial avec au moins une Épique garantie. Les packs gagnés vont dans une **réserve bonus** sans plafond, à part de la réserve qui se recharge (10 max) ; à l'ouverture, les packs spéciaux passent en premier, puis la réserve rechargée, puis la réserve bonus. La progression est suivie côté serveur par les fonctions du jeu (`supabase/migrations/20261103000000_quests.sql`). Chaque carte s'ouvre en plein écran au clic : on peut la faire pivoter (glisser, double-clic pour la retourner), passer aux cartes voisines et lire sa fiche (statistiques, albums, finitions, recyclage, vitrine). L'ouverture est sonorisée : déchirure de papier à l'ouverture, page qui tourne et marimba (plus de notes pour les cartes rares) à chaque carte. Les sons sont synthétisés dans le navigateur avec la Web Audio API, sans fichier audio ; le bouton haut-parleur de la page Packs coupe le son, et ce choix est mémorisé.
 
 **Classeur** (`/collection`) : 21 albums thématiques façon Panini (champions, vainqueurs, Français, écuries, grille de la saison, Grands Prix par décennie, Monaco, Monza, Silverstone, Spa, courses mythiques, moments). Une carte peut figurer dans plusieurs albums ; un album complet rapporte une fois sa récompense en Pièces (250 à 800) et apparaît sur le profil public. Les albums sont définis dans `scripts/build-catalog.mjs` (`ALBUMS`).
