@@ -36,13 +36,58 @@ defineProps({
   background: var(--tier-bg);
 }
 
-.tier-1 { --tier: #e7a983; --tier-bg: rgb(205 127 80 / 0.16); --tier-line: rgb(205 127 80 / 0.45); }
-.tier-2 { --tier: #dfe4ea; --tier-bg: rgb(200 205 214 / 0.12); --tier-line: rgb(200 205 214 / 0.4); }
+/*
+ * Bronze, Argent et Or : médailles en métal (fond dégradé, reflet en haut à gauche,
+ * liseré métallique, icône gravée). L'Or ajoute un halo et un reflet qui passe ;
+ * la Légende garde l'irisé et le liseré qui tourne.
+ */
+.tier-1,
+.tier-2,
 .tier-3 {
-  --tier: #ffd65a;
-  --tier-bg: rgb(232 193 90 / 0.16);
-  --tier-line: rgb(232 193 90 / 0.7);
-  box-shadow: 0 0 8px rgb(232 193 90 / 0.25);
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  background:
+    radial-gradient(circle at 30% 22%, rgb(255 255 255 / 0.45), transparent 50%) padding-box,
+    linear-gradient(145deg, var(--m-light), var(--m-mid) 45%, var(--m-dark)) padding-box,
+    linear-gradient(145deg, var(--m-edge), var(--m-dark) 55%, var(--m-edge)) border-box;
+  box-shadow: inset 0 -2px 3px rgb(0 0 0 / 0.25);
+}
+
+.tier-1,
+.tier-2,
+.tier-3 {
+  color: var(--m-ink);
+}
+
+.tier-1 :deep(svg),
+.tier-2 :deep(svg),
+.tier-3 :deep(svg) {
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.35));
+}
+
+.tier-1 { --m-light: #f0b98f; --m-mid: #c27a49; --m-dark: #7a4422; --m-edge: #ffd2ad; --m-ink: #3a1a07; }
+.tier-2 { --m-light: #ffffff; --m-mid: #c3cad3; --m-dark: #7b8591; --m-edge: #ffffff; --m-ink: #262c33; }
+.tier-3 { --m-light: #fff1b3; --m-mid: #e8b93f; --m-dark: #9a6a12; --m-edge: #fff6cf; --m-ink: #3d2803; }
+
+.tier-3 {
+  box-shadow: inset 0 -2px 3px rgb(0 0 0 / 0.25), 0 0 10px rgb(232 193 90 / 0.4);
+}
+
+/* Or : un reflet traverse la médaille de temps en temps */
+.tier-3::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(115deg, transparent 42%, rgb(255 255 255 / 0.55) 50%, transparent 58%);
+  transform: translateX(-100%);
+  animation: ach-shine 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ach-shine {
+  0%, 60% { transform: translateX(-100%); }
+  85%, 100% { transform: translateX(100%); }
 }
 
 /* Légende : fond irisé, liseré arc-en-ciel épais qui tourne en continu et halo coloré */
@@ -74,6 +119,7 @@ defineProps({
 
 @media (prefers-reduced-motion: reduce) {
   .tier-4 { animation: none; }
+  .tier-3::after { display: none; }
 }
 
 .ach-badge.locked {
@@ -82,6 +128,10 @@ defineProps({
   border: 1.5px solid var(--line);
   box-shadow: none;
   animation: none;
+}
+
+.ach-badge.locked::after {
+  display: none;
 }
 
 .ach-badge.locked :deep(svg) {
