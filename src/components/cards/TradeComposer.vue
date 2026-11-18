@@ -117,8 +117,12 @@ const giveCards = computed(() => give.value.map((id) => col.byId.get(id)).filter
 const takeCards = computed(() => take.value.map((id) => col.byId.get(id)).filter(Boolean))
 const lastCopies = computed(() => giveCards.value.filter((c) => col.owned.get(c.id) === 1))
 
-/** Valeur d'un côté de l'échange : points de rareté du classement (1, 3, 10, 25, 100) */
-const value = (cards) => cards.reduce((n, c) => n + (RARITY_VALUE[c.rarity]?.points ?? 0), 0)
+/**
+ * Valeur d'un côté de l'échange (même calcul que public._trade_card_value) : points de rareté
+ * (1, 3, 10, 25, 100), 150 pour un vitrail numéroté et 300 pour la Rosace (5 exemplaires)
+ */
+const cardValue = (c) => (c.printRun ? (c.printRun <= 5 ? 300 : 150) : RARITY_VALUE[c.rarity]?.points ?? 0)
+const value = (cards) => cards.reduce((n, c) => n + cardValue(c), 0)
 const giveValue = computed(() => value(giveCards.value))
 const takeValue = computed(() => value(takeCards.value))
 const balanced = computed(() => Math.max(giveValue.value, takeValue.value) <= 2 * Math.min(giveValue.value, takeValue.value))
